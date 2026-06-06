@@ -514,7 +514,7 @@
 </section>
 <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Na vrh">↑</button>
 
-<footer><p>© 2025 Villa Anita · Dalmacija · Hrvatska</p><p data-i18n="footer_rights">Sva prava pridržana</p></footer>
+<footer><p>© <span id="footer-year"></span> Villa Anita · Dalmacija · Hrvatska</p><p><a href="privacy.html" style="color:rgba(255,255,255,0.4); text-decoration:none; font-size:0.7rem; letter-spacing:0.05em;">Privacy Policy</a> &nbsp;·&nbsp; <span data-i18n="footer_rights" style="color:rgba(255,255,255,0.3); font-size:0.7rem;">Sva prava pridržana</span></p></footer>
 
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 <script>
@@ -776,6 +776,7 @@ function setLang(lang) {
   });
 }
 document.addEventListener('DOMContentLoaded', function() { setLang('en'); });
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 
 // ===================== RECENZIJE PRIKAŽI VIŠE =====================
 let reviewsExpanded = false;
