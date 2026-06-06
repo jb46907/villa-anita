@@ -278,7 +278,7 @@
     <div class="amenity-item"><div class="amenity-icon">❄️</div><div class="amenity-name" data-i18n="a7">Klima uređaj</div></div>
     <div class="amenity-item"><div class="amenity-icon">🛥️</div><div class="amenity-name" data-i18n="a8">Blizina plaže</div></div>
     <div class="amenity-item"><div class="amenity-icon">🔥</div><div class="amenity-name" data-i18n="a9">Kamin</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🏓🎯🏋️</div><div class="amenity-name" data-i18n="a10">Activity Room</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🏓</div><div class="amenity-name" data-i18n="a10">Activity Room</div></div>
   </div>
 </section>
 
@@ -458,13 +458,13 @@
 
   <div class="review-form-wrap">
     <h3 class="review-form-title" data-i18n="review_form_title">Ostavite recenziju</h3>
-    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;" data-i18n="review_form_sub">Recenzija će biti objavljena nakon odobrenja.</p>
-    <div data-fs-success-review class="fs-success" data-i18n="review_success">✓ Hvala! Recenzija je zaprimljena i bit će objavljena nakon pregleda.</div>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;" data-i18n="review_form_sub">Recenzija će biti u što kraćem roku objavljena.</p>
+    <div data-fs-success-review class="fs-success" data-i18n="review_success">✓ Hvala! Recenzija će biti objavljena uskoro.</div>
     <form id="review-form">
       <input type="hidden" name="_subject" value="Nova recenzija – Villa Anita (čeka odobrenje)">
       <div class="form-row">
         <div class="form-group"><label data-i18n="r_name">Vaše ime</label><input type="text" name="ime" placeholder="Ana K." required></div>
-        <div class="form-group"><label data-i18n="r_country">Država</label><input type="text" name="drzava" placeholder="🇭🇷 Hrvatska"></div>
+        <div class="form-group"><label data-i18n="r_country">Država</label><input type="text" name="drzava" placeholder="Hrvatska" data-i18n-placeholder="ph_country"></div>
       </div>
       <div class="form-group" style="margin-bottom:1rem;">
         <label data-i18n="r_stars">Ocjena</label>
@@ -511,7 +511,7 @@ const i18n = {
     g1:'Bazen & terasa', g2:'Spavaća soba', g3:'Vrt & masline', g4:'Kuhinja', g5:'Pogled na more',
     amenities_eyebrow:'Što nudimo', amenities_title:'Sadržaji vile',
     a1:'Privatni bazen', a2:'Pogled na more', a3:'Privatne večere', a4:'Parkiralište', a5:'Wi-Fi',
-    a6:'Mediteranski vrt', a7:'Klima uređaj', a8:'Blizina plaže', a9:'Kamin', a10:'Activity Room (stolni tenis, pikado, orbitrek, PS4...)',
+    a6:'Mediteranski vrt', a7:'Klima uređaj', a8:'Blizina plaže', a9:'Kamin', a10:'Soba aktivnosti',
     gym_title:'Zona aktivnosti',
     g_1:'Pikado', g_2:'Orbitrek', g_3:'Traka za trčanje', g_4:'Vreća za udaranje', g_5:'Girje & bučice', g_6:'PlayStation 4',
     booking_eyebrow:'Ugodan doček', booking_title:'Rezervirajte privatnu večeru',
@@ -532,13 +532,13 @@ const i18n = {
     form_success:'✓ Rezervacija zaprimljena! Javit ćemo se uskoro.', form_error:'Greška. Pokušajte ponovo.',
     form_success_info:'✓ Upit zaprimljen! Odgovorit ćemo što prije.',
     reviews_eyebrow:'Što kažu gosti', reviews_title:'Recenzije',
-    review_form_title:'Ostavite recenziju', review_form_sub:'Recenzija će biti objavljena nakon odobrenja.',
+    review_form_title:'Ostavite recenziju', review_form_sub:'Recenzija će biti u što kraćem roku objavljena.',
     r_name:'Vaše ime', r_country:'Država', r_stars:'Ocjena', r_text:'Vaša recenzija',
-    btn_review:'Pošaljite recenziju', review_success:'✓ Hvala! Recenzija će biti objavljena nakon pregleda.',
+    btn_review:'Pošaljite recenziju', review_success:'✓ Hvala! Recenzija će biti objavljena uskoro.',
     contact_eyebrow:'Povežimo se', contact_title:'Kontaktirajte nas',
     c_phone:'Telefon', c_email:'Email', c_location:'Lokacija', c_season:'Sezona', c_season_val:'Travanj – Listopad',
     footer_rights:'Sva prava pridržana',
-    ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...'
+    ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...', ph_country:'Hrvatska'
   },
   en: {
     nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_reviews:'Reviews', nav_contact:'Contact',
@@ -550,7 +550,7 @@ const i18n = {
     g1:'Pool & terrace', g2:'Bedroom', g3:'Garden & olives', g4:'Kitchen', g5:'Sea view',
     amenities_eyebrow:'What we offer', amenities_title:'Villa amenities',
     a1:'Private pool', a2:'Sea view', a3:'Private dinners', a4:'Parking', a5:'Wi-Fi',
-    a6:'Mediterranean garden', a7:'Air conditioning', a8:'Near the beach', a9:'Fireplace', a10:'Activity Room (table tennis, darts, elliptical, PS4...)',
+    a6:'Mediterranean garden', a7:'Air conditioning', a8:'Near the beach', a9:'Fireplace', a10:'Activity Room',
     gym_title:'Activity zone',
     g_1:'Darts', g_2:'Elliptical trainer', g_3:'Treadmill', g_4:'Punching bag', g_5:'Dumbbells & weights', g_6:'PlayStation 4',
     booking_eyebrow:'A warm welcome', booking_title:'Book a private dinner',
@@ -571,13 +571,13 @@ const i18n = {
     form_success:'✓ Booking received! We will be in touch shortly.', form_error:'An error occurred. Please try again.',
     form_success_info:'✓ Enquiry received! We will reply as soon as possible.',
     reviews_eyebrow:'What guests say', reviews_title:'Reviews',
-    review_form_title:'Leave a review', review_form_sub:'Your review will be published after approval.',
+    review_form_title:'Leave a review', review_form_sub:'Your review will be published shortly.',
     r_name:'Your name', r_country:'Country', r_stars:'Rating', r_text:'Your review',
-    btn_review:'Submit review', review_success:'✓ Thank you! Your review will be published after approval.',
+    btn_review:'Submit review', review_success:'✓ Thank you! Your review will be published soon.',
     contact_eyebrow:'Get in touch', contact_title:'Contact us',
     c_phone:'Phone', c_email:'Email', c_location:'Location', c_season:'Season', c_season_val:'April – October',
     footer_rights:'All rights reserved',
-    ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...'
+    ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...', ph_country:'Croatia'
   },
   de: {
     nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
@@ -589,7 +589,7 @@ const i18n = {
     g1:'Pool & Terrasse', g2:'Schlafzimmer', g3:'Garten & Oliven', g4:'Küche', g5:'Meerblick',
     amenities_eyebrow:'Was wir bieten', amenities_title:'Villaausstattung',
     a1:'Privater Pool', a2:'Meerblick', a3:'Private Abendessen', a4:'Parkplatz', a5:'Wi-Fi',
-    a6:'Mediterraner Garten', a7:'Klimaanlage', a8:'Strandnähe', a9:'Kamin', a10:'Activity Room (Tischtennis, Darts, Crosstrainer, PS4...)',
+    a6:'Mediterraner Garten', a7:'Klimaanlage', a8:'Strandnähe', a9:'Kamin', a10:'Aktivitätsraum',
     gym_title:'Aktivitätszone',
     g_1:'Darts', g_2:'Crosstrainer', g_3:'Laufband', g_4:'Boxsack', g_5:'Hanteln', g_6:'PlayStation 4',
     booking_eyebrow:'Herzlich willkommen', booking_title:'Privates Abendessen buchen',
@@ -610,13 +610,13 @@ const i18n = {
     form_success:'✓ Buchung erhalten! Wir melden uns in Kürze.', form_error:'Fehler aufgetreten. Bitte erneut versuchen.',
     form_success_info:'✓ Anfrage erhalten! Wir antworten so bald wie möglich.',
     reviews_eyebrow:'Was Gäste sagen', reviews_title:'Bewertungen',
-    review_form_title:'Bewertung hinterlassen', review_form_sub:'Ihre Bewertung wird nach Prüfung veröffentlicht.',
+    review_form_title:'Bewertung hinterlassen', review_form_sub:'Ihre Bewertung wird in Kürze veröffentlicht.',
     r_name:'Ihr Name', r_country:'Land', r_stars:'Bewertung', r_text:'Ihre Bewertung',
-    btn_review:'Bewertung senden', review_success:'✓ Danke! Ihre Bewertung wird nach Prüfung veröffentlicht.',
+    btn_review:'Bewertung senden', review_success:'✓ Danke! Ihre Bewertung wird bald veröffentlicht.',
     contact_eyebrow:'Kontaktieren Sie uns', contact_title:'Kontakt',
     c_phone:'Telefon', c_email:'E-Mail', c_location:'Lage', c_season:'Saison', c_season_val:'April – Oktober',
     footer_rights:'Alle Rechte vorbehalten',
-    ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...'
+    ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...', ph_country:'Kroatien'
   },
   nl: {
     nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_reviews:'Recensies', nav_contact:'Contact',
@@ -628,7 +628,7 @@ const i18n = {
     g1:'Zwembad & terras', g2:'Slaapkamer', g3:'Tuin & olijven', g4:'Keuken', g5:'Zeezicht',
     amenities_eyebrow:'Wat we bieden', amenities_title:'Villavoorzieningen',
     a1:'Privézwembad', a2:'Zeezicht', a3:'Privé diners', a4:'Parkeren', a5:'Wi-Fi',
-    a6:'Mediterrane tuin', a7:'Airconditioning', a8:'Strand nabij', a9:'Open haard', a10:'Activity Room (tafeltennis, darts, crosstrainer, PS4...)',
+    a6:'Mediterrane tuin', a7:'Airconditioning', a8:'Strand nabij', a9:'Open haard', a10:'Activiteitenruimte',
     gym_title:'Activiteitenzone',
     g_1:'Darts', g_2:'Crosstrainer', g_3:'Loopband', g_4:'Bokszak', g_5:'Gewichten & halters', g_6:'PlayStation 4',
     booking_eyebrow:'Van harte welkom', booking_title:'Privé diner reserveren',
@@ -649,13 +649,13 @@ const i18n = {
     form_success:'✓ Reservering ontvangen! We nemen snel contact op.', form_error:'Er is een fout opgetreden.',
     form_success_info:'✓ Aanvraag ontvangen! We reageren zo snel mogelijk.',
     reviews_eyebrow:'Wat gasten zeggen', reviews_title:'Recensies',
-    review_form_title:'Laat een recensie achter', review_form_sub:'Uw recensie wordt gepubliceerd na goedkeuring.',
+    review_form_title:'Laat een recensie achter', review_form_sub:'Uw recensie wordt zo snel mogelijk gepubliceerd.',
     r_name:'Uw naam', r_country:'Land', r_stars:'Beoordeling', r_text:'Uw recensie',
-    btn_review:'Recensie versturen', review_success:'✓ Bedankt! Uw recensie wordt gepubliceerd na beoordeling.',
+    btn_review:'Recensie versturen', review_success:'✓ Bedankt! Uw recensie wordt binnenkort gepubliceerd.',
     contact_eyebrow:'Neem contact op', contact_title:'Contact',
     c_phone:'Telefoon', c_email:'E-mail', c_location:'Locatie', c_season:'Seizoen', c_season_val:'April – Oktober',
     footer_rights:'Alle rechten voorbehouden',
-    ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...'
+    ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...', ph_country:'Kroatië'
   },
   fr: {
     nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_reviews:'Avis', nav_contact:'Contact',
@@ -667,7 +667,7 @@ const i18n = {
     g1:'Piscine & terrasse', g2:'Chambre', g3:'Jardin & oliviers', g4:'Cuisine', g5:'Vue mer',
     amenities_eyebrow:'Ce que nous offrons', amenities_title:'Équipements de la villa',
     a1:'Piscine privée', a2:'Vue sur la mer', a3:'Dîners privés', a4:'Parking', a5:'Wi-Fi',
-    a6:'Jardin méditerranéen', a7:'Climatisation', a8:'Proche de la plage', a9:'Cheminée', a10:'Activity Room (tennis de table, fléchettes, elliptique, PS4...)',
+    a6:'Jardin méditerranéen', a7:'Climatisation', a8:'Proche de la plage', a9:'Cheminée', a10:'Salle d\'activités',
     gym_title:'Zone d\'activités',
     g_1:'Fléchettes', g_2:'Vélo elliptique', g_3:'Tapis de course', g_4:'Sac de frappe', g_5:'Haltères', g_6:'PlayStation 4',
     booking_eyebrow:'Bienvenue', booking_title:'Réserver un dîner privé',
@@ -688,13 +688,13 @@ const i18n = {
     form_success:'✓ Réservation reçue ! Nous vous contacterons bientôt.', form_error:'Une erreur s\'est produite.',
     form_success_info:'✓ Demande reçue ! Nous répondrons dès que possible.',
     reviews_eyebrow:'Ce que disent les clients', reviews_title:'Avis',
-    review_form_title:'Laisser un avis', review_form_sub:'Votre avis sera publié après validation.',
+    review_form_title:'Laisser un avis', review_form_sub:'Votre avis sera publié dans les plus brefs délais.',
     r_name:'Votre nom', r_country:'Pays', r_stars:'Note', r_text:'Votre avis',
-    btn_review:'Soumettre l\'avis', review_success:'✓ Merci ! Votre avis sera publié après vérification.',
+    btn_review:'Soumettre l\'avis', review_success:'✓ Merci ! Votre avis sera publié bientôt.',
     contact_eyebrow:'Nous contacter', contact_title:'Contactez-nous',
     c_phone:'Téléphone', c_email:'E-mail', c_location:'Lieu', c_season:'Saison', c_season_val:'Avril – Octobre',
     footer_rights:'Tous droits réservés',
-    ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...'
+    ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...', ph_country:'Croatie'
   },
   it: {
     nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_reviews:'Recensioni', nav_contact:'Contatti',
@@ -706,7 +706,7 @@ const i18n = {
     g1:'Piscina & terrazza', g2:'Camera da letto', g3:'Giardino & ulivi', g4:'Cucina', g5:'Vista mare',
     amenities_eyebrow:'Cosa offriamo', amenities_title:'Servizi della villa',
     a1:'Piscina privata', a2:'Vista sul mare', a3:'Cene private', a4:'Parcheggio', a5:'Wi-Fi',
-    a6:'Giardino mediterraneo', a7:'Aria condizionata', a8:'Vicino alla spiaggia', a9:'Camino', a10:'Activity Room (ping pong, freccette, ellittica, PS4...)',
+    a6:'Giardino mediterraneo', a7:'Aria condizionata', a8:'Vicino alla spiaggia', a9:'Camino', a10:'Sala attività',
     gym_title:'Zona attività',
     g_1:'Freccette', g_2:'Ellittica', g_3:'Tapis roulant', g_4:'Sacco da boxe', g_5:'Manubri & pesi', g_6:'PlayStation 4',
     booking_eyebrow:'Benvenuti', booking_title:'Prenota una cena privata',
@@ -727,13 +727,13 @@ const i18n = {
     form_success:'✓ Prenotazione ricevuta! Ci metteremo in contatto a breve.', form_error:'Si è verificato un errore.',
     form_success_info:'✓ Richiesta ricevuta! Risponderemo il prima possibile.',
     reviews_eyebrow:'Cosa dicono gli ospiti', reviews_title:'Recensioni',
-    review_form_title:'Lascia una recensione', review_form_sub:'La tua recensione sarà pubblicata dopo approvazione.',
+    review_form_title:'Lascia una recensione', review_form_sub:'La tua recensione sarà pubblicata al più presto.',
     r_name:'Il tuo nome', r_country:'Paese', r_stars:'Valutazione', r_text:'La tua recensione',
-    btn_review:'Invia recensione', review_success:'✓ Grazie! La tua recensione sarà pubblicata dopo revisione.',
+    btn_review:'Invia recensione', review_success:'✓ Grazie! La tua recensione sarà pubblicata a breve.',
     contact_eyebrow:'Mettiti in contatto', contact_title:'Contattaci',
     c_phone:'Telefono', c_email:'Email', c_location:'Posizione', c_season:'Stagione', c_season_val:'Aprile – Ottobre',
     footer_rights:'Tutti i diritti riservati',
-    ph_notes:'Allergie, richieste speciali...', ph_message:'Le vostre domande...', ph_review:'Descrivi il tuo soggiorno...'
+    ph_notes:'Allergie, richieste speciali...', ph_message:'Le vostre domande...', ph_review:'Descrivi il tuo soggiorno...', ph_country:'Croazia'
   }
 };
 
