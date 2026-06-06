@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Villa Anita – Dalmacija</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sand: #F5EFE0;
+    --sand-dark: #E8DCC8;
+    --terracotta: #C4704A;
+    --terracotta-light: #D4886A;
+    --sea: #2B6C8A;
+    --sea-light: #4A8FA8;
+    --olive: #6B7C4A;
+    --text: #2C2416;
+    --text-muted: #7A6A54;
+    --white: #FDFAF5;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(253,250,245,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(196,112,74,0.15); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; letter-spacing: 0.05em; color: var(--terracotta); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--terracotta); }
+
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+  .hero-left { background: var(--sand); display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 4rem 4rem; position: relative; overflow: hidden; }
+  .hero-left::before { content: ''; position: absolute; top: -80px; left: -80px; width: 320px; height: 320px; border-radius: 50%; background: rgba(196,112,74,0.08); }
+  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1.5rem; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; font-weight: 300; line-height: 1.1; color: var(--text); margin-bottom: 0.3rem; }
+  .hero-title em { font-style: italic; color: var(--terracotta); }
+  .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+  .hero-location { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--sea); margin-bottom: 2.5rem; }
+  .hero-location::before { content: '◆'; font-size: 0.5rem; }
+  .hero-desc { font-size: 1rem; line-height: 1.8; color: var(--text-muted); max-width: 380px; margin-bottom: 3rem; font-weight: 300; }
+  .btn-primary { display: inline-block; background: var(--terracotta); color: var(--white); padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; text-decoration: none; }
+  .btn-primary:hover { background: var(--terracotta-light); transform: translateY(-1px); }
+  .btn-outline { display: inline-block; border: 1px solid var(--sea); color: var(--sea); padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; background: transparent; margin-left: 1rem; }
+  .btn-outline:hover { background: var(--sea); color: var(--white); }
+
+  .hero-right { position: relative; overflow: hidden; }
+  .hero-image-grid { display: grid; grid-template-rows: 1fr 1fr; height: 100%; }
+  .hero-img { background-size: cover; background-position: center; position: relative; }
+  .hero-img-main { background: linear-gradient(135deg, #7BA7BC 0%, #4A8FA8 30%, #2B6C8A 70%, #1E4F66 100%); display: flex; align-items: flex-end; padding: 2rem; }
+  .hero-img-sec { background: linear-gradient(135deg, #C8956A 0%, #B5724A 40%, #8B5332 100%); display: flex; align-items: flex-start; padding: 2rem; }
+  .img-caption { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: rgba(255,255,255,0.85); }
+
+  section { padding: 6rem 4rem; }
+
+  .gallery-section { background: var(--white); }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; line-height: 1.2; }
+  .gallery-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 280px 280px; gap: 12px; max-width: 1100px; margin: 0 auto; }
+  .gallery-item { border-radius: 2px; overflow: hidden; position: relative; cursor: pointer; }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-item-inner { width: 100%; height: 100%; transition: transform 0.4s ease; }
+  .gallery-item:hover .gallery-item-inner { transform: scale(1.04); }
+  .g1 { background: linear-gradient(160deg, #3D7A96 0%, #1E4F66 100%); }
+  .g2 { background: linear-gradient(160deg, #C8956A 0%, #8B5332 100%); }
+  .g3 { background: linear-gradient(160deg, #8BA870 0%, #4A5C2E 100%); }
+  .g4 { background: linear-gradient(160deg, #D4A0A0 0%, #A05050 100%); }
+  .g5 { background: linear-gradient(160deg, #7090B0 0%, #3D5A7A 100%); }
+  .gallery-label { position: absolute; bottom: 1rem; left: 1rem; background: rgba(44,36,22,0.7); backdrop-filter: blur(4px); padding: 0.4rem 0.8rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); border-radius: 1px; }
+
+  .amenities-section { background: var(--sand); }
+  .amenities-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; max-width: 900px; margin: 0 auto; }
+  .amenity-item { text-align: center; padding: 2rem 1rem; background: var(--white); border-top: 3px solid var(--terracotta); }
+  .amenity-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .amenity-name { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+
+  .booking-section { background: var(--white); }
+  .booking-container { max-width: 720px; margin: 0 auto; }
+  .booking-tabs { display: flex; gap: 0; margin-bottom: 3rem; border-bottom: 2px solid var(--sand-dark); }
+  .tab-btn { padding: 1rem 2rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; background: none; border: none; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-family: 'Jost', sans-serif; }
+  .tab-btn.active { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-group label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .form-group input, .form-group select, .form-group textarea { padding: 0.8rem 1rem; border: 1px solid var(--sand-dark); background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.95rem; color: var(--text); outline: none; transition: border-color 0.2s; border-radius: 0; -webkit-appearance: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--terracotta); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-full { grid-column: 1 / -1; }
+
+  .menu-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--terracotta); margin: 2rem 0 1rem; }
+  .menu-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
+  .menu-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; border: 1px solid var(--sand-dark); cursor: pointer; transition: all 0.2s; user-select: none; font-size: 0.9rem; color: var(--text); }
+  .menu-item:hover { border-color: var(--terracotta-light); background: rgba(196,112,74,0.04); }
+  .menu-item.selected { border-color: var(--terracotta); background: rgba(196,112,74,0.08); }
+  .menu-item-check { width: 16px; height: 16px; border: 1.5px solid var(--sand-dark); border-radius: 50%; transition: all 0.2s; flex-shrink: 0; }
+  .menu-item.selected .menu-item-check { background: var(--terracotta); border-color: var(--terracotta); }
+
+  .summary-box { background: var(--sand); padding: 1.5rem 2rem; margin: 2rem 0; border-left: 3px solid var(--terracotta); }
+  .summary-box h4 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; }
+  .summary-items { font-size: 0.9rem; color: var(--text); line-height: 2; }
+
+  .contact-section { background: var(--text); color: var(--white); text-align: center; padding: 5rem 4rem; }
+  .contact-section .section-eyebrow { color: var(--terracotta-light); }
+  .contact-grid { display: flex; justify-content: center; gap: 4rem; margin-top: 3rem; }
+  .contact-item-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.4rem; }
+  .contact-item-value { font-size: 1rem; color: rgba(255,255,255,0.9); }
+  .contact-item-value a { color: var(--terracotta-light); text-decoration: none; }
+
+  footer { background: var(--text); border-top: 1px solid rgba(255,255,255,0.08); padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-size: 0.75rem; color: rgba(255,255,255,0.35); letter-spacing: 0.05em; }
+
+  .success-msg { display: none; background: rgba(107,124,74,0.1); border: 1px solid var(--olive); padding: 1.5rem; text-align: center; color: var(--olive); font-size: 0.9rem; letter-spacing: 0.05em; margin-top: 1rem; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-left > * { animation: fadeUp 0.7s ease both; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero-title { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-location { animation-delay: 0.35s; }
+  .hero-desc { animation-delay: 0.4s; }
+  .hero-cta { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Villa Anita</div>
+  <ul class="nav-links">
+    <li><a href="#gallery">Galerija</a></li>
+    <li><a href="#amenities">Sadržaji</a></li>
+    <li><a href="#booking">Rezervacija</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Ekskluzivni smještaj · Dalmacija</p>
+    <h1 class="hero-title">Villa<br><em>Anita</em></h1>
+    <p class="hero-sub">Vaš dom na obali Jadrana</p>
+    <p class="hero-location">Dalmacija, Hrvatska</p>
+    <p class="hero-desc">Predivna villa s pogledom na more, okružena mediteranskim zelenilom. Savršeno mjesto za odmor u srcu Dalmacije – privatnost, elegancija i autentičan dalmatinski ugođaj.</p>
+    <div class="hero-cta">
+      <a href="#booking" class="btn-primary">Rezervirajte večeru</a>
+      <a href="#gallery" class="btn-outline">Pogledajte villu</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-grid">
+      <div class="hero-img hero-img-main">
+        <p class="img-caption">Pogled na Jadransko more</p>
+      </div>
+      <div class="hero-img hero-img-sec">
+        <p class="img-caption">Terasa za večeru</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="gallery-section" id="gallery">
+  <div class="section-header">
+    <p class="section-eyebrow">Prostori i ugođaj</p>
+    <h2 class="section-title">Upoznajte Villu Anitu</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <div class="gallery-item-inner g1" style="height:100%"></div>
+      <span class="gallery-label">Bazen & terasa</span>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner g2" style="height:100%"></div>
+      <span class="gallery-label">Spavaća soba</span>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner g3" style="height:100%"></div>
+      <span class="gallery-label">Vrt & masline</span>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner g4" style="height:100%"></div>
+      <span class="gallery-label">Kuhinja</span>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner g5" style="height:100%"></div>
+      <span class="gallery-label">Pogled na more</span>
+    </div>
+  </div>
+</section>
+
+<section class="amenities-section" id="amenities">
+  <div class="section-header">
+    <p class="section-eyebrow">Što nudimo</p>
+    <h2 class="section-title">Sadržaji vile</h2>
+  </div>
+  <div class="amenities-grid">
+    <div class="amenity-item"><div class="amenity-icon">🏊</div><div class="amenity-name">Privatni bazen</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🌊</div><div class="amenity-name">Pogled na more</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🍽️</div><div class="amenity-name">Privatne večere</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🚗</div><div class="amenity-name">Parkiralište</div></div>
+    <div class="amenity-item"><div class="amenity-icon">📶</div><div class="amenity-name">Wi-Fi</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🌿</div><div class="amenity-name">Mediteranski vrt</div></div>
+    <div class="amenity-item"><div class="amenity-icon">❄️</div><div class="amenity-name">Klima uređaj</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🛥️</div><div class="amenity-name">Blizina plaže</div></div>
+  </div>
+</section>
+
+<section class="booking-section" id="booking">
+  <div class="booking-container">
+    <div class="section-header">
+      <p class="section-eyebrow">Ugodan doček</p>
+      <h2 class="section-title">Rezervirajte privatnu večeru</h2>
+    </div>
+    <div class="booking-tabs">
+      <button class="tab-btn active" onclick="switchTab('dinner')">Privatna večera</button>
+      <button class="tab-btn" onclick="switchTab('info')">Upit za smještaj</button>
+    </div>
+
+    <div class="tab-content active" id="tab-dinner">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vaše ime i prezime</label>
+          <input type="text" id="d-name" placeholder="Ana Kovač">
+        </div>
+        <div class="form-group">
+          <label>Kontakt (tel / email)</label>
+          <input type="text" id="d-contact" placeholder="+385 91 234 5678">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Datum večere</label>
+          <input type="date" id="d-date">
+        </div>
+        <div class="form-group">
+          <label>Broj osoba</label>
+          <select id="d-guests">
+            <option value="">— odaberite —</option>
+            <option>2 osobe</option>
+            <option>3–4 osobe</option>
+            <option>5–6 osoba</option>
+            <option>7–8 osoba</option>
+            <option>9–10 osoba</option>
+            <option>10+ osoba</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Termin</label>
+          <select id="d-time">
+            <option value="">— odaberite —</option>
+            <option>18:00 – Rani zalazak sunca</option>
+            <option>19:30 – Večernji ugođaj</option>
+            <option>20:00 – Standardni termin</option>
+            <option>21:00 – Kasna večera</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Posebna prigoda</label>
+          <select id="d-occasion">
+            <option value="">— nije posebna prigoda —</option>
+            <option>Godišnjica</option>
+            <option>Rođendan</option>
+            <option>Zaruke</option>
+            <option>Poslovni ručak/večera</option>
+            <option>Obiteljski okupljanje</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="menu-section-title">Predjela – odaberite</p>
+      <div class="menu-items">
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Dalmatinska pršut ploča</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Bruschetta s rajčicom</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Škampi na buzaru</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Carpaccio od tune</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Sir i masline</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Juha od dagnji</div>
+      </div>
+
+      <p class="menu-section-title">Glavno jelo – odaberite</p>
+      <div class="menu-items">
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Riba s roštilja (orada/brancin)</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Janjetina ispod peke</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Hobotnica s povrćem</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Teletina na dalmatinski</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Lignje na žaru</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Vegetarijanska peka</div>
+      </div>
+
+      <p class="menu-section-title">Desert – odaberite</p>
+      <div class="menu-items">
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Panna cotta s lavandom</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Roštilj voće s medom</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Kroštule i fritule</div>
+        <div class="menu-item" onclick="toggleItem(this)"><span class="menu-item-check"></span>Sorbet od limuna</div>
+      </div>
+
+      <div class="form-row" style="margin-top:1.5rem">
+        <div class="form-group form-full">
+          <label>Napomene (alergije, posebne želje...)</label>
+          <textarea id="d-notes" placeholder="Npr. vegetarijanski, bez glutena, slavlje za godišnjicu..."></textarea>
+        </div>
+      </div>
+
+      <div class="summary-box" id="summary-box" style="display:none">
+        <h4>Pregled rezervacije</h4>
+        <div class="summary-items" id="summary-text"></div>
+      </div>
+
+      <button class="btn-primary" id="submit-dinner" onclick="submitBooking()" style="width:100%; text-align:center; padding:1.1rem">Pošaljite rezervaciju</button>
+      <div class="success-msg" id="success-msg">✓ Vaša rezervacija je zaprimljena! Javit ćemo se u roku od nekoliko sati za potvrdu.</div>
+    </div>
+
+    <div class="tab-content" id="tab-info">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ime i prezime</label>
+          <input type="text" placeholder="Marko Marković">
+        </div>
+        <div class="form-group">
+          <label>Email adresa</label>
+          <input type="email" placeholder="marko@email.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Dolazak</label>
+          <input type="date">
+        </div>
+        <div class="form-group">
+          <label>Odlazak</label>
+          <input type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Broj gostiju</label>
+          <select>
+            <option>2 osobe</option><option>3–4 osobe</option><option>5–6 osoba</option><option>7+ osoba</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Kontakt telefon</label>
+          <input type="tel" placeholder="+385 91 000 0000">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:1.5rem">
+        <label>Poruka</label>
+        <textarea placeholder="Vaša pitanja ili posebne potrebe..."></textarea>
+      </div>
+      <button class="btn-primary" id="submit-info" onclick="submitInfo()" style="width:100%; text-align:center; padding:1.1rem">Pošaljite upit</button>
+      <div class="success-msg" id="success-info">✓ Upit zaprimljen! Odgovorit ćemo vam što prije.</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <p class="section-eyebrow">Povežimo se</p>
+  <h2 class="section-title" style="color:var(--white); font-family:'Cormorant Garamond',serif; font-weight:300;">Kontaktirajte nas</h2>
+  <div class="contact-grid">
+    <div class="contact-item">
+      <p class="contact-item-label">Telefon</p>
+      <p class="contact-item-value"><a href="tel:+38591234567">+385 91 234 567</a></p>
+    </div>
+    <div class="contact-item">
+      <p class="contact-item-label">Email</p>
+      <p class="contact-item-value"><a href="mailto:info@villaanita.hr">info@villaanita.hr</a></p>
+    </div>
+    <div class="contact-item">
+      <p class="contact-item-label">Lokacija</p>
+      <p class="contact-item-value" style="color:rgba(255,255,255,0.75)">Dalmacija, Hrvatska</p>
+    </div>
+    <div class="contact-item">
+      <p class="contact-item-label">Sezona</p>
+      <p class="contact-item-value" style="color:rgba(255,255,255,0.75)">Travanj – Listopad</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Villa Anita · Dalmacija · Hrvatska</p>
+  <p>Sva prava pridržana</p>
+</footer>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (name==='dinner'&&i===0)||(name==='info'&&i===1)));
+  document.getElementById('tab-dinner').classList.toggle('active', name==='dinner');
+  document.getElementById('tab-info').classList.toggle('active', name==='info');
+}
+function toggleItem(el) {
+  el.classList.toggle('selected');
+  updateSummary();
+}
+function updateSummary() {
+  const date = document.getElementById('d-date').value;
+  const guests = document.getElementById('d-guests').value;
+  const time = document.getElementById('d-time').value;
+  const selected = [...document.querySelectorAll('.menu-item.selected')].map(e => e.textContent.trim());
+  const box = document.getElementById('summary-box');
+  const txt = document.getElementById('summary-text');
+  if (selected.length > 0 || date || guests) {
+    box.style.display = 'block';
+    let html = '';
+    if (date) html += '📅 Datum: <strong>' + date + '</strong><br>';
+    if (guests) html += '👥 Gosti: <strong>' + guests + '</strong><br>';
+    if (time) html += '🕗 Termin: <strong>' + time + '</strong><br>';
+    if (selected.length > 0) html += '🍽️ Odabrana jela: <strong>' + selected.join(', ') + '</strong>';
+    txt.innerHTML = html;
+  } else {
+    box.style.display = 'none';
+  }
+}
+document.querySelectorAll('#tab-dinner input, #tab-dinner select').forEach(el => el.addEventListener('change', updateSummary));
+function submitBooking() {
+  const name = document.getElementById('d-name').value;
+  const date = document.getElementById('d-date').value;
+  const guests = document.getElementById('d-guests').value;
+  if (!name || !date || !guests) { alert('Molimo unesite ime, datum i broj gostiju.'); return; }
+  document.getElementById('success-msg').style.display = 'block';
+  document.getElementById('submit-dinner').style.display = 'none';
+}
+function submitInfo() {
+  document.getElementById('success-info').style.display = 'block';
+  document.getElementById('submit-info').style.display = 'none';
+}
+</script>
+</body>
+</html>
