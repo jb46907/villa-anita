@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -196,8 +196,8 @@
   </ul>
   <div class="nav-right">
     <div class="lang-switcher">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('hr')">HR</button>
+      <button class="lang-btn active" onclick="setLang('hr')">HR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('de')">DE</button>
       <button class="lang-btn" onclick="setLang('nl')">NL</button>
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
@@ -216,8 +216,8 @@
   <a href="#reviews" onclick="closeMenu()" data-i18n="nav_reviews">Recenzije</a>
   <a href="#contact" onclick="closeMenu()" data-i18n="nav_contact">Kontakt</a>
   <div class="mobile-lang">
-    <button class="lang-btn active" onclick="setLang('en');closeMenu()">EN</button>
-    <button class="lang-btn" onclick="setLang('hr');closeMenu()">HR</button>
+    <button class="lang-btn active" onclick="setLang('hr');closeMenu()">HR</button>
+    <button class="lang-btn" onclick="setLang('en');closeMenu()">EN</button>
     <button class="lang-btn" onclick="setLang('de');closeMenu()">DE</button>
     <button class="lang-btn" onclick="setLang('nl');closeMenu()">NL</button>
     <button class="lang-btn" onclick="setLang('fr');closeMenu()">FR</button>
@@ -383,7 +383,7 @@
 
         <div class="form-row" style="margin-top:1.5rem">
           <div class="form-group form-full"><label data-i18n="f_notes">Napomene</label>
-            <textarea name="napomene" placeholder="Alergije, posebne želje..." data-fs-field></textarea>
+            <textarea name="napomene" placeholder="Alergije, posebne želje..." data-fs-field data-i18n-placeholder="ph_notes"></textarea>
           </div>
         </div>
 
@@ -427,7 +427,7 @@
           <div class="form-group"><label data-i18n="f_phone">Telefon</label><input type="tel" name="telefon" placeholder="+385 91 000 0000"></div>
         </div>
         <div class="form-group" style="margin-bottom:1.5rem"><label data-i18n="f_message">Poruka</label>
-          <textarea name="poruka" placeholder="Vaša pitanja..."></textarea>
+          <textarea name="poruka" placeholder="Vaša pitanja..." data-i18n-placeholder="ph_message"></textarea>
         </div>
         <button type="submit" class="btn-primary" id="submit-stay" style="width:100%;text-align:center;padding:1.1rem" data-i18n="btn_send">Pošaljite upit</button>
         <div class="fs-success" id="stay-success" data-i18n="form_success_info">✓ Upit zaprimljen! Odgovorit ćemo vam što prije.</div>
@@ -486,7 +486,7 @@
         <input type="hidden" name="ocjena" id="hidden-stars" value="5">
       </div>
       <div class="form-group" style="margin-bottom:1.5rem;"><label data-i18n="r_text">Vaša recenzija</label>
-        <textarea name="recenzija" placeholder="Opišite Vaš boravak..." required style="min-height:110px;"></textarea>
+        <textarea name="recenzija" placeholder="Opišite Vaš boravak..." required style="min-height:110px;" data-i18n-placeholder="ph_review"></textarea>
       </div>
       <button type="submit" class="btn-primary" id="submit-review" style="width:100%;text-align:center;padding:1rem;" data-i18n="btn_review">Pošaljite recenziju</button>
     </form>
@@ -546,7 +546,8 @@ const i18n = {
     btn_review:'Pošaljite recenziju', review_success:'✓ Hvala! Recenzija će biti objavljena nakon pregleda.',
     contact_eyebrow:'Povežimo se', contact_title:'Kontaktirajte nas',
     c_phone:'Telefon', c_email:'Email', c_location:'Lokacija', c_season:'Sezona', c_season_val:'Travanj – Listopad',
-    footer_rights:'Sva prava pridržana'
+    footer_rights:'Sva prava pridržana',
+    ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...'
   },
   en: {
     nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_reviews:'Reviews', nav_contact:'Contact',
@@ -584,7 +585,8 @@ const i18n = {
     btn_review:'Submit review', review_success:'✓ Thank you! Your review will be published after approval.',
     contact_eyebrow:'Get in touch', contact_title:'Contact us',
     c_phone:'Phone', c_email:'Email', c_location:'Location', c_season:'Season', c_season_val:'April – October',
-    footer_rights:'All rights reserved'
+    footer_rights:'All rights reserved',
+    ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...'
   },
   de: {
     nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
@@ -622,7 +624,8 @@ const i18n = {
     btn_review:'Bewertung senden', review_success:'✓ Danke! Ihre Bewertung wird nach Prüfung veröffentlicht.',
     contact_eyebrow:'Kontaktieren Sie uns', contact_title:'Kontakt',
     c_phone:'Telefon', c_email:'E-Mail', c_location:'Lage', c_season:'Saison', c_season_val:'April – Oktober',
-    footer_rights:'Alle Rechte vorbehalten'
+    footer_rights:'Alle Rechte vorbehalten',
+    ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...'
   },
   nl: {
     nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_reviews:'Recensies', nav_contact:'Contact',
@@ -660,7 +663,8 @@ const i18n = {
     btn_review:'Recensie versturen', review_success:'✓ Bedankt! Uw recensie wordt gepubliceerd na beoordeling.',
     contact_eyebrow:'Neem contact op', contact_title:'Contact',
     c_phone:'Telefoon', c_email:'E-mail', c_location:'Locatie', c_season:'Seizoen', c_season_val:'April – Oktober',
-    footer_rights:'Alle rechten voorbehouden'
+    footer_rights:'Alle rechten voorbehouden',
+    ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...'
   },
   fr: {
     nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_reviews:'Avis', nav_contact:'Contact',
@@ -698,7 +702,8 @@ const i18n = {
     btn_review:'Soumettre l\'avis', review_success:'✓ Merci ! Votre avis sera publié après vérification.',
     contact_eyebrow:'Nous contacter', contact_title:'Contactez-nous',
     c_phone:'Téléphone', c_email:'E-mail', c_location:'Lieu', c_season:'Saison', c_season_val:'Avril – Octobre',
-    footer_rights:'Tous droits réservés'
+    footer_rights:'Tous droits réservés',
+    ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...'
   },
   it: {
     nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_reviews:'Recensioni', nav_contact:'Contatti',
@@ -736,7 +741,8 @@ const i18n = {
     btn_review:'Invia recensione', review_success:'✓ Grazie! La tua recensione sarà pubblicata dopo revisione.',
     contact_eyebrow:'Mettiti in contatto', contact_title:'Contattaci',
     c_phone:'Telefono', c_email:'Email', c_location:'Posizione', c_season:'Stagione', c_season_val:'Aprile – Ottobre',
-    footer_rights:'Tutti i diritti riservati'
+    footer_rights:'Tutti i diritti riservati',
+    ph_notes:'Allergie, richieste speciali...', ph_message:'Le vostre domande...', ph_review:'Descrivi il tuo soggiorno...'
   }
 };
 
@@ -753,7 +759,13 @@ function setLang(lang) {
     const key = el.getAttribute('data-i18n');
     if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
   });
+  // Prijevod placeholder atributa
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
 }
+document.addEventListener('DOMContentLoaded', function() { setLang('en'); });
 
 // ===================== NAV =====================
 function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
