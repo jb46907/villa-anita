@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Villa Anita – Dalmacija</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sand: #F5EFE0; --sand-dark: #E8DCC8; --terracotta: #C4704A;
+    --terracotta-light: #D4886A; --sea: #2B6C8A; --olive: #6B7C4A;
+    --text: #2C2416; --text-muted: #7A6A54; --white: #FDFAF5;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(253,250,245,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(196,112,74,0.15); gap: 1rem; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--terracotta); white-space: nowrap; }
+  .nav-links { display: flex; gap: 1.2rem; list-style: none; }
+  .nav-links a { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; white-space: nowrap; }
+  .nav-links a:hover { color: var(--terracotta); }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .lang-switcher { display: flex; gap: 4px; flex-wrap: wrap; }
+  .lang-btn { background: none; border: 1px solid var(--sand-dark); padding: 3px 7px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; color: var(--text-muted); font-family: 'Jost', sans-serif; transition: all 0.2s; border-radius: 2px; }
+  .lang-btn.active { background: var(--terracotta); color: var(--white); border-color: var(--terracotta); }
+  .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; }
+  .mobile-menu { display: none; position: fixed; top: 57px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--sand-dark); z-index: 99; padding: 1rem 1.5rem; }
+  .mobile-menu.open { display: block; }
+  .mobile-menu a { display: block; padding: 0.75rem 0; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; border-bottom: 1px solid var(--sand); }
+  .mobile-lang { display: flex; gap: 6px; flex-wrap: wrap; padding: 1rem 0 0.5rem; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+  .hero-left { background: var(--sand); display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 4rem; position: relative; overflow: hidden; }
+  .hero-left::before { content: ''; position: absolute; top: -80px; left: -80px; width: 320px; height: 320px; border-radius: 50%; background: rgba(196,112,74,0.08); }
+  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1.5rem; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; font-weight: 300; line-height: 1.1; margin-bottom: 0.3rem; }
+  .hero-title em { font-style: italic; color: var(--terracotta); }
+  .hero-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+  .hero-location { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--sea); margin-bottom: 2.5rem; }
+  .hero-location::before { content: '◆'; font-size: 0.5rem; }
+  .hero-desc { font-size: 1rem; line-height: 1.8; color: var(--text-muted); max-width: 380px; margin-bottom: 3rem; font-weight: 300; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .btn-primary { display: inline-block; background: var(--terracotta); color: var(--white); padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; text-decoration: none; }
+  .btn-primary:hover { background: var(--terracotta-light); transform: translateY(-1px); }
+  .btn-outline { display: inline-block; border: 1px solid var(--sea); color: var(--sea); padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; background: transparent; }
+  .btn-outline:hover { background: var(--sea); color: var(--white); }
+  .hero-right { overflow: hidden; }
+  .hero-image-grid { display: grid; grid-template-rows: 1fr 1fr; height: 100%; }
+  .hero-img { background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 1.5rem; }
+  .hero-img:last-child { align-items: flex-start; }
+  .hero-img-main { background-color: #2B6C8A; background-image: url('images/hero-main.jpg'); }
+  .hero-img-sec { background-color: #B5724A; background-image: url('images/hero-sec.jpg'); }
+  .img-caption { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: rgba(255,255,255,0.9); background: rgba(0,0,0,0.25); padding: 4px 10px; border-radius: 2px; }
+
+  /* SECTIONS */
+  section { padding: 5rem 4rem; }
+  .section-header { text-align: center; margin-bottom: 3.5rem; }
+  .section-eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; line-height: 1.2; }
+
+  /* GALLERY */
+  .gallery-section { background: var(--white); }
+  .gallery-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 10px; max-width: 1100px; margin: 0 auto; }
+  .gallery-item { border-radius: 2px; overflow: hidden; position: relative; cursor: pointer; }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-item-inner { width: 100%; height: 100%; transition: transform 0.4s ease; background-size: cover; background-position: center; }
+  .gallery-item:hover .gallery-item-inner { transform: scale(1.04); }
+  .gi-1 { background-color: #3D7A96; background-image: url('images/gallery-1.jpg'); }
+  .gi-2 { background-color: #C8956A; background-image: url('images/gallery-2.jpg'); }
+  .gi-3 { background-color: #8BA870; background-image: url('images/gallery-3.jpg'); }
+  .gi-4 { background-color: #D4A0A0; background-image: url('images/gallery-4.jpg'); }
+  .gi-5 { background-color: #7090B0; background-image: url('images/gallery-5.jpg'); }
+  .gallery-label { position: absolute; bottom: 0.75rem; left: 0.75rem; background: rgba(44,36,22,0.65); backdrop-filter: blur(4px); padding: 0.3rem 0.7rem; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); }
+
+  /* AMENITIES */
+  .amenities-section { background: var(--sand); }
+  .amenities-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
+  .amenity-item { text-align: center; padding: 1.5rem 0.8rem; background: var(--white); border-top: 3px solid var(--terracotta); }
+  .amenity-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .amenity-name { font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); line-height: 1.4; }
+  .amenities-subtitle { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; color: var(--terracotta); margin: 3rem 0 1.5rem; font-style: italic; }
+
+  /* BOOKING */
+  .booking-section { background: var(--white); }
+  .booking-container { max-width: 720px; margin: 0 auto; }
+  .booking-tabs { display: flex; margin-bottom: 2.5rem; border-bottom: 2px solid var(--sand-dark); overflow-x: auto; }
+  .tab-btn { padding: 0.9rem 1.5rem; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; background: none; border: none; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-family: 'Jost', sans-serif; white-space: nowrap; }
+  .tab-btn.active { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .form-group input, .form-group select, .form-group textarea { padding: 0.75rem 0.9rem; border: 1px solid var(--sand-dark); background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; transition: border-color 0.2s; border-radius: 0; -webkit-appearance: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--terracotta); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-full { grid-column: 1 / -1; }
+  .menu-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--terracotta); margin: 1.8rem 0 0.8rem; }
+  .menu-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .menu-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 0.9rem; border: 1px solid var(--sand-dark); cursor: pointer; transition: all 0.2s; user-select: none; font-size: 0.85rem; color: var(--text); }
+  .menu-item:hover { border-color: var(--terracotta-light); background: rgba(196,112,74,0.04); }
+  .menu-item.selected { border-color: var(--terracotta); background: rgba(196,112,74,0.08); }
+  .menu-item-check { width: 15px; height: 15px; border: 1.5px solid var(--sand-dark); border-radius: 50%; transition: all 0.2s; flex-shrink: 0; }
+  .menu-item.selected .menu-item-check { background: var(--terracotta); border-color: var(--terracotta); }
+  .summary-box { background: var(--sand); padding: 1.2rem 1.5rem; margin: 1.5rem 0; border-left: 3px solid var(--terracotta); }
+  .summary-box h4 { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem; }
+  .summary-items { font-size: 0.85rem; color: var(--text); line-height: 2; }
+
+  /* REVIEWS */
+  .reviews-section { background: var(--sand); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem; }
+  .review-card { background: var(--white); padding: 1.5rem; border-top: 3px solid var(--terracotta); }
+  .review-stars { color: var(--terracotta); font-size: 1rem; margin-bottom: 0.8rem; letter-spacing: 2px; }
+  .review-text { font-size: 0.9rem; line-height: 1.7; color: var(--text-muted); font-style: italic; margin-bottom: 1rem; }
+  .review-author { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); font-style: normal; }
+  .review-country { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+  .review-form-wrap { max-width: 600px; margin: 0 auto; background: var(--white); padding: 2rem; border-top: 3px solid var(--terracotta-light); }
+  .review-form-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 1.5rem; color: var(--text); }
+  .star-select { display: flex; gap: 6px; margin-bottom: 1.2rem; }
+  .star-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--sand-dark); transition: color 0.15s; line-height: 1; }
+  .star-btn.active { color: var(--terracotta); }
+
+  /* CONTACT */
+  .contact-section { background: var(--text); color: var(--white); text-align: center; padding: 5rem 4rem; }
+  .contact-section .section-eyebrow { color: var(--terracotta-light); }
+  .contact-grid { display: flex; justify-content: center; gap: 3rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .contact-item-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.3rem; }
+  .contact-item-value { font-size: 0.95rem; color: rgba(255,255,255,0.9); }
+  .contact-item-value a { color: var(--terracotta-light); text-decoration: none; }
+  footer { background: var(--text); border-top: 1px solid rgba(255,255,255,0.08); padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  footer p { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+
+  .fs-success { display: none; background: rgba(107,124,74,0.1); border: 1px solid var(--olive); padding: 1.2rem; text-align: center; color: var(--olive); font-size: 0.9rem; margin-top: 1rem; }
+  .fs-error-msg { display: none; background: rgba(196,112,74,0.1); border: 1px solid var(--terracotta); padding: 1rem; color: var(--terracotta); font-size: 0.85rem; margin-top: 0.5rem; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-left > * { animation: fadeUp 0.7s ease both; }
+  .hero-eyebrow { animation-delay: 0.1s; } .hero-title { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; } .hero-location { animation-delay: 0.35s; }
+  .hero-desc { animation-delay: 0.4s; } .hero-cta { animation-delay: 0.5s; }
+
+  @media (max-width: 1050px) {
+    .amenities-grid { grid-template-columns: repeat(4, 1fr); }
+    nav { flex-wrap: wrap; }
+    .nav-links { gap: 0.8rem; }
+  }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 280px; }
+    .hero-left { padding: 7rem 2.5rem 3rem; }
+    .hero-title { font-size: 3.5rem; }
+    section { padding: 4rem 2.5rem; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px 200px; }
+    .gallery-item:first-child { grid-row: auto; grid-column: 1 / 3; }
+    .amenities-grid { grid-template-columns: repeat(3, 1fr); }
+    .reviews-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0.9rem 1.2rem; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: block; }
+    .lang-switcher { display: none; }
+    .hero-right { height: 220px; }
+    .hero-left { padding: 6rem 1.5rem 2.5rem; }
+    .hero-title { font-size: 2.8rem; }
+    .hero-desc { font-size: 0.95rem; max-width: 100%; }
+    .btn-primary, .btn-outline { width: 100%; text-align: center; padding: 1rem; }
+    section { padding: 3rem 1.5rem; }
+    .section-title { font-size: 2rem; }
+    .gallery-grid { grid-template-columns: 1fr; grid-template-rows: repeat(5, 180px); }
+    .gallery-item:first-child { grid-row: auto; grid-column: auto; }
+    .amenities-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .menu-items { grid-template-columns: 1fr; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .contact-section { padding: 3.5rem 1.5rem; }
+    .contact-grid { flex-direction: column; gap: 1.5rem; align-items: center; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Villa Anita</div>
+  <ul class="nav-links">
+    <li><a href="#gallery" data-i18n="nav_gallery">Galerija</a></li>
+    <li><a href="#amenities" data-i18n="nav_amenities">Sadržaji</a></li>
+    <li><a href="#booking" data-i18n="nav_booking">Rezervacija</a></li>
+    <li><a href="#reviews" data-i18n="nav_reviews">Recenzije</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Kontakt</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('hr')">HR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('nl')">NL</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('it')">IT</button>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#gallery" onclick="closeMenu()" data-i18n="nav_gallery">Galerija</a>
+  <a href="#amenities" onclick="closeMenu()" data-i18n="nav_amenities">Sadržaji</a>
+  <a href="#booking" onclick="closeMenu()" data-i18n="nav_booking">Rezervacija</a>
+  <a href="#reviews" onclick="closeMenu()" data-i18n="nav_reviews">Recenzije</a>
+  <a href="#contact" onclick="closeMenu()" data-i18n="nav_contact">Kontakt</a>
+  <div class="mobile-lang">
+    <button class="lang-btn active" onclick="setLang('hr');closeMenu()">HR</button>
+    <button class="lang-btn" onclick="setLang('en');closeMenu()">EN</button>
+    <button class="lang-btn" onclick="setLang('de');closeMenu()">DE</button>
+    <button class="lang-btn" onclick="setLang('nl');closeMenu()">NL</button>
+    <button class="lang-btn" onclick="setLang('fr');closeMenu()">FR</button>
+    <button class="lang-btn" onclick="setLang('it');closeMenu()">IT</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">Ekskluzivni smještaj · Dalmacija</p>
+    <h1 class="hero-title">Villa<br><em>Anita</em></h1>
+    <p class="hero-sub" data-i18n="hero_sub">Vaš dom na obali Jadrana</p>
+    <p class="hero-location">Dalmacija, Hrvatska</p>
+    <p class="hero-desc" data-i18n="hero_desc">Predivna villa s pogledom na more, okružena mediteranskim zelenilom. Savršeno mjesto za odmor u srcu Dalmacije – privatnost, elegancija i autentičan dalmatinski ugođaj.</p>
+    <div class="hero-cta">
+      <a href="#booking" class="btn-primary" data-i18n="hero_cta1">Rezervirajte večeru</a>
+      <a href="#gallery" class="btn-outline" data-i18n="hero_cta2">Pogledajte villu</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div style="display:grid; grid-template-rows:1fr 1fr; height:100%;">
+      <div class="hero-img hero-img-main"><p class="img-caption" data-i18n="hero_img1">Pogled na Jadransko more</p></div>
+      <div class="hero-img hero-img-sec"><p class="img-caption" data-i18n="hero_img2">Terasa za večeru</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- GALERIJA -->
+<section class="gallery-section" id="gallery">
+  <div class="section-header">
+    <p class="section-eyebrow" data-i18n="gallery_eyebrow">Prostori i ugođaj</p>
+    <h2 class="section-title" data-i18n="gallery_title">Upoznajte Villu Anitu</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><div class="gallery-item-inner gi-1" style="height:100%"></div><span class="gallery-label" data-i18n="g1">Bazen & terasa</span></div>
+    <div class="gallery-item"><div class="gallery-item-inner gi-2" style="height:100%"></div><span class="gallery-label" data-i18n="g2">Spavaća soba</span></div>
+    <div class="gallery-item"><div class="gallery-item-inner gi-3" style="height:100%"></div><span class="gallery-label" data-i18n="g3">Vrt & masline</span></div>
+    <div class="gallery-item"><div class="gallery-item-inner gi-4" style="height:100%"></div><span class="gallery-label" data-i18n="g4">Kuhinja</span></div>
+    <div class="gallery-item"><div class="gallery-item-inner gi-5" style="height:100%"></div><span class="gallery-label" data-i18n="g5">Pogled na more</span></div>
+  </div>
+</section>
+
+<!-- SADRŽAJI -->
+<section class="amenities-section" id="amenities">
+  <div class="section-header">
+    <p class="section-eyebrow" data-i18n="amenities_eyebrow">Što nudimo</p>
+    <h2 class="section-title" data-i18n="amenities_title">Sadržaji vile</h2>
+  </div>
+  <div class="amenities-grid">
+    <div class="amenity-item"><div class="amenity-icon">🏊</div><div class="amenity-name" data-i18n="a1">Privatni bazen</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🌊</div><div class="amenity-name" data-i18n="a2">Pogled na more</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🍽️</div><div class="amenity-name" data-i18n="a3">Privatne večere</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🚗</div><div class="amenity-name" data-i18n="a4">Parkiralište</div></div>
+    <div class="amenity-item"><div class="amenity-icon">📶</div><div class="amenity-name" data-i18n="a5">Wi-Fi</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🌿</div><div class="amenity-name" data-i18n="a6">Mediteranski vrt</div></div>
+    <div class="amenity-item"><div class="amenity-icon">❄️</div><div class="amenity-name" data-i18n="a7">Klima uređaj</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🛥️</div><div class="amenity-name" data-i18n="a8">Blizina plaže</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🔥</div><div class="amenity-name" data-i18n="a9">Kamin</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🏓</div><div class="amenity-name" data-i18n="a10">Stolni tenis</div></div>
+  </div>
+  <p class="amenities-subtitle" data-i18n="gym_title">Zona aktivnosti</p>
+  <div class="amenities-grid" style="margin-top:0;">
+    <div class="amenity-item"><div class="amenity-icon">🎯</div><div class="amenity-name" data-i18n="g_1">Pikado</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🚴</div><div class="amenity-name" data-i18n="g_2">Orbitrek</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🏃</div><div class="amenity-name" data-i18n="g_3">Traka za trčanje</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🥊</div><div class="amenity-name" data-i18n="g_4">Vreća za udaranje</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🏋️</div><div class="amenity-name" data-i18n="g_5">Girje & bučice</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🎮</div><div class="amenity-name" data-i18n="g_6">PlayStation 4</div></div>
+  </div>
+</section>
+
+<!-- REZERVACIJA -->
+<section class="booking-section" id="booking">
+  <div class="booking-container">
+    <div class="section-header">
+      <p class="section-eyebrow" data-i18n="booking_eyebrow">Ugodan doček</p>
+      <h2 class="section-title" data-i18n="booking_title">Rezervirajte privatnu večeru</h2>
+    </div>
+    <div class="booking-tabs">
+      <button class="tab-btn active" onclick="switchTab('dinner')" data-i18n="tab_dinner">Privatna večera</button>
+      <button class="tab-btn" onclick="switchTab('info')" data-i18n="tab_stay">Upit za smještaj</button>
+    </div>
+
+    <!-- VEČERA FORMA — Formspree -->
+    <div class="tab-content active" id="tab-dinner">
+      <div data-fs-success class="fs-success" data-i18n="form_success">✓ Rezervacija zaprimljena! Javit ćemo se uskoro za potvrdu.</div>
+      <div data-fs-error class="fs-error-msg" data-i18n="form_error">Došlo je do greške. Molimo pokušajte ponovo.</div>
+      <form id="dinner-form">
+        <input type="hidden" name="_subject" value="Nova rezervacija večere – Villa Anita">
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_name">Ime i prezime</label><input type="text" name="ime_prezime" placeholder="Ana Kovač" required data-fs-field></div>
+          <div class="form-group"><label data-i18n="f_contact">Kontakt (tel / email)</label><input type="text" name="kontakt" placeholder="+385 91 234 5678" required data-fs-field></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_date">Datum večere</label><input type="date" name="datum" required data-fs-field></div>
+          <div class="form-group"><label data-i18n="f_guests">Broj osoba</label>
+            <select name="broj_osoba" required data-fs-field>
+              <option value="" data-i18n="f_select">— odaberite —</option>
+              <option>2 osobe</option><option>3–4 osobe</option><option>5–6 osoba</option>
+              <option>7–8 osoba</option><option>9–10 osoba</option><option>10+ osoba</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_time">Termin</label>
+            <select name="termin" data-fs-field>
+              <option value="" data-i18n="f_select">— odaberite —</option>
+              <option data-i18n="t1">18:00 – Rani zalazak sunca</option>
+              <option data-i18n="t2">19:30 – Večernji ugođaj</option>
+              <option data-i18n="t3">20:00 – Standardni termin</option>
+              <option data-i18n="t4">21:00 – Kasna večera</option>
+            </select>
+          </div>
+          <div class="form-group"><label data-i18n="f_occasion">Posebna prigoda</label>
+            <select name="prigoda" data-fs-field>
+              <option value="" data-i18n="f_none">— nije posebna prigoda —</option>
+              <option data-i18n="oc1">Godišnjica</option><option data-i18n="oc2">Rođendan</option>
+              <option data-i18n="oc3">Zaruke</option><option data-i18n="oc4">Poslovni ručak/večera</option>
+              <option data-i18n="oc5">Obiteljski okup</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="menu-section-title" data-i18n="menu_starters">Predjela</p>
+        <div class="menu-items" id="starters-list">
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s1">Dalmatinska pršut ploča</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s2">Bruschetta s rajčicom</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s3">Škampi na buzaru</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s4">Carpaccio od tune</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s5">Sir i masline</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'starter')"><span class="menu-item-check"></span><span data-i18n="s6">Juha od dagnji</span></div>
+        </div>
+        <input type="hidden" name="predjela" id="hidden-starters">
+
+        <p class="menu-section-title" data-i18n="menu_mains">Glavno jelo</p>
+        <div class="menu-items" id="mains-list">
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m1">Riba s roštilja (orada/brancin)</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m2">Janjetina ispod peke</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m3">Hobotnica s povrćem</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m4">Teletina na dalmatinski</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m5">Lignje na žaru</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'main')"><span class="menu-item-check"></span><span data-i18n="m6">Vegetarijanska peka</span></div>
+        </div>
+        <input type="hidden" name="glavno_jelo" id="hidden-mains">
+
+        <p class="menu-section-title" data-i18n="menu_desserts">Desert</p>
+        <div class="menu-items" id="desserts-list">
+          <div class="menu-item" onclick="toggleItem(this,'dessert')"><span class="menu-item-check"></span><span data-i18n="d1">Panna cotta s lavandom</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'dessert')"><span class="menu-item-check"></span><span data-i18n="d2">Roštilj voće s medom</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'dessert')"><span class="menu-item-check"></span><span data-i18n="d3">Kroštule i fritule</span></div>
+          <div class="menu-item" onclick="toggleItem(this,'dessert')"><span class="menu-item-check"></span><span data-i18n="d4">Sorbet od limuna</span></div>
+        </div>
+        <input type="hidden" name="desert" id="hidden-desserts">
+
+        <div class="form-row" style="margin-top:1.5rem">
+          <div class="form-group form-full"><label data-i18n="f_notes">Napomene</label>
+            <textarea name="napomene" placeholder="Alergije, posebne želje..." data-fs-field></textarea>
+          </div>
+        </div>
+
+        <div class="summary-box" id="summary-box" style="display:none">
+          <h4 data-i18n="summary_title">Pregled rezervacije</h4>
+          <div class="summary-items" id="summary-text"></div>
+        </div>
+
+        <button type="submit" class="btn-primary" data-fs-submit-btn style="width:100%;text-align:center;padding:1.1rem;margin-top:0.5rem" data-i18n="btn_submit">Pošaljite rezervaciju</button>
+      </form>
+    </div>
+
+    <!-- SMJEŠTAJ FORMA -->
+    <div class="tab-content" id="tab-info">
+      <div data-fs-success-info class="fs-success" data-i18n="form_success_info">✓ Upit zaprimljen! Odgovorit ćemo vam što prije.</div>
+      <form id="stay-form">
+        <input type="hidden" name="_subject" value="Upit za smještaj – Villa Anita">
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_name">Ime i prezime</label><input type="text" name="ime_prezime" placeholder="Marko Marković" required></div>
+          <div class="form-group"><label data-i18n="f_email">Email adresa</label><input type="email" name="email" placeholder="marko@email.com" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_checkin">Dolazak</label><input type="date" name="dolazak"></div>
+          <div class="form-group"><label data-i18n="f_checkout">Odlazak</label><input type="date" name="odlazak"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="f_guests">Broj gostiju</label>
+            <select name="broj_gostiju">
+              <option>2 osobe</option><option>3–4 osobe</option><option>5–6 osoba</option><option>7+ osoba</option>
+            </select>
+          </div>
+          <div class="form-group"><label data-i18n="f_phone">Telefon</label><input type="tel" name="telefon" placeholder="+385 91 000 0000"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem"><label data-i18n="f_message">Poruka</label>
+          <textarea name="poruka" placeholder="Vaša pitanja..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" id="submit-stay" style="width:100%;text-align:center;padding:1.1rem" data-i18n="btn_send">Pošaljite upit</button>
+        <div class="fs-success" id="stay-success" data-i18n="form_success_info">✓ Upit zaprimljen! Odgovorit ćemo vam što prije.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- RECENZIJE -->
+<section class="reviews-section" id="reviews">
+  <div class="section-header">
+    <p class="section-eyebrow" data-i18n="reviews_eyebrow">Što kažu gosti</p>
+    <h2 class="section-title" data-i18n="reviews_title">Recenzije</h2>
+  </div>
+  <div class="reviews-grid" id="reviews-grid">
+    <!-- Ovdje dodaješ svoje stare recenzije — kopiraj blok ispod i ponavljaj -->
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Nevjerojatno mjesto! Villa je savršena, pogled na more je bio spektakularan. Večera na terasi bila je nezaboravna."</p>
+      <p class="review-author">Familie Müller</p>
+      <p class="review-country">🇩🇪 Njemačka · Srpanj 2024.</p>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Perfect stay, absolutely beautiful villa. The private dinner was outstanding – fresh fish, lovely terrace, wonderful hosts."</p>
+      <p class="review-author">James & Sarah</p>
+      <p class="review-country">🇬🇧 UK · Kolovoz 2024.</p>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Magnifique villa avec une vue imprenable sur la mer. Le dîner privé était exceptionnel. Nous reviendrons certainement!"</p>
+      <p class="review-author">Famille Dubois</p>
+      <p class="review-country">🇫🇷 Francuska · Lipanj 2024.</p>
+    </div>
+  </div>
+
+  <div class="review-form-wrap">
+    <h3 class="review-form-title" data-i18n="review_form_title">Ostavite recenziju</h3>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;" data-i18n="review_form_sub">Recenzija će biti objavljena nakon odobrenja.</p>
+    <div data-fs-success-review class="fs-success" data-i18n="review_success">✓ Hvala! Recenzija je zaprimljena i bit će objavljena nakon pregleda.</div>
+    <form id="review-form">
+      <input type="hidden" name="_subject" value="Nova recenzija – Villa Anita (čeka odobrenje)">
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="r_name">Vaše ime</label><input type="text" name="ime" placeholder="Ana K." required></div>
+        <div class="form-group"><label data-i18n="r_country">Država</label><input type="text" name="drzava" placeholder="🇭🇷 Hrvatska"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label data-i18n="r_stars">Ocjena</label>
+        <div class="star-select" id="star-select">
+          <button type="button" class="star-btn" data-val="1" onclick="setStars(1)">★</button>
+          <button type="button" class="star-btn" data-val="2" onclick="setStars(2)">★</button>
+          <button type="button" class="star-btn" data-val="3" onclick="setStars(3)">★</button>
+          <button type="button" class="star-btn" data-val="4" onclick="setStars(4)">★</button>
+          <button type="button" class="star-btn" data-val="5" onclick="setStars(5)">★</button>
+        </div>
+        <input type="hidden" name="ocjena" id="hidden-stars" value="5">
+      </div>
+      <div class="form-group" style="margin-bottom:1.5rem;"><label data-i18n="r_text">Vaša recenzija</label>
+        <textarea name="recenzija" placeholder="Opišite Vaš boravak..." required style="min-height:110px;"></textarea>
+      </div>
+      <button type="submit" class="btn-primary" id="submit-review" style="width:100%;text-align:center;padding:1rem;" data-i18n="btn_review">Pošaljite recenziju</button>
+    </form>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section class="contact-section" id="contact">
+  <p class="section-eyebrow" data-i18n="contact_eyebrow">Povežimo se</p>
+  <h2 class="section-title" style="color:var(--white);font-family:'Cormorant Garamond',serif;font-weight:300;" data-i18n="contact_title">Kontaktirajte nas</h2>
+  <div class="contact-grid">
+    <div class="contact-item"><p class="contact-item-label" data-i18n="c_phone">Telefon</p><p class="contact-item-value"><a href="tel:+38591234567">+385 91 234 567</a></p></div>
+    <div class="contact-item"><p class="contact-item-label" data-i18n="c_email">Email</p><p class="contact-item-value"><a href="mailto:info@villaanita.hr">info@villaanita.hr</a></p></div>
+    <div class="contact-item"><p class="contact-item-label" data-i18n="c_location">Lokacija</p><p class="contact-item-value" style="color:rgba(255,255,255,0.75)">Dalmacija, Hrvatska</p></div>
+    <div class="contact-item"><p class="contact-item-label" data-i18n="c_season">Sezona</p><p class="contact-item-value" style="color:rgba(255,255,255,0.75)" data-i18n="c_season_val">Travanj – Listopad</p></div>
+  </div>
+</section>
+<footer><p>© 2025 Villa Anita · Dalmacija · Hrvatska</p><p data-i18n="footer_rights">Sva prava pridržana</p></footer>
+
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+<script>
+// ===================== PRIJEVODI =====================
+const i18n = {
+  hr: {
+    nav_gallery:'Galerija', nav_amenities:'Sadržaji', nav_booking:'Rezervacija', nav_reviews:'Recenzije', nav_contact:'Kontakt',
+    hero_eyebrow:'Ekskluzivni smještaj · Dalmacija', hero_sub:'Vaš dom na obali Jadrana',
+    hero_desc:'Predivna villa s pogledom na more, okružena mediteranskim zelenilom. Savršeno mjesto za odmor u srcu Dalmacije.',
+    hero_cta1:'Rezervirajte večeru', hero_cta2:'Pogledajte villu',
+    hero_img1:'Pogled na Jadransko more', hero_img2:'Terasa za večeru',
+    gallery_eyebrow:'Prostori i ugođaj', gallery_title:'Upoznajte Villu Anitu',
+    g1:'Bazen & terasa', g2:'Spavaća soba', g3:'Vrt & masline', g4:'Kuhinja', g5:'Pogled na more',
+    amenities_eyebrow:'Što nudimo', amenities_title:'Sadržaji vile',
+    a1:'Privatni bazen', a2:'Pogled na more', a3:'Privatne večere', a4:'Parkiralište', a5:'Wi-Fi',
+    a6:'Mediteranski vrt', a7:'Klima uređaj', a8:'Blizina plaže', a9:'Kamin', a10:'Stolni tenis',
+    gym_title:'Zona aktivnosti',
+    g_1:'Pikado', g_2:'Orbitrek', g_3:'Traka za trčanje', g_4:'Vreća za udaranje', g_5:'Girje & bučice', g_6:'PlayStation 4',
+    booking_eyebrow:'Ugodan doček', booking_title:'Rezervirajte privatnu večeru',
+    tab_dinner:'Privatna večera', tab_stay:'Upit za smještaj',
+    f_name:'Ime i prezime', f_contact:'Kontakt (tel / email)', f_date:'Datum večere', f_guests:'Broj osoba',
+    f_time:'Termin', f_occasion:'Posebna prigoda', f_notes:'Napomene', f_email:'Email adresa',
+    f_checkin:'Dolazak', f_checkout:'Odlazak', f_phone:'Telefon', f_message:'Poruka',
+    f_select:'— odaberite —', f_none:'— nije posebna prigoda —',
+    t1:'18:00 – Rani zalazak sunca', t2:'19:30 – Večernji ugođaj', t3:'20:00 – Standardni termin', t4:'21:00 – Kasna večera',
+    oc1:'Godišnjica', oc2:'Rođendan', oc3:'Zaruke', oc4:'Poslovni ručak/večera', oc5:'Obiteljski okup',
+    menu_starters:'Predjela', menu_mains:'Glavno jelo', menu_desserts:'Desert',
+    s1:'Dalmatinska pršut ploča', s2:'Bruschetta s rajčicom', s3:'Škampi na buzaru', s4:'Carpaccio od tune', s5:'Sir i masline', s6:'Juha od dagnji',
+    m1:'Riba s roštilja (orada/brancin)', m2:'Janjetina ispod peke', m3:'Hobotnica s povrćem', m4:'Teletina na dalmatinski', m5:'Lignje na žaru', m6:'Vegetarijanska peka',
+    d1:'Panna cotta s lavandom', d2:'Roštilj voće s medom', d3:'Kroštule i fritule', d4:'Sorbet od limuna',
+    summary_title:'Pregled rezervacije', btn_submit:'Pošaljite rezervaciju', btn_send:'Pošaljite upit',
+    form_success:'✓ Rezervacija zaprimljena! Javit ćemo se uskoro.', form_error:'Greška. Pokušajte ponovo.',
+    form_success_info:'✓ Upit zaprimljen! Odgovorit ćemo što prije.',
+    reviews_eyebrow:'Što kažu gosti', reviews_title:'Recenzije',
+    review_form_title:'Ostavite recenziju', review_form_sub:'Recenzija će biti objavljena nakon odobrenja.',
+    r_name:'Vaše ime', r_country:'Država', r_stars:'Ocjena', r_text:'Vaša recenzija',
+    btn_review:'Pošaljite recenziju', review_success:'✓ Hvala! Recenzija će biti objavljena nakon pregleda.',
+    contact_eyebrow:'Povežimo se', contact_title:'Kontaktirajte nas',
+    c_phone:'Telefon', c_email:'Email', c_location:'Lokacija', c_season:'Sezona', c_season_val:'Travanj – Listopad',
+    footer_rights:'Sva prava pridržana'
+  },
+  en: {
+    nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_reviews:'Reviews', nav_contact:'Contact',
+    hero_eyebrow:'Exclusive accommodation · Dalmatia', hero_sub:'Your home on the Adriatic coast',
+    hero_desc:'Beautiful villa with sea views, surrounded by Mediterranean greenery. The perfect retreat in the heart of Dalmatia.',
+    hero_cta1:'Book a private dinner', hero_cta2:'View the villa',
+    hero_img1:'View of the Adriatic Sea', hero_img2:'Dinner terrace',
+    gallery_eyebrow:'Spaces & atmosphere', gallery_title:'Discover Villa Anita',
+    g1:'Pool & terrace', g2:'Bedroom', g3:'Garden & olives', g4:'Kitchen', g5:'Sea view',
+    amenities_eyebrow:'What we offer', amenities_title:'Villa amenities',
+    a1:'Private pool', a2:'Sea view', a3:'Private dinners', a4:'Parking', a5:'Wi-Fi',
+    a6:'Mediterranean garden', a7:'Air conditioning', a8:'Near the beach', a9:'Fireplace', a10:'Table tennis',
+    gym_title:'Activity zone',
+    g_1:'Darts', g_2:'Elliptical trainer', g_3:'Treadmill', g_4:'Punching bag', g_5:'Dumbbells & weights', g_6:'PlayStation 4',
+    booking_eyebrow:'A warm welcome', booking_title:'Book a private dinner',
+    tab_dinner:'Private dinner', tab_stay:'Accommodation enquiry',
+    f_name:'Full name', f_contact:'Contact (phone / email)', f_date:'Dinner date', f_guests:'Number of guests',
+    f_time:'Time slot', f_occasion:'Special occasion', f_notes:'Notes', f_email:'Email address',
+    f_checkin:'Check-in', f_checkout:'Check-out', f_phone:'Phone', f_message:'Message',
+    f_select:'— select —', f_none:'— no special occasion —',
+    t1:'18:00 – Early sunset', t2:'19:30 – Evening ambience', t3:'20:00 – Standard slot', t4:'21:00 – Late dinner',
+    oc1:'Anniversary', oc2:'Birthday', oc3:'Engagement', oc4:'Business dinner', oc5:'Family gathering',
+    menu_starters:'Starters', menu_mains:'Main course', menu_desserts:'Dessert',
+    s1:'Dalmatian prosciutto board', s2:'Bruschetta with tomato', s3:'Scampi buzara', s4:'Tuna carpaccio', s5:'Cheese & olives', s6:'Mussel soup',
+    m1:'Grilled fish (sea bream/bass)', m2:'Lamb under the peka', m3:'Octopus with vegetables', m4:'Dalmatian-style veal', m5:'Grilled squid', m6:'Vegetarian peka',
+    d1:'Lavender panna cotta', d2:'Grilled fruit with honey', d3:'Kroštule & fritule', d4:'Lemon sorbet',
+    summary_title:'Booking summary', btn_submit:'Send booking', btn_send:'Send enquiry',
+    form_success:'✓ Booking received! We will be in touch shortly.', form_error:'An error occurred. Please try again.',
+    form_success_info:'✓ Enquiry received! We will reply as soon as possible.',
+    reviews_eyebrow:'What guests say', reviews_title:'Reviews',
+    review_form_title:'Leave a review', review_form_sub:'Your review will be published after approval.',
+    r_name:'Your name', r_country:'Country', r_stars:'Rating', r_text:'Your review',
+    btn_review:'Submit review', review_success:'✓ Thank you! Your review will be published after approval.',
+    contact_eyebrow:'Get in touch', contact_title:'Contact us',
+    c_phone:'Phone', c_email:'Email', c_location:'Location', c_season:'Season', c_season_val:'April – October',
+    footer_rights:'All rights reserved'
+  },
+  de: {
+    nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
+    hero_eyebrow:'Exklusive Unterkunft · Dalmatien', hero_sub:'Ihr Zuhause an der Adriaküste',
+    hero_desc:'Wunderschöne Villa mit Meerblick, umgeben von mediterranem Grün. Der perfekte Rückzugsort im Herzen Dalmatiens.',
+    hero_cta1:'Privates Abendessen buchen', hero_cta2:'Villa ansehen',
+    hero_img1:'Blick auf die Adria', hero_img2:'Abendessen-Terrasse',
+    gallery_eyebrow:'Räume & Atmosphäre', gallery_title:'Entdecken Sie Villa Anita',
+    g1:'Pool & Terrasse', g2:'Schlafzimmer', g3:'Garten & Oliven', g4:'Küche', g5:'Meerblick',
+    amenities_eyebrow:'Was wir bieten', amenities_title:'Villaausstattung',
+    a1:'Privater Pool', a2:'Meerblick', a3:'Private Abendessen', a4:'Parkplatz', a5:'Wi-Fi',
+    a6:'Mediterraner Garten', a7:'Klimaanlage', a8:'Strandnähe', a9:'Kamin', a10:'Tischtennis',
+    gym_title:'Aktivitätszone',
+    g_1:'Darts', g_2:'Crosstrainer', g_3:'Laufband', g_4:'Boxsack', g_5:'Hanteln', g_6:'PlayStation 4',
+    booking_eyebrow:'Herzlich willkommen', booking_title:'Privates Abendessen buchen',
+    tab_dinner:'Privates Abendessen', tab_stay:'Unterkunftsanfrage',
+    f_name:'Vor- und Nachname', f_contact:'Kontakt (Tel. / E-Mail)', f_date:'Abendessen-Datum', f_guests:'Personenanzahl',
+    f_time:'Uhrzeit', f_occasion:'Besonderer Anlass', f_notes:'Anmerkungen', f_email:'E-Mail-Adresse',
+    f_checkin:'Anreise', f_checkout:'Abreise', f_phone:'Telefon', f_message:'Nachricht',
+    f_select:'— wählen —', f_none:'— kein besonderer Anlass —',
+    t1:'18:00 – Früher Sonnenuntergang', t2:'19:30 – Abendstimmung', t3:'20:00 – Standard', t4:'21:00 – Spätes Abendessen',
+    oc1:'Jahrestag', oc2:'Geburtstag', oc3:'Verlobung', oc4:'Geschäftsessen', oc5:'Familientreffen',
+    menu_starters:'Vorspeisen', menu_mains:'Hauptgang', menu_desserts:'Dessert',
+    s1:'Dalmatinische Prosciutto-Platte', s2:'Bruschetta mit Tomate', s3:'Scampi Buzara', s4:'Thunfisch-Carpaccio', s5:'Käse & Oliven', s6:'Muschelsuppe',
+    m1:'Gegrillter Fisch (Dorade/Barsch)', m2:'Lamm unter der Peka', m3:'Oktopus mit Gemüse', m4:'Dalmatinisches Kalbfleisch', m5:'Gegrillter Tintenfisch', m6:'Vegetarische Peka',
+    d1:'Lavendel-Panna-cotta', d2:'Gegrillte Früchte mit Honig', d3:'Kroštule & Fritule', d4:'Zitronensorbet',
+    summary_title:'Buchungsübersicht', btn_submit:'Buchung senden', btn_send:'Anfrage senden',
+    form_success:'✓ Buchung erhalten! Wir melden uns in Kürze.', form_error:'Fehler aufgetreten. Bitte erneut versuchen.',
+    form_success_info:'✓ Anfrage erhalten! Wir antworten so bald wie möglich.',
+    reviews_eyebrow:'Was Gäste sagen', reviews_title:'Bewertungen',
+    review_form_title:'Bewertung hinterlassen', review_form_sub:'Ihre Bewertung wird nach Prüfung veröffentlicht.',
+    r_name:'Ihr Name', r_country:'Land', r_stars:'Bewertung', r_text:'Ihre Bewertung',
+    btn_review:'Bewertung senden', review_success:'✓ Danke! Ihre Bewertung wird nach Prüfung veröffentlicht.',
+    contact_eyebrow:'Kontaktieren Sie uns', contact_title:'Kontakt',
+    c_phone:'Telefon', c_email:'E-Mail', c_location:'Lage', c_season:'Saison', c_season_val:'April – Oktober',
+    footer_rights:'Alle Rechte vorbehalten'
+  },
+  nl: {
+    nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_reviews:'Recensies', nav_contact:'Contact',
+    hero_eyebrow:'Exclusief verblijf · Dalmatië', hero_sub:'Uw thuis aan de Adriatische kust',
+    hero_desc:'Prachtige villa met zeezicht, omgeven door mediterraan groen. De perfecte plek om tot rust te komen in het hart van Dalmatië.',
+    hero_cta1:'Privé diner reserveren', hero_cta2:'Bekijk de villa',
+    hero_img1:'Uitzicht op de Adriatische Zee', hero_img2:'Dinasterras',
+    gallery_eyebrow:'Ruimtes & sfeer', gallery_title:'Ontdek Villa Anita',
+    g1:'Zwembad & terras', g2:'Slaapkamer', g3:'Tuin & olijven', g4:'Keuken', g5:'Zeezicht',
+    amenities_eyebrow:'Wat we bieden', amenities_title:'Villavoorzieningen',
+    a1:'Privézwembad', a2:'Zeezicht', a3:'Privé diners', a4:'Parkeren', a5:'Wi-Fi',
+    a6:'Mediterrane tuin', a7:'Airconditioning', a8:'Strand nabij', a9:'Open haard', a10:'Tafeltennis',
+    gym_title:'Activiteitenzone',
+    g_1:'Darts', g_2:'Crosstrainer', g_3:'Loopband', g_4:'Bokszak', g_5:'Gewichten & halters', g_6:'PlayStation 4',
+    booking_eyebrow:'Van harte welkom', booking_title:'Privé diner reserveren',
+    tab_dinner:'Privé diner', tab_stay:'Verblijfsaanvraag',
+    f_name:'Voor- en achternaam', f_contact:'Contact (tel. / e-mail)', f_date:'Dinerdatum', f_guests:'Aantal personen',
+    f_time:'Tijdslot', f_occasion:'Speciale gelegenheid', f_notes:'Opmerkingen', f_email:'E-mailadres',
+    f_checkin:'Aankomst', f_checkout:'Vertrek', f_phone:'Telefoon', f_message:'Bericht',
+    f_select:'— selecteer —', f_none:'— geen speciale gelegenheid —',
+    t1:'18:00 – Vroege zonsondergang', t2:'19:30 – Avondsfeer', t3:'20:00 – Standaard', t4:'21:00 – Laat diner',
+    oc1:'Jubileum', oc2:'Verjaardag', oc3:'Verloving', oc4:'Zakelijk diner', oc5:'Familiebijeenkomst',
+    menu_starters:'Voorgerechten', menu_mains:'Hoofdgerecht', menu_desserts:'Dessert',
+    s1:'Dalmatische prosciutto-plank', s2:'Bruschetta met tomaat', s3:'Scampi buzara', s4:'Tonijncarpaccio', s5:'Kaas & olijven', s6:'Mosselensoep',
+    m1:'Gegrilde vis (dorade/zeebaars)', m2:'Lam onder de peka', m3:'Octopus met groenten', m4:'Dalmatisch kalfsvlees', m5:'Gegrilde inktvis', m6:'Vegetarische peka',
+    d1:'Lavendel panna cotta', d2:'Gegrild fruit met honing', d3:'Kroštule & fritule', d4:'Citroensorbet',
+    summary_title:'Reserveringsoverzicht', btn_submit:'Reservering versturen', btn_send:'Aanvraag versturen',
+    form_success:'✓ Reservering ontvangen! We nemen snel contact op.', form_error:'Er is een fout opgetreden.',
+    form_success_info:'✓ Aanvraag ontvangen! We reageren zo snel mogelijk.',
+    reviews_eyebrow:'Wat gasten zeggen', reviews_title:'Recensies',
+    review_form_title:'Laat een recensie achter', review_form_sub:'Uw recensie wordt gepubliceerd na goedkeuring.',
+    r_name:'Uw naam', r_country:'Land', r_stars:'Beoordeling', r_text:'Uw recensie',
+    btn_review:'Recensie versturen', review_success:'✓ Bedankt! Uw recensie wordt gepubliceerd na beoordeling.',
+    contact_eyebrow:'Neem contact op', contact_title:'Contact',
+    c_phone:'Telefoon', c_email:'E-mail', c_location:'Locatie', c_season:'Seizoen', c_season_val:'April – Oktober',
+    footer_rights:'Alle rechten voorbehouden'
+  },
+  fr: {
+    nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_reviews:'Avis', nav_contact:'Contact',
+    hero_eyebrow:'Hébergement exclusif · Dalmatie', hero_sub:'Votre maison sur la côte Adriatique',
+    hero_desc:'Magnifique villa avec vue sur la mer, entourée de verdure méditerranéenne. L\'endroit idéal pour se ressourcer au cœur de la Dalmatie.',
+    hero_cta1:'Réserver un dîner privé', hero_cta2:'Voir la villa',
+    hero_img1:'Vue sur la mer Adriatique', hero_img2:'Terrasse dîner',
+    gallery_eyebrow:'Espaces & ambiance', gallery_title:'Découvrez Villa Anita',
+    g1:'Piscine & terrasse', g2:'Chambre', g3:'Jardin & oliviers', g4:'Cuisine', g5:'Vue mer',
+    amenities_eyebrow:'Ce que nous offrons', amenities_title:'Équipements de la villa',
+    a1:'Piscine privée', a2:'Vue sur la mer', a3:'Dîners privés', a4:'Parking', a5:'Wi-Fi',
+    a6:'Jardin méditerranéen', a7:'Climatisation', a8:'Proche de la plage', a9:'Cheminée', a10:'Tennis de table',
+    gym_title:'Zone d\'activités',
+    g_1:'Fléchettes', g_2:'Vélo elliptique', g_3:'Tapis de course', g_4:'Sac de frappe', g_5:'Haltères', g_6:'PlayStation 4',
+    booking_eyebrow:'Bienvenue', booking_title:'Réserver un dîner privé',
+    tab_dinner:'Dîner privé', tab_stay:'Demande de séjour',
+    f_name:'Nom et prénom', f_contact:'Contact (tél. / email)', f_date:'Date du dîner', f_guests:'Nombre de personnes',
+    f_time:'Créneau horaire', f_occasion:'Occasion spéciale', f_notes:'Remarques', f_email:'Adresse e-mail',
+    f_checkin:'Arrivée', f_checkout:'Départ', f_phone:'Téléphone', f_message:'Message',
+    f_select:'— sélectionner —', f_none:'— pas d\'occasion spéciale —',
+    t1:'18h00 – Coucher de soleil', t2:'19h30 – Ambiance soirée', t3:'20h00 – Créneau standard', t4:'21h00 – Dîner tardif',
+    oc1:'Anniversaire de mariage', oc2:'Anniversaire', oc3:'Fiançailles', oc4:'Dîner d\'affaires', oc5:'Réunion familiale',
+    menu_starters:'Entrées', menu_mains:'Plat principal', menu_desserts:'Dessert',
+    s1:'Plateau de prosciutto dalmate', s2:'Bruschetta à la tomate', s3:'Scampi buzara', s4:'Carpaccio de thon', s5:'Fromage & olives', s6:'Soupe de moules',
+    m1:'Poisson grillé (dorade/bar)', m2:'Agneau sous la peka', m3:'Poulpe aux légumes', m4:'Veau à la dalmate', m5:'Calmars grillés', m6:'Peka végétarienne',
+    d1:'Panna cotta à la lavande', d2:'Fruits grillés au miel', d3:'Kroštule & fritule', d4:'Sorbet citron',
+    summary_title:'Récapitulatif', btn_submit:'Envoyer la réservation', btn_send:'Envoyer la demande',
+    form_success:'✓ Réservation reçue ! Nous vous contacterons bientôt.', form_error:'Une erreur s\'est produite.',
+    form_success_info:'✓ Demande reçue ! Nous répondrons dès que possible.',
+    reviews_eyebrow:'Ce que disent les clients', reviews_title:'Avis',
+    review_form_title:'Laisser un avis', review_form_sub:'Votre avis sera publié après validation.',
+    r_name:'Votre nom', r_country:'Pays', r_stars:'Note', r_text:'Votre avis',
+    btn_review:'Soumettre l\'avis', review_success:'✓ Merci ! Votre avis sera publié après vérification.',
+    contact_eyebrow:'Nous contacter', contact_title:'Contactez-nous',
+    c_phone:'Téléphone', c_email:'E-mail', c_location:'Lieu', c_season:'Saison', c_season_val:'Avril – Octobre',
+    footer_rights:'Tous droits réservés'
+  },
+  it: {
+    nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_reviews:'Recensioni', nav_contact:'Contatti',
+    hero_eyebrow:'Alloggio esclusivo · Dalmazia', hero_sub:'La tua casa sulla costa adriatica',
+    hero_desc:'Splendida villa con vista sul mare, circondata da verde mediterraneo. Il luogo perfetto per rilassarsi nel cuore della Dalmazia.',
+    hero_cta1:'Prenota una cena privata', hero_cta2:'Scopri la villa',
+    hero_img1:'Vista sul mare Adriatico', hero_img2:'Terrazza cena',
+    gallery_eyebrow:'Spazi & atmosfera', gallery_title:'Scopri Villa Anita',
+    g1:'Piscina & terrazza', g2:'Camera da letto', g3:'Giardino & ulivi', g4:'Cucina', g5:'Vista mare',
+    amenities_eyebrow:'Cosa offriamo', amenities_title:'Servizi della villa',
+    a1:'Piscina privata', a2:'Vista sul mare', a3:'Cene private', a4:'Parcheggio', a5:'Wi-Fi',
+    a6:'Giardino mediterraneo', a7:'Aria condizionata', a8:'Vicino alla spiaggia', a9:'Camino', a10:'Ping pong',
+    gym_title:'Zona attività',
+    g_1:'Freccette', g_2:'Ellittica', g_3:'Tapis roulant', g_4:'Sacco da boxe', g_5:'Manubri & pesi', g_6:'PlayStation 4',
+    booking_eyebrow:'Benvenuti', booking_title:'Prenota una cena privata',
+    tab_dinner:'Cena privata', tab_stay:'Richiesta soggiorno',
+    f_name:'Nome e cognome', f_contact:'Contatto (tel. / email)', f_date:'Data cena', f_guests:'Numero persone',
+    f_time:'Orario', f_occasion:'Occasione speciale', f_notes:'Note', f_email:'Indirizzo email',
+    f_checkin:'Arrivo', f_checkout:'Partenza', f_phone:'Telefono', f_message:'Messaggio',
+    f_select:'— seleziona —', f_none:'— nessuna occasione speciale —',
+    t1:'18:00 – Tramonto anticipato', t2:'19:30 – Atmosfera serale', t3:'20:00 – Orario standard', t4:'21:00 – Cena tardiva',
+    oc1:'Anniversario', oc2:'Compleanno', oc3:'Fidanzamento', oc4:'Cena di lavoro', oc5:'Riunione di famiglia',
+    menu_starters:'Antipasti', menu_mains:'Secondo piatto', menu_desserts:'Dolce',
+    s1:'Tagliere di prosciutto dalmata', s2:'Bruschetta al pomodoro', s3:'Scampi buzara', s4:'Carpaccio di tonno', s5:'Formaggi & olive', s6:'Zuppa di cozze',
+    m1:'Pesce alla griglia (orata/branzino)', m2:'Agnello sotto la peka', m3:'Polpo con verdure', m4:'Vitello alla dalmata', m5:'Calamari alla griglia', m6:'Peka vegetariana',
+    d1:'Panna cotta alla lavanda', d2:'Frutta alla griglia con miele', d3:'Kroštule & fritule', d4:'Sorbetto al limone',
+    summary_title:'Riepilogo prenotazione', btn_submit:'Invia prenotazione', btn_send:'Invia richiesta',
+    form_success:'✓ Prenotazione ricevuta! Ci metteremo in contatto a breve.', form_error:'Si è verificato un errore.',
+    form_success_info:'✓ Richiesta ricevuta! Risponderemo il prima possibile.',
+    reviews_eyebrow:'Cosa dicono gli ospiti', reviews_title:'Recensioni',
+    review_form_title:'Lascia una recensione', review_form_sub:'La tua recensione sarà pubblicata dopo approvazione.',
+    r_name:'Il tuo nome', r_country:'Paese', r_stars:'Valutazione', r_text:'La tua recensione',
+    btn_review:'Invia recensione', review_success:'✓ Grazie! La tua recensione sarà pubblicata dopo revisione.',
+    contact_eyebrow:'Mettiti in contatto', contact_title:'Contattaci',
+    c_phone:'Telefono', c_email:'Email', c_location:'Posizione', c_season:'Stagione', c_season_val:'Aprile – Ottobre',
+    footer_rights:'Tutti i diritti riservati'
+  }
+};
+
+let currentLang = 'hr';
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === lang));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+}
+
+// ===================== NAV =====================
+function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
+function closeMenu() { document.getElementById('mobile-menu').classList.remove('open'); }
+
+// ===================== TABS =====================
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (name==='dinner'&&i===0)||(name==='info'&&i===1)));
+  document.getElementById('tab-dinner').classList.toggle('active', name==='dinner');
+  document.getElementById('tab-info').classList.toggle('active', name==='info');
+}
+
+// ===================== MENU ODABIR =====================
+function toggleItem(el, type) {
+  el.classList.toggle('selected');
+  updateHiddenFields();
+  updateSummary();
+}
+function updateHiddenFields() {
+  document.getElementById('hidden-starters').value = [...document.querySelectorAll('#starters-list .menu-item.selected span')].map(e=>e.textContent).join(', ');
+  document.getElementById('hidden-mains').value = [...document.querySelectorAll('#mains-list .menu-item.selected span')].map(e=>e.textContent).join(', ');
+  document.getElementById('hidden-desserts').value = [...document.querySelectorAll('#desserts-list .menu-item.selected span')].map(e=>e.textContent).join(', ');
+}
+function updateSummary() {
+  const date = document.querySelector('[name="datum"]').value;
+  const guests = document.querySelector('[name="broj_osoba"]').value;
+  const time = document.querySelector('[name="termin"]').value;
+  const starters = document.getElementById('hidden-starters').value;
+  const mains = document.getElementById('hidden-mains').value;
+  const desserts = document.getElementById('hidden-desserts').value;
+  const box = document.getElementById('summary-box');
+  if (date || guests || starters || mains) {
+    box.style.display = 'block';
+    let html = '';
+    if (date) html += '📅 ' + date + '<br>';
+    if (guests) html += '👥 ' + guests + '<br>';
+    if (time) html += '🕗 ' + time + '<br>';
+    if (starters) html += '🥗 ' + starters + '<br>';
+    if (mains) html += '🍽️ ' + mains + '<br>';
+    if (desserts) html += '🍮 ' + desserts;
+    document.getElementById('summary-text').innerHTML = html;
+  } else { box.style.display = 'none'; }
+}
+document.querySelectorAll('#tab-dinner input, #tab-dinner select').forEach(el => el.addEventListener('change', updateSummary));
+
+// ===================== ZVJEZDICE =====================
+function setStars(n) {
+  document.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('active', i < n));
+  document.getElementById('hidden-stars').value = n;
+}
+setStars(5);
+
+// ===================== FORMSPREE =====================
+window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Večera forma
+  formspree('initForm', { formElement: '#dinner-form', formId: 'mykakrkr' });
+
+  // Prati uspjeh večere forme
+  const dinnerSuccess = document.querySelector('#tab-dinner [data-fs-success]');
+  const obs1 = new MutationObserver(() => {
+    if (dinnerSuccess.style.display !== 'none') {
+      dinnerSuccess.style.display = 'block';
+      if (i18n[currentLang]) dinnerSuccess.textContent = i18n[currentLang].form_success;
+    }
+  });
+  obs1.observe(dinnerSuccess, { attributes: true, attributeFilter: ['style'] });
+
+  // Smještaj forma — ručni fetch
+  document.getElementById('stay-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-stay');
+    btn.disabled = true;
+    const data = new FormData(this);
+    try {
+      const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        document.getElementById('stay-success').style.display = 'block';
+        btn.style.display = 'none';
+      } else { btn.disabled = false; }
+    } catch { btn.disabled = false; }
+  });
+
+  // Recenzija forma — ručni fetch
+  document.getElementById('review-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-review');
+    btn.disabled = true;
+    const data = new FormData(this);
+    try {
+      const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        const successEl = document.querySelector('[data-fs-success-review]');
+        successEl.style.display = 'block';
+        if (i18n[currentLang]) successEl.textContent = i18n[currentLang].review_success;
+        document.getElementById('review-form').style.display = 'none';
+      } else { btn.disabled = false; }
+    } catch { btn.disabled = false; }
+  });
+});
+</script>
+</body>
+</html>
