@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy – Villa Anita</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sand: #F5EFE0; --sand-dark: #E8DCC8; --terracotta: #C4704A;
+    --sea: #2B6C8A; --text: #2C2416; --text-muted: #7A6A54; --white: #FDFAF5;
+  }
+  body { font-family: 'Jost', sans-serif; background: var(--white); color: var(--text); }
+
+  nav { padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--sand-dark); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--terracotta); text-decoration: none; }
+  .nav-back { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--terracotta); }
+
+  .container { max-width: 740px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+  .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1rem; }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; margin-bottom: 0.5rem; line-height: 1.2; }
+  .page-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--sand-dark); }
+
+  h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--terracotta); margin: 2.5rem 0 0.8rem; }
+  p { font-size: 0.95rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1rem; }
+  ul { margin: 0.5rem 0 1rem 1.5rem; }
+  ul li { font-size: 0.95rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 0.3rem; }
+  a { color: var(--terracotta); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .highlight { background: var(--sand); border-left: 3px solid var(--terracotta); padding: 1rem 1.5rem; margin: 1.5rem 0; font-size: 0.9rem; line-height: 1.7; color: var(--text); }
+
+  footer { background: var(--text); padding: 1.5rem 2rem; text-align: center; }
+  footer p { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Villa Anita</a>
+  <a href="index.html" class="nav-back">← Back to website</a>
+</nav>
+
+<div class="container">
+  <p class="page-eyebrow">Legal</p>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-date">Last updated: January 2025</p>
+
+  <div class="highlight">
+    Your privacy matters to us. Villa Anita collects only the information necessary to respond to your enquiries and process dinner reservations. We do not sell, share, or misuse your personal data.
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>Villa Anita is a private holiday villa located in Dalmatia, Croatia. This privacy policy explains how we handle personal data collected through our website (<strong>villaanita.github.io</strong> or any connected domain).</p>
+  <p>For any privacy-related questions, contact us at: <a href="mailto:info@villaanita.hr">info@villaanita.hr</a></p>
+
+  <h2>2. What data we collect</h2>
+  <p>We collect personal data only when you voluntarily submit a form on our website. This includes:</p>
+  <ul>
+    <li>Full name</li>
+    <li>Email address or phone number</li>
+    <li>Requested dates and number of guests</li>
+    <li>Meal preferences and special requests</li>
+    <li>Review content, name and country (if you submit a review)</li>
+  </ul>
+  <p>We do not use cookies for tracking, advertising, or analytics. No data is collected passively as you browse.</p>
+
+  <h2>3. How we use your data</h2>
+  <p>We use the information you provide solely to:</p>
+  <ul>
+    <li>Respond to your accommodation or dinner enquiry</li>
+    <li>Confirm and manage your reservation</li>
+    <li>Publish your review on our website (with your consent, after approval)</li>
+  </ul>
+  <p>We will never use your data for marketing, newsletters, or pass it to third parties for commercial purposes.</p>
+
+  <h2>4. How your data is processed</h2>
+  <p>Form submissions are handled through <strong>Formspree</strong> (formspree.io), a third-party form processing service. When you submit a form, your data is transmitted securely to Formspree and forwarded to our email inbox. Formspree's own privacy policy applies to data in transit — you can read it at <a href="https://formspree.io/legal/privacy-policy" target="_blank">formspree.io/legal/privacy-policy</a>.</p>
+  <p>We do not operate a database. Submitted data is stored only in our email inbox and is not shared beyond that.</p>
+
+  <h2>5. Legal basis (GDPR)</h2>
+  <p>Under the General Data Protection Regulation (GDPR), we process your data on the following legal bases:</p>
+  <ul>
+    <li><strong>Contract performance</strong> — processing your reservation enquiry</li>
+    <li><strong>Legitimate interest</strong> — responding to your questions and managing bookings</li>
+    <li><strong>Consent</strong> — publishing reviews you voluntarily submit</li>
+  </ul>
+
+  <h2>6. Your rights</h2>
+  <p>As an EU resident, you have the right to:</p>
+  <ul>
+    <li>Access the personal data we hold about you</li>
+    <li>Request correction of inaccurate data</li>
+    <li>Request deletion of your data ("right to be forgotten")</li>
+    <li>Withdraw consent at any time (e.g. request removal of a published review)</li>
+  </ul>
+  <p>To exercise any of these rights, simply email us at <a href="mailto:info@villaanita.hr">info@villaanita.hr</a> and we will respond within 30 days.</p>
+
+  <h2>7. Data retention</h2>
+  <p>We retain enquiry and reservation data in our email inbox for up to 2 years for record-keeping purposes, after which it is deleted. Published reviews may remain on the website until you request their removal.</p>
+
+  <h2>8. Changes to this policy</h2>
+  <p>We may update this privacy policy from time to time. Any changes will be reflected on this page with an updated date. We recommend checking this page occasionally.</p>
+
+  <h2>9. Contact</h2>
+  <p>If you have any questions or concerns about this privacy policy or how your data is handled, please contact us:</p>
+  <p><strong>Villa Anita</strong><br>Dalmatia, Croatia<br><a href="mailto:info@villaanita.hr">info@villaanita.hr</a></p>
+</div>
+
+<footer>
+  <p>© <script>document.write(new Date().getFullYear())</script> Villa Anita · Dalmacija · Hrvatska · <a href="index.html" style="color:rgba(255,255,255,0.4)">Back to website</a></p>
+</footer>
+
+</body>
+</html>
