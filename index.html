@@ -182,6 +182,13 @@
     .contact-grid { flex-direction: column; gap: 1.5rem; align-items: center; }
     footer { flex-direction: column; text-align: center; }
   }
+  .review-card.hidden { display: none; }
+  .btn-show-more { display: block; margin: 2rem auto 0; background: none; border: 1px solid var(--terracotta); color: var(--terracotta); padding: 0.75rem 2rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: 'Jost', sans-serif; transition: all 0.2s; }
+  .btn-show-more:hover { background: var(--terracotta); color: var(--white); }
+
+  .back-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; background: var(--terracotta); color: var(--white); border: none; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(196,112,74,0.4); transition: background 0.2s, transform 0.2s; z-index: 99; }
+  .back-to-top:hover { background: var(--terracotta-light); transform: translateY(-3px); }
+  .back-to-top.visible { display: flex; }
 </style>
 </head>
 <body>
@@ -436,6 +443,7 @@
   </div>
   <div class="reviews-grid" id="reviews-grid">
     <!-- Ovdje dodaješ svoje stare recenzije — kopiraj blok ispod i ponavljaj -->
+    <!-- Prve 3 su vidljive, ostale dodaj s klasom "review-card hidden" -->
     <div class="review-card">
       <div class="review-stars">★★★★★</div>
       <p class="review-text">"Nevjerojatno mjesto! Villa je savršena, pogled na more je bio spektakularan. Večera na terasi bila je nezaboravna."</p>
@@ -454,7 +462,16 @@
       <p class="review-author">Famille Dubois</p>
       <p class="review-country">🇫🇷 Francuska · Lipanj 2024.</p>
     </div>
+    <!-- Primjer skrivene recenzije — makni klasu "hidden" kad hoćeš da se prikaže odmah
+    <div class="review-card hidden">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Ovdje ide tekst recenzije..."</p>
+      <p class="review-author">Ime Prezime</p>
+      <p class="review-country">🇭🇷 Hrvatska · Kolovoz 2024.</p>
+    </div>
+    -->
   </div>
+  <button class="btn-show-more" id="btn-show-more" onclick="showMoreReviews()" data-i18n="btn_show_more">Prikaži sve recenzije ↓</button>
 
   <div class="review-form-wrap">
     <h3 class="review-form-title" data-i18n="review_form_title">Ostavite recenziju</h3>
@@ -495,6 +512,8 @@
     <div class="contact-item"><p class="contact-item-label" data-i18n="c_season">Sezona</p><p class="contact-item-value" style="color:rgba(255,255,255,0.75)" data-i18n="c_season_val">Travanj – Listopad</p></div>
   </div>
 </section>
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Na vrh">↑</button>
+
 <footer><p>© 2025 Villa Anita · Dalmacija · Hrvatska</p><p data-i18n="footer_rights">Sva prava pridržana</p></footer>
 
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
@@ -538,7 +557,7 @@ const i18n = {
     contact_eyebrow:'Povežimo se', contact_title:'Kontaktirajte nas',
     c_phone:'Telefon', c_email:'Email', c_location:'Lokacija', c_season:'Sezona', c_season_val:'Travanj – Listopad',
     footer_rights:'Sva prava pridržana',
-    ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...', ph_country:'Hrvatska'
+    ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...', ph_country:'Hrvatska', btn_show_more:'Prikaži sve recenzije ↓', btn_show_less:'Sakrij ↑'
   },
   en: {
     nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_reviews:'Reviews', nav_contact:'Contact',
@@ -577,7 +596,7 @@ const i18n = {
     contact_eyebrow:'Get in touch', contact_title:'Contact us',
     c_phone:'Phone', c_email:'Email', c_location:'Location', c_season:'Season', c_season_val:'April – October',
     footer_rights:'All rights reserved',
-    ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...', ph_country:'Croatia'
+    ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...', ph_country:'Croatia', btn_show_more:'Show all reviews ↓', btn_show_less:'Show less ↑'
   },
   de: {
     nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
@@ -616,7 +635,7 @@ const i18n = {
     contact_eyebrow:'Kontaktieren Sie uns', contact_title:'Kontakt',
     c_phone:'Telefon', c_email:'E-Mail', c_location:'Lage', c_season:'Saison', c_season_val:'April – Oktober',
     footer_rights:'Alle Rechte vorbehalten',
-    ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...', ph_country:'Kroatien'
+    ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...', ph_country:'Kroatien', btn_show_more:'Alle Bewertungen ↓', btn_show_less:'Weniger ↑'
   },
   nl: {
     nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_reviews:'Recensies', nav_contact:'Contact',
@@ -655,7 +674,7 @@ const i18n = {
     contact_eyebrow:'Neem contact op', contact_title:'Contact',
     c_phone:'Telefoon', c_email:'E-mail', c_location:'Locatie', c_season:'Seizoen', c_season_val:'April – Oktober',
     footer_rights:'Alle rechten voorbehouden',
-    ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...', ph_country:'Kroatië'
+    ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...', ph_country:'Kroatië', btn_show_more:'Alle recensies ↓', btn_show_less:'Minder ↑'
   },
   fr: {
     nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_reviews:'Avis', nav_contact:'Contact',
@@ -694,7 +713,7 @@ const i18n = {
     contact_eyebrow:'Nous contacter', contact_title:'Contactez-nous',
     c_phone:'Téléphone', c_email:'E-mail', c_location:'Lieu', c_season:'Saison', c_season_val:'Avril – Octobre',
     footer_rights:'Tous droits réservés',
-    ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...', ph_country:'Croatie'
+    ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...', ph_country:'Croatie', btn_show_more:'Tous les avis ↓', btn_show_less:'Réduire ↑'
   },
   it: {
     nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_reviews:'Recensioni', nav_contact:'Contatti',
@@ -733,7 +752,7 @@ const i18n = {
     contact_eyebrow:'Mettiti in contatto', contact_title:'Contattaci',
     c_phone:'Telefono', c_email:'Email', c_location:'Posizione', c_season:'Stagione', c_season_val:'Aprile – Ottobre',
     footer_rights:'Tutti i diritti riservati',
-    ph_notes:'Allergie, richieste speciali...', ph_message:'Le vostre domande...', ph_review:'Descrivi il tuo soggiorno...', ph_country:'Croazia'
+    ph_notes:'Allergie, richieste speciali...', ph_message:'Le vostre domande...', ph_review:'Descrivi il tuo soggiorno...', ph_country:'Croazia', btn_show_more:'Tutte le recensioni ↓', btn_show_less:'Meno ↑'
   }
 };
 
@@ -757,6 +776,28 @@ function setLang(lang) {
   });
 }
 document.addEventListener('DOMContentLoaded', function() { setLang('en'); });
+
+// ===================== RECENZIJE PRIKAŽI VIŠE =====================
+let reviewsExpanded = false;
+function showMoreReviews() {
+  reviewsExpanded = !reviewsExpanded;
+  document.querySelectorAll('.review-card.hidden').forEach(c => {
+    c.style.display = reviewsExpanded ? 'block' : 'none';
+  });
+  const btn = document.getElementById('btn-show-more');
+  const lang = currentLang;
+  btn.textContent = reviewsExpanded
+    ? (i18n[lang]?.btn_show_less || 'Show less ↑')
+    : (i18n[lang]?.btn_show_more || 'Show all reviews ↓');
+  if (!reviewsExpanded) document.getElementById('reviews').scrollIntoView({behavior:'smooth'});
+}
+
+// ===================== BACK TO TOP =====================
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('back-to-top');
+  if (window.scrollY > 400) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
 
 // ===================== NAV =====================
 function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
