@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Villa Anita – Dalmacija</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -277,16 +278,7 @@
     <div class="amenity-item"><div class="amenity-icon">❄️</div><div class="amenity-name" data-i18n="a7">Klima uređaj</div></div>
     <div class="amenity-item"><div class="amenity-icon">🛥️</div><div class="amenity-name" data-i18n="a8">Blizina plaže</div></div>
     <div class="amenity-item"><div class="amenity-icon">🔥</div><div class="amenity-name" data-i18n="a9">Kamin</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🏓</div><div class="amenity-name" data-i18n="a10">Stolni tenis</div></div>
-  </div>
-  <p class="amenities-subtitle" data-i18n="gym_title">Zona aktivnosti</p>
-  <div class="amenities-grid" style="margin-top:0;">
-    <div class="amenity-item"><div class="amenity-icon">🎯</div><div class="amenity-name" data-i18n="g_1">Pikado</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🚴</div><div class="amenity-name" data-i18n="g_2">Orbitrek</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🏃</div><div class="amenity-name" data-i18n="g_3">Traka za trčanje</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🥊</div><div class="amenity-name" data-i18n="g_4">Vreća za udaranje</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🏋️</div><div class="amenity-name" data-i18n="g_5">Girje & bučice</div></div>
-    <div class="amenity-item"><div class="amenity-icon">🎮</div><div class="amenity-name" data-i18n="g_6">PlayStation 4</div></div>
+    <div class="amenity-item"><div class="amenity-icon">🏓</div><div class="amenity-name" data-i18n="a10">Activity Room</div></div>
   </div>
 </section>
 
@@ -298,8 +290,8 @@
       <h2 class="section-title" data-i18n="booking_title">Rezervirajte privatnu večeru</h2>
     </div>
     <div class="booking-tabs">
-      <button class="tab-btn active" onclick="switchTab('dinner')" data-i18n="tab_dinner">Privatna večera</button>
-      <button class="tab-btn" onclick="switchTab('info')" data-i18n="tab_stay">Upit za smještaj</button>
+      <button class="tab-btn active" onclick="switchTab('dinner')">🍽️ <span data-i18n="tab_dinner">Privatna večera</span></button>
+      <button class="tab-btn" onclick="switchTab('info')">🏠 <span data-i18n="tab_stay">Upit za smještaj</span></button>
     </div>
 
     <!-- VEČERA FORMA — Formspree -->
@@ -498,7 +490,6 @@
   <p class="section-eyebrow" data-i18n="contact_eyebrow">Povežimo se</p>
   <h2 class="section-title" style="color:var(--white);font-family:'Cormorant Garamond',serif;font-weight:300;" data-i18n="contact_title">Kontaktirajte nas</h2>
   <div class="contact-grid">
-    <div class="contact-item"><p class="contact-item-label" data-i18n="c_phone">Telefon</p><p class="contact-item-value"><a href="tel:+38591234567">+385 91 234 567</a></p></div>
     <div class="contact-item"><p class="contact-item-label" data-i18n="c_email">Email</p><p class="contact-item-value"><a href="mailto:info@villaanita.hr">info@villaanita.hr</a></p></div>
     <div class="contact-item"><p class="contact-item-label" data-i18n="c_location">Lokacija</p><p class="contact-item-value" style="color:rgba(255,255,255,0.75)">Dalmacija, Hrvatska</p></div>
     <div class="contact-item"><p class="contact-item-label" data-i18n="c_season">Sezona</p><p class="contact-item-value" style="color:rgba(255,255,255,0.75)" data-i18n="c_season_val">Travanj – Listopad</p></div>
@@ -520,7 +511,7 @@ const i18n = {
     g1:'Bazen & terasa', g2:'Spavaća soba', g3:'Vrt & masline', g4:'Kuhinja', g5:'Pogled na more',
     amenities_eyebrow:'Što nudimo', amenities_title:'Sadržaji vile',
     a1:'Privatni bazen', a2:'Pogled na more', a3:'Privatne večere', a4:'Parkiralište', a5:'Wi-Fi',
-    a6:'Mediteranski vrt', a7:'Klima uređaj', a8:'Blizina plaže', a9:'Kamin', a10:'Stolni tenis',
+    a6:'Mediteranski vrt', a7:'Klima uređaj', a8:'Blizina plaže', a9:'Kamin', a10:'Activity Room (stolni tenis, pikado, orbitrek, PS4...)',
     gym_title:'Zona aktivnosti',
     g_1:'Pikado', g_2:'Orbitrek', g_3:'Traka za trčanje', g_4:'Vreća za udaranje', g_5:'Girje & bučice', g_6:'PlayStation 4',
     booking_eyebrow:'Ugodan doček', booking_title:'Rezervirajte privatnu večeru',
@@ -559,7 +550,7 @@ const i18n = {
     g1:'Pool & terrace', g2:'Bedroom', g3:'Garden & olives', g4:'Kitchen', g5:'Sea view',
     amenities_eyebrow:'What we offer', amenities_title:'Villa amenities',
     a1:'Private pool', a2:'Sea view', a3:'Private dinners', a4:'Parking', a5:'Wi-Fi',
-    a6:'Mediterranean garden', a7:'Air conditioning', a8:'Near the beach', a9:'Fireplace', a10:'Table tennis',
+    a6:'Mediterranean garden', a7:'Air conditioning', a8:'Near the beach', a9:'Fireplace', a10:'Activity Room (table tennis, darts, elliptical, PS4...)',
     gym_title:'Activity zone',
     g_1:'Darts', g_2:'Elliptical trainer', g_3:'Treadmill', g_4:'Punching bag', g_5:'Dumbbells & weights', g_6:'PlayStation 4',
     booking_eyebrow:'A warm welcome', booking_title:'Book a private dinner',
@@ -598,7 +589,7 @@ const i18n = {
     g1:'Pool & Terrasse', g2:'Schlafzimmer', g3:'Garten & Oliven', g4:'Küche', g5:'Meerblick',
     amenities_eyebrow:'Was wir bieten', amenities_title:'Villaausstattung',
     a1:'Privater Pool', a2:'Meerblick', a3:'Private Abendessen', a4:'Parkplatz', a5:'Wi-Fi',
-    a6:'Mediterraner Garten', a7:'Klimaanlage', a8:'Strandnähe', a9:'Kamin', a10:'Tischtennis',
+    a6:'Mediterraner Garten', a7:'Klimaanlage', a8:'Strandnähe', a9:'Kamin', a10:'Activity Room (Tischtennis, Darts, Crosstrainer, PS4...)',
     gym_title:'Aktivitätszone',
     g_1:'Darts', g_2:'Crosstrainer', g_3:'Laufband', g_4:'Boxsack', g_5:'Hanteln', g_6:'PlayStation 4',
     booking_eyebrow:'Herzlich willkommen', booking_title:'Privates Abendessen buchen',
@@ -637,7 +628,7 @@ const i18n = {
     g1:'Zwembad & terras', g2:'Slaapkamer', g3:'Tuin & olijven', g4:'Keuken', g5:'Zeezicht',
     amenities_eyebrow:'Wat we bieden', amenities_title:'Villavoorzieningen',
     a1:'Privézwembad', a2:'Zeezicht', a3:'Privé diners', a4:'Parkeren', a5:'Wi-Fi',
-    a6:'Mediterrane tuin', a7:'Airconditioning', a8:'Strand nabij', a9:'Open haard', a10:'Tafeltennis',
+    a6:'Mediterrane tuin', a7:'Airconditioning', a8:'Strand nabij', a9:'Open haard', a10:'Activity Room (tafeltennis, darts, crosstrainer, PS4...)',
     gym_title:'Activiteitenzone',
     g_1:'Darts', g_2:'Crosstrainer', g_3:'Loopband', g_4:'Bokszak', g_5:'Gewichten & halters', g_6:'PlayStation 4',
     booking_eyebrow:'Van harte welkom', booking_title:'Privé diner reserveren',
@@ -676,7 +667,7 @@ const i18n = {
     g1:'Piscine & terrasse', g2:'Chambre', g3:'Jardin & oliviers', g4:'Cuisine', g5:'Vue mer',
     amenities_eyebrow:'Ce que nous offrons', amenities_title:'Équipements de la villa',
     a1:'Piscine privée', a2:'Vue sur la mer', a3:'Dîners privés', a4:'Parking', a5:'Wi-Fi',
-    a6:'Jardin méditerranéen', a7:'Climatisation', a8:'Proche de la plage', a9:'Cheminée', a10:'Tennis de table',
+    a6:'Jardin méditerranéen', a7:'Climatisation', a8:'Proche de la plage', a9:'Cheminée', a10:'Activity Room (tennis de table, fléchettes, elliptique, PS4...)',
     gym_title:'Zone d\'activités',
     g_1:'Fléchettes', g_2:'Vélo elliptique', g_3:'Tapis de course', g_4:'Sac de frappe', g_5:'Haltères', g_6:'PlayStation 4',
     booking_eyebrow:'Bienvenue', booking_title:'Réserver un dîner privé',
@@ -715,7 +706,7 @@ const i18n = {
     g1:'Piscina & terrazza', g2:'Camera da letto', g3:'Giardino & ulivi', g4:'Cucina', g5:'Vista mare',
     amenities_eyebrow:'Cosa offriamo', amenities_title:'Servizi della villa',
     a1:'Piscina privata', a2:'Vista sul mare', a3:'Cene private', a4:'Parcheggio', a5:'Wi-Fi',
-    a6:'Giardino mediterraneo', a7:'Aria condizionata', a8:'Vicino alla spiaggia', a9:'Camino', a10:'Ping pong',
+    a6:'Giardino mediterraneo', a7:'Aria condizionata', a8:'Vicino alla spiaggia', a9:'Camino', a10:'Activity Room (ping pong, freccette, ellittica, PS4...)',
     gym_title:'Zona attività',
     g_1:'Freccette', g_2:'Ellittica', g_3:'Tapis roulant', g_4:'Sacco da boxe', g_5:'Manubri & pesi', g_6:'PlayStation 4',
     booking_eyebrow:'Benvenuti', booking_title:'Prenota una cena privata',
@@ -793,19 +784,19 @@ function updateSummary() {
   const date = document.querySelector('[name="datum"]').value;
   const guests = document.querySelector('[name="broj_osoba"]').value;
   const time = document.querySelector('[name="termin"]').value;
-  const starters = document.getElementById('hidden-starters').value;
-  const mains = document.getElementById('hidden-mains').value;
-  const desserts = document.getElementById('hidden-desserts').value;
+  const starterItems = [...document.querySelectorAll('#starters-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
+  const mainItems = [...document.querySelectorAll('#mains-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
+  const dessertItems = [...document.querySelectorAll('#desserts-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
   const box = document.getElementById('summary-box');
-  if (date || guests || starters || mains) {
+  if (date || guests || starterItems.length || mainItems.length) {
     box.style.display = 'block';
     let html = '';
     if (date) html += '📅 ' + date + '<br>';
     if (guests) html += '👥 ' + guests + '<br>';
     if (time) html += '🕗 ' + time + '<br>';
-    if (starters) html += '🥗 ' + starters + '<br>';
-    if (mains) html += '🍽️ ' + mains + '<br>';
-    if (desserts) html += '🍮 ' + desserts;
+    if (starterItems.length) html += '🥗 ' + starterItems.join(', ') + '<br>';
+    if (mainItems.length) html += '🍽️ ' + mainItems.join(', ') + '<br>';
+    if (dessertItems.length) html += '🍮 ' + dessertItems.join(', ');
     document.getElementById('summary-text').innerHTML = html;
   } else { box.style.display = 'none'; }
 }
