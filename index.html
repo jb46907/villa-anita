@@ -861,9 +861,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('submit-dinner');
     btn.disabled = true;
     btn.textContent = '...';
-    document.getElementById('hidden-starters').value = [...document.querySelectorAll('#starters-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
-    document.getElementById('hidden-mains').value = [...document.querySelectorAll('#mains-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
-    document.getElementById('hidden-desserts').value = [...document.querySelectorAll('#desserts-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
+    const starters = [...document.querySelectorAll('#starters-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
+    const mains = [...document.querySelectorAll('#mains-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
+    const desserts = [...document.querySelectorAll('#desserts-list .menu-item.selected span')].map(e=>e.textContent.trim()).filter(Boolean);
+    document.getElementById('hidden-starters').value = starters.length ? starters.join(', ') : 'Nije odabrano';
+    document.getElementById('hidden-mains').value = mains.length ? mains.join(', ') : 'Nije odabrano';
+    document.getElementById('hidden-desserts').value = desserts.length ? desserts.join(', ') : 'Nije odabrano';
     const data = new FormData(this);
     try {
       const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
