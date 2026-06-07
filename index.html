@@ -858,46 +858,74 @@ document.addEventListener('DOMContentLoaded', function() {
   // Večera forma
   formspree('initForm', { formElement: '#dinner-form', formId: 'mykakrkr' });
 
-  // Prati uspjeh večere forme
+  // Večera — reset i success nakon slanja
   const dinnerSuccess = document.querySelector('#tab-dinner [data-fs-success]');
   const obs1 = new MutationObserver(() => {
     if (dinnerSuccess.style.display !== 'none') {
+      dinnerSuccess.textContent = i18n[currentLang]?.form_success || '✓ Booking received! We will be in touch shortly.';
       dinnerSuccess.style.display = 'block';
-      if (i18n[currentLang]) dinnerSuccess.textContent = i18n[currentLang].form_success;
+      document.getElementById('dinner-form').reset();
+      document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
+      document.getElementById('summary-box').style.display = 'none';
+      document.getElementById('hidden-starters').value = '';
+      document.getElementById('hidden-mains').value = '';
+      document.getElementById('hidden-desserts').value = '';
+      dinnerSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   });
   obs1.observe(dinnerSuccess, { attributes: true, attributeFilter: ['style'] });
 
-  // Smještaj forma — ručni fetch
+  // Smještaj forma
   document.getElementById('stay-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submit-stay');
     btn.disabled = true;
+    btn.textContent = '...';
     const data = new FormData(this);
     try {
       const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       if (res.ok) {
-        document.getElementById('stay-success').style.display = 'block';
+        this.reset();
+        const msg = document.getElementById('stay-success');
+        msg.textContent = i18n[currentLang]?.form_success_info || '✓ Enquiry received! We will reply as soon as possible.';
+        msg.style.display = 'block';
         btn.style.display = 'none';
-      } else { btn.disabled = false; }
-    } catch { btn.disabled = false; }
+        msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        btn.disabled = false;
+        btn.textContent = i18n[currentLang]?.btn_send || 'Send enquiry';
+      }
+    } catch {
+      btn.disabled = false;
+      btn.textContent = i18n[currentLang]?.btn_send || 'Send enquiry';
+    }
   });
 
-  // Recenzija forma — ručni fetch
+  // Recenzija forma
   document.getElementById('review-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submit-review');
     btn.disabled = true;
+    btn.textContent = '...';
     const data = new FormData(this);
     try {
       const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       if (res.ok) {
+        this.reset();
+        setStars(5);
         const successEl = document.querySelector('[data-fs-success-review]');
+        successEl.textContent = i18n[currentLang]?.review_success || '✓ Thank you! Your review will be published soon.';
         successEl.style.display = 'block';
-        if (i18n[currentLang]) successEl.textContent = i18n[currentLang].review_success;
-        document.getElementById('review-form').style.display = 'none';
-      } else { btn.disabled = false; }
-    } catch { btn.disabled = false; }
+        btn.style.display = 'none';
+        successEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        btn.disabled = false;
+        btn.textContent = i18n[currentLang]?.btn_review || 'Submit review';
+      }
+    } catch {
+      btn.disabled = false;
+      btn.textContent = i18n[currentLang]?.btn_review || 'Submit review';
+    }
   });
 });
 </script>
