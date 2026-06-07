@@ -391,7 +391,7 @@
           <div class="summary-items" id="summary-text"></div>
         </div>
 
-        <button type="submit" class="btn-primary" style="width:100%;text-align:center;padding:1.1rem;margin-top:0.5rem" data-i18n="btn_submit">Pošaljite rezervaciju</button>
+        <button type="submit" class="btn-primary" id="submit-dinner" style="width:100%;text-align:center;padding:1.1rem;margin-top:0.5rem" data-i18n="btn_submit">Pošaljite rezervaciju</button>
       </form>
     </div>
 
@@ -476,7 +476,6 @@
   <div class="review-form-wrap">
     <h3 class="review-form-title" data-i18n="review_form_title">Ostavite recenziju</h3>
     <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;" data-i18n="review_form_sub">Recenzija će biti u što kraćem roku objavljena.</p>
-    <div data-fs-success-review class="fs-success" data-i18n="review_success">✓ Hvala! Recenzija će biti objavljena uskoro.</div>
     <form id="review-form">
       <input type="hidden" name="_subject" value="Nova recenzija – Villa Anita (čeka odobrenje)">
       <div class="form-row">
@@ -498,6 +497,7 @@
         <textarea name="recenzija" placeholder="Opišite Vaš boravak..." required style="min-height:110px;" data-i18n-placeholder="ph_review"></textarea>
       </div>
       <button type="submit" class="btn-primary" id="submit-review" style="width:100%;text-align:center;padding:1rem;" data-i18n="btn_review">Pošaljite recenziju</button>
+      <div id="review-success" class="fs-success" style="display:none;margin-top:1rem;"></div>
     </form>
   </div>
 </section>
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (res.ok) {
         this.reset();
         setStars(5);
-        const successEl = document.querySelector('[data-fs-success-review]');
+        const successEl = document.getElementById('review-success');
         successEl.textContent = i18n[currentLang]?.review_success || '✓ Thank you! Your review will be published soon.';
         successEl.style.display = 'block';
         btn.style.display = 'none';
