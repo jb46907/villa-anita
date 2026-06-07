@@ -301,20 +301,20 @@
       <button class="tab-btn" onclick="switchTab('info')">🏠 <span data-i18n="tab_stay">Upit za smještaj</span></button>
     </div>
 
-    <!-- VEČERA FORMA — Formspree -->
+    <!-- VEČERA FORMA -->
     <div class="tab-content active" id="tab-dinner">
-      <div data-fs-success class="fs-success" data-i18n="form_success">✓ Rezervacija zaprimljena! Javit ćemo se uskoro za potvrdu.</div>
-      <div data-fs-error class="fs-error-msg" data-i18n="form_error">Došlo je do greške. Molimo pokušajte ponovo.</div>
+      <div id="dinner-success" class="fs-success" style="display:none"></div>
+      <div id="dinner-error" class="fs-error-msg" style="display:none" data-i18n="form_error">Došlo je do greške. Molimo pokušajte ponovo.</div>
       <form id="dinner-form">
         <input type="hidden" name="_subject" value="Nova rezervacija večere – Villa Anita">
         <div class="form-row">
-          <div class="form-group"><label data-i18n="f_name">Ime i prezime</label><input type="text" name="ime_prezime" placeholder="Ana Kovač" required data-fs-field></div>
-          <div class="form-group"><label data-i18n="f_contact">Kontakt (tel / email)</label><input type="text" name="kontakt" placeholder="+385 91 234 5678" required data-fs-field></div>
+          <div class="form-group"><label data-i18n="f_name">Ime i prezime</label><input type="text" name="ime_prezime" placeholder="Ana Kovač" required></div>
+          <div class="form-group"><label data-i18n="f_contact">Kontakt (tel / email)</label><input type="text" name="kontakt" placeholder="+385 91 234 5678" required></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label data-i18n="f_date">Datum večere</label><input type="date" name="datum" required data-fs-field></div>
+          <div class="form-group"><label data-i18n="f_date">Datum večere</label><input type="date" name="datum" required></div>
           <div class="form-group"><label data-i18n="f_guests">Broj osoba</label>
-            <select name="broj_osoba" required data-fs-field>
+            <select name="broj_osoba" required>
               <option value="" data-i18n="f_select">— odaberite —</option>
               <option value="1" data-i18n="g_num_1">1 osoba</option>
               <option value="2" data-i18n="g_num_2">2 osobe</option>
@@ -331,7 +331,7 @@
         </div>
         <div class="form-row">
           <div class="form-group"><label data-i18n="f_time">Termin</label>
-            <select name="termin" data-fs-field>
+            <select name="termin">
               <option value="" data-i18n="f_select">— odaberite —</option>
               <option data-i18n="t1">18:00 – Rani zalazak sunca</option>
               <option data-i18n="t2">19:30 – Večernji ugođaj</option>
@@ -340,7 +340,7 @@
             </select>
           </div>
           <div class="form-group"><label data-i18n="f_occasion">Posebna prigoda</label>
-            <select name="prigoda" data-fs-field>
+            <select name="prigoda">
               <option value="" data-i18n="f_none">— nije posebna prigoda —</option>
               <option data-i18n="oc1">Godišnjica</option><option data-i18n="oc2">Rođendan</option>
               <option data-i18n="oc3">Zaruke</option><option data-i18n="oc4">Poslovni ručak/večera</option>
@@ -382,7 +382,7 @@
 
         <div class="form-row" style="margin-top:1.5rem">
           <div class="form-group form-full"><label data-i18n="f_notes">Napomene</label>
-            <textarea name="napomene" placeholder="Alergije, posebne želje..." data-fs-field data-i18n-placeholder="ph_notes"></textarea>
+            <textarea name="napomene" placeholder="Alergije, posebne želje..." data-i18n-placeholder="ph_notes"></textarea>
           </div>
         </div>
 
@@ -391,7 +391,7 @@
           <div class="summary-items" id="summary-text"></div>
         </div>
 
-        <button type="submit" class="btn-primary" data-fs-submit-btn style="width:100%;text-align:center;padding:1.1rem;margin-top:0.5rem" data-i18n="btn_submit">Pošaljite rezervaciju</button>
+        <button type="submit" class="btn-primary" style="width:100%;text-align:center;padding:1.1rem;margin-top:0.5rem" data-i18n="btn_submit">Pošaljite rezervaciju</button>
       </form>
     </div>
 
@@ -856,24 +856,39 @@ window.formspree = window.formspree || function() { (formspree.q = formspree.q |
 
 document.addEventListener('DOMContentLoaded', function() {
   // Večera forma
-  formspree('initForm', { formElement: '#dinner-form', formId: 'mykakrkr' });
-
-  // Večera — reset i success nakon slanja
-  const dinnerSuccess = document.querySelector('#tab-dinner [data-fs-success]');
-  const obs1 = new MutationObserver(() => {
-    if (dinnerSuccess.style.display !== 'none') {
-      dinnerSuccess.textContent = i18n[currentLang]?.form_success || '✓ Booking received! We will be in touch shortly.';
-      dinnerSuccess.style.display = 'block';
-      document.getElementById('dinner-form').reset();
-      document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
-      document.getElementById('summary-box').style.display = 'none';
-      document.getElementById('hidden-starters').value = '';
-      document.getElementById('hidden-mains').value = '';
-      document.getElementById('hidden-desserts').value = '';
-      dinnerSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.getElementById('dinner-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-dinner');
+    btn.disabled = true;
+    btn.textContent = '...';
+    document.getElementById('hidden-starters').value = [...document.querySelectorAll('#starters-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
+    document.getElementById('hidden-mains').value = [...document.querySelectorAll('#mains-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
+    document.getElementById('hidden-desserts').value = [...document.querySelectorAll('#desserts-list .menu-item.selected span')].map(e=>e.textContent.trim()).join(', ');
+    const data = new FormData(this);
+    try {
+      const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        this.reset();
+        document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
+        document.getElementById('summary-box').style.display = 'none';
+        document.getElementById('hidden-starters').value = '';
+        document.getElementById('hidden-mains').value = '';
+        document.getElementById('hidden-desserts').value = '';
+        const msg = document.getElementById('dinner-success');
+        msg.textContent = i18n[currentLang]?.form_success || '✓ Booking received! We will be in touch shortly.';
+        msg.style.display = 'block';
+        btn.style.display = 'none';
+        msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        btn.disabled = false;
+        btn.textContent = i18n[currentLang]?.btn_submit || 'Send booking';
+        document.getElementById('dinner-error').style.display = 'block';
+      }
+    } catch {
+      btn.disabled = false;
+      btn.textContent = i18n[currentLang]?.btn_submit || 'Send booking';
     }
   });
-  obs1.observe(dinnerSuccess, { attributes: true, attributeFilter: ['style'] });
 
   // Smještaj forma
   document.getElementById('stay-form').addEventListener('submit', async function(e) {
