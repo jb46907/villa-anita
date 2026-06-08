@@ -312,15 +312,29 @@ async function submitOrder(e) {
   Object.keys(cart).forEach(id=>{const p=ALL_PRODUCTS.find(x=>x.id==id);if(p)total+=p.price*cart[id];});
   if(total<100){alert(`Minimum order is €100.00. Your current total is €${total.toFixed(2)}. Please add more items.`);return;}
   total=0;
-  const itemLines=Object.keys(cart).map(id=>{
+  const items=Object.keys(cart).map(id=>{
     const p=ALL_PRODUCTS.find(x=>x.id==id);
     const qty=cart[id],sub=p.price*qty; total+=sub;
-    return `${p.name} x${qty} = €${sub.toFixed(2)}`;
-  }).join('\n');
+    return {id:p.id, name:p.name, price:p.price, qty, sub};
+  });
+  const itemLines=items.map(i=>`${i.name} x${i.qty} = €${i.sub.toFixed(2)}`).join('\n');
   const notes=document.getElementById('order-notes').value;
+  const orderNumber='VA-'+Date.now().toString().slice(-6);
   const btn=e.target; btn.disabled=true; btn.textContent='...';
+
+  // Save to Supabase
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/orders`,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({order_number:orderNumber,guest_name:name,contact,delivery_date:date,notes,items,total})
+    });
+  } catch(err){ console.warn('Supabase save failed:',err); }
+
+  // Send email via Formspree
   const fd=new FormData();
-  fd.append('_subject','Grocery Order – '+name+' – '+date);
+  fd.append('_subject','Grocery Order '+orderNumber+' – '+name+' – '+date);
+  fd.append('order_number',orderNumber);
   fd.append('name',name); fd.append('contact',contact);
   fd.append('delivery_date',date); fd.append('order_items',itemLines);
   fd.append('total','€'+total.toFixed(2));
@@ -330,6 +344,7 @@ async function submitOrder(e) {
     if(res.ok){
       cart={}; updateCartCount();
       document.getElementById('order-form').style.display='none';
+      document.getElementById('order-success').innerHTML=`✓ Order <strong>${orderNumber}</strong> received! We will confirm and deliver on the selected date. Payment in cash on delivery.`;
       document.getElementById('order-success').style.display='block';
       renderCart();
     } else { btn.disabled=false; btn.textContent='📧 Send Order'; alert('Error, please try again.'); }
