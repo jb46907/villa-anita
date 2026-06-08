@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin – Villa Anita Shop</title>
+<title>Admin – Villa Anita</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -13,35 +13,44 @@ body{font-family:'Jost',sans-serif;background:#f0f0f0;color:var(--text)}
 
 /* LOGIN */
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand)}
-.login-box{background:var(--white);padding:2.5rem;width:320px;border-top:4px solid var(--terracotta)}
-.login-box h2{font-size:1.3rem;margin-bottom:1.5rem;font-weight:500}
-.login-box input{width:100%;padding:0.75rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.95rem;margin-bottom:1rem;outline:none}
+.login-box{background:var(--white);padding:2.5rem;width:340px;border-top:4px solid var(--terracotta);text-align:center}
+.login-box h2{font-size:1.3rem;margin-bottom:0.5rem;font-weight:500}
+.login-box p{font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem}
+.login-box input{width:100%;padding:0.75rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.95rem;margin-bottom:1rem;outline:none;background:var(--white)}
 .login-box input:focus{border-color:var(--terracotta)}
 .btn{background:var(--terracotta);color:var(--white);border:none;padding:0.75rem 1.5rem;font-family:'Jost',sans-serif;font-size:0.85rem;cursor:pointer;transition:background 0.2s;letter-spacing:0.05em}
 .btn:hover{background:var(--terracotta-light)}
 .btn.danger{background:var(--red)}
+.btn.danger:hover{background:#a93226}
 .btn.small{padding:0.4rem 0.8rem;font-size:0.75rem}
 .btn.outline{background:none;border:1px solid var(--terracotta);color:var(--terracotta)}
 .btn.outline:hover{background:var(--terracotta);color:var(--white)}
-.login-error{color:var(--red);font-size:0.85rem;margin-top:0.5rem;display:none}
+.btn.green{background:var(--olive)}
+.btn.green:hover{background:#556033}
+.login-error{color:var(--red);font-size:0.8rem;margin-top:0.5rem;display:none}
 
-/* ADMIN LAYOUT */
+/* ADMIN */
 .admin-wrap{display:none;min-height:100vh}
 .admin-nav{background:var(--text);color:white;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.admin-nav h1{font-size:1.2rem;font-weight:500}
+.admin-nav h1{font-size:1.1rem;font-weight:500}
 .admin-nav-right{display:flex;align-items:center;gap:1rem}
+.admin-tabs{display:flex;background:#1a1008}
+.admin-tab{padding:0.7rem 1.5rem;background:none;border:none;color:rgba(255,255,255,0.6);font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
+.admin-tab.active{color:white;border-bottom-color:var(--terracotta)}
 .admin-body{padding:2rem;max-width:1400px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
 /* STATS */
 .stats{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
 .stat-card{background:var(--white);padding:1rem 1.5rem;flex:1;min-width:120px;border-top:3px solid var(--terracotta)}
 .stat-card .num{font-size:1.8rem;font-weight:500;color:var(--terracotta)}
-.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
+.stat-card .label{font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
 
 /* TOOLBAR */
 .toolbar{background:var(--white);padding:1rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-.toolbar input, .toolbar select{padding:0.55rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)}
-.toolbar input:focus, .toolbar select:focus{border-color:var(--terracotta)}
+.toolbar input,.toolbar select{padding:0.55rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--terracotta)}
 .toolbar input[type=text]{flex:1;min-width:200px}
 
 /* TABLE */
@@ -56,15 +65,30 @@ tr:hover td{background:#fafafa}
 .badge-active{background:#d4edda;color:#155724}
 .badge-inactive{background:#f8d7da;color:#721c24}
 
-/* EDIT MODAL */
+/* CATEGORIES */
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+.cat-card{background:var(--white);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.cat-card-left{display:flex;align-items:center;gap:0.8rem}
+.cat-emoji{font-size:1.5rem}
+.cat-name{font-size:0.95rem;font-weight:500}
+.cat-count{font-size:0.75rem;color:var(--text-muted)}
+.cat-actions{display:flex;gap:0.4rem}
+.add-cat-form{background:var(--white);padding:1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap}
+.add-cat-form .form-group{display:flex;flex-direction:column;gap:0.3rem}
+.add-cat-form label{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)}
+.add-cat-form input{padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;width:200px}
+.add-cat-form input:focus{border-color:var(--terracotta)}
+.add-cat-form input.emoji-input{width:80px;text-align:center;font-size:1.2rem}
+
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal{background:var(--white);padding:2rem;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto}
 .modal h3{font-size:1.2rem;margin-bottom:1.5rem;font-weight:500}
 .modal-row{margin-bottom:1rem}
 .modal-row label{display:block;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.3rem}
-.modal-row input, .modal-row select{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none}
-.modal-row input:focus, .modal-row select:focus{border-color:var(--terracotta)}
+.modal-row input,.modal-row select{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)}
+.modal-row input:focus,.modal-row select:focus{border-color:var(--terracotta)}
 .modal-img-preview{width:80px;height:80px;object-fit:contain;background:var(--sand);margin-top:0.5rem;padding:4px}
 .modal-actions{display:flex;gap:0.8rem;margin-top:1.5rem;flex-wrap:wrap}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--olive);color:white;padding:0.7rem 1.5rem;font-size:0.85rem;z-index:600;display:none;border-radius:2px}
@@ -77,69 +101,74 @@ tr:hover td{background:#fafafa}
 <div class="login-screen" id="login-screen">
   <div class="login-box">
     <h2>⚙️ Villa Anita Admin</h2>
-    <input type="password" id="login-password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
-    <br>
+    <p>Sign in with your Supabase account</p>
+    <input type="email" id="login-email" placeholder="Email address" onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
+    <input type="password" id="login-password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn" onclick="doLogin()" style="width:100%">Login</button>
-    <div class="login-error" id="login-error">Wrong password. Try again.</div>
+    <div class="login-error" id="login-error">Wrong email or password.</div>
   </div>
 </div>
 
 <!-- ADMIN -->
 <div class="admin-wrap" id="admin-wrap">
   <div class="admin-nav">
-    <h1>⚙️ Shop Admin — Villa Anita</h1>
+    <h1>⚙️ Villa Anita Admin</h1>
     <div class="admin-nav-right">
-      <a href="shop.html" target="_blank" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none">↗ View shop</a>
+      <a href="shop.html" target="_blank" style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-decoration:none">↗ View shop</a>
       <button class="btn small outline" style="color:white;border-color:rgba(255,255,255,0.4)" onclick="logout()">Logout</button>
     </div>
   </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchTab('products',this)">📦 Products</button>
+    <button class="admin-tab" onclick="switchTab('categories',this)">🗂 Categories</button>
+  </div>
 
   <div class="admin-body">
-    <div class="stats">
-      <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total items</div></div>
-      <div class="stat-card"><div class="num" id="stat-active">—</div><div class="label">Active</div></div>
-      <div class="stat-card"><div class="num" id="stat-inactive">—</div><div class="label">Hidden</div></div>
-      <div class="stat-card"><div class="num" id="stat-cats">—</div><div class="label">Categories</div></div>
+
+    <!-- PRODUCTS TAB -->
+    <div class="tab-panel active" id="tab-products">
+      <div class="stats">
+        <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total</div></div>
+        <div class="stat-card"><div class="num" id="stat-active">—</div><div class="label">Active</div></div>
+        <div class="stat-card"><div class="num" id="stat-inactive">—</div><div class="label">Hidden</div></div>
+        <div class="stat-card"><div class="num" id="stat-cats">—</div><div class="label">Categories</div></div>
+      </div>
+      <div class="toolbar">
+        <input type="text" id="admin-search" placeholder="🔍 Search by name..." oninput="renderTable()">
+        <select id="admin-cat" onchange="renderTable()">
+          <option value="">All categories</option>
+        </select>
+        <select id="admin-status" onchange="renderTable()">
+          <option value="">All</option>
+          <option value="true">Active only</option>
+          <option value="false">Hidden only</option>
+        </select>
+        <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="admin-table-body"></tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="toolbar">
-      <input type="text" id="admin-search" placeholder="🔍 Search by name..." oninput="renderTable()">
-      <select id="admin-cat" onchange="renderTable()">
-        <option value="">All categories</option>
-        <option>Alcohol</option>
-        <option>Beverages & Coffee</option>
-        <option>Dairy & Cheese</option>
-        <option>Fruit & Vegetables</option>
-        <option>Pasta & Basics</option>
-        <option>Snacks & Sweets</option>
-        <option>Meat & Fish</option>
-        <option>Toiletries</option>
-        <option>Household</option>
-        <option>Other</option>
-      </select>
-      <select id="admin-status" onchange="renderTable()">
-        <option value="">All</option>
-        <option value="true">Active only</option>
-        <option value="false">Hidden only</option>
-      </select>
-      <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
+    <!-- CATEGORIES TAB -->
+    <div class="tab-panel" id="tab-categories">
+      <div class="add-cat-form">
+        <div class="form-group">
+          <label>Emoji</label>
+          <input type="text" class="emoji-input" id="new-cat-emoji" placeholder="🛒" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Category name</label>
+          <input type="text" id="new-cat-name" placeholder="e.g. Baby Food" onkeydown="if(event.key==='Enter')addCategory()">
+        </div>
+        <button class="btn green" onclick="addCategory()">+ Add Category</button>
+      </div>
+      <div class="cats-grid" id="cats-grid"></div>
     </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="admin-table-body"></tbody>
-      </table>
-    </div>
   </div>
 </div>
 
@@ -148,28 +177,11 @@ tr:hover td{background:#fafafa}
   <div class="modal">
     <h3>Edit Product</h3>
     <input type="hidden" id="edit-id">
-    <div class="modal-row">
-      <label>Name</label>
-      <input type="text" id="edit-name">
-    </div>
-    <div class="modal-row">
-      <label>Price (€)</label>
-      <input type="number" id="edit-price" step="0.01" min="0">
-    </div>
+    <div class="modal-row"><label>Name</label><input type="text" id="edit-name"></div>
+    <div class="modal-row"><label>Price (€)</label><input type="number" id="edit-price" step="0.01" min="0"></div>
     <div class="modal-row">
       <label>Category</label>
-      <select id="edit-cat">
-        <option>Alcohol</option>
-        <option>Beverages & Coffee</option>
-        <option>Dairy & Cheese</option>
-        <option>Fruit & Vegetables</option>
-        <option>Pasta & Basics</option>
-        <option>Snacks & Sweets</option>
-        <option>Meat & Fish</option>
-        <option>Toiletries</option>
-        <option>Household</option>
-        <option>Other</option>
-      </select>
+      <select id="edit-cat"></select>
     </div>
     <div class="modal-row">
       <label>Image URL</label>
@@ -179,12 +191,12 @@ tr:hover td{background:#fafafa}
     <div class="modal-row">
       <label>Status</label>
       <select id="edit-active">
-        <option value="true">Active (visible in shop)</option>
-        <option value="false">Hidden (not shown in shop)</option>
+        <option value="true">Active (visible)</option>
+        <option value="false">Hidden</option>
       </select>
     </div>
     <div class="modal-actions">
-      <button class="btn" onclick="saveEdit()">💾 Save changes</button>
+      <button class="btn" onclick="saveEdit()">💾 Save</button>
       <button class="btn outline" onclick="closeModal()">Cancel</button>
     </div>
   </div>
@@ -195,26 +207,48 @@ tr:hover td{background:#fafafa}
 <script>
 const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
-const SERVICE_KEY = SUPABASE_ANON;
-const ADMIN_PASSWORD = 'villaanita2025';
 
 let ALL_PRODUCTS = [];
+let ALL_CATS = [];
+let authToken = null;
 
-function doLogin() {
-  const pw = document.getElementById('login-password').value;
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-wrap').style.display = 'block';
-    loadProducts();
-  } else {
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      authToken = data.access_token;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      loadAll();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  } catch {
     document.getElementById('login-error').style.display = 'block';
   }
 }
 
-function logout() {
+async function logout() {
+  authToken = null;
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('admin-wrap').style.display = 'none';
   document.getElementById('login-password').value = '';
+}
+
+function headers(write=false) {
+  const token = write && authToken ? authToken : SUPABASE_ANON;
+  return { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
+}
+
+async function loadAll() {
+  await Promise.all([loadProducts(), loadCategories()]);
 }
 
 async function loadProducts() {
@@ -226,13 +260,51 @@ async function loadProducts() {
   renderTable();
 }
 
+async function loadCategories() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/categories?order=sort_order.asc`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+  });
+  ALL_CATS = await res.json();
+  renderCatFilter();
+  renderCatGrid();
+  renderEditCatSelect();
+}
+
+function renderCatFilter() {
+  const sel = document.getElementById('admin-cat');
+  sel.innerHTML = '<option value="">All categories</option>' +
+    ALL_CATS.map(c => `<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
+}
+
+function renderEditCatSelect() {
+  document.getElementById('edit-cat').innerHTML = ALL_CATS.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+function renderCatGrid() {
+  document.getElementById('cats-grid').innerHTML = ALL_CATS.map(c => {
+    const count = ALL_PRODUCTS.filter(p => p.category === c.name).length;
+    return `<div class="cat-card">
+      <div class="cat-card-left">
+        <span class="cat-emoji">${c.emoji}</span>
+        <div>
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">${count} products</div>
+        </div>
+      </div>
+      <div class="cat-actions">
+        <button class="btn small outline" onclick="editCategory(${c.id},'${c.name}','${c.emoji}')">✏️</button>
+        <button class="btn small danger" onclick="deleteCategory(${c.id},'${c.name}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function updateStats() {
-  const active = ALL_PRODUCTS.filter(p => p.active).length;
-  const cats = new Set(ALL_PRODUCTS.map(p => p.category)).size;
+  const active = ALL_PRODUCTS.filter(p=>p.active).length;
   document.getElementById('stat-total').textContent = ALL_PRODUCTS.length;
   document.getElementById('stat-active').textContent = active;
   document.getElementById('stat-inactive').textContent = ALL_PRODUCTS.length - active;
-  document.getElementById('stat-cats').textContent = cats;
+  document.getElementById('stat-cats').textContent = new Set(ALL_PRODUCTS.map(p=>p.category)).size;
 }
 
 function renderTable() {
@@ -247,29 +319,27 @@ function renderTable() {
   });
   document.getElementById('table-count').textContent = filtered.length + ' items';
   document.getElementById('admin-table-body').innerHTML = filtered.map(p => `
-    <tr class="${p.active ? '' : 'inactive-row'}">
-      <td><img class="product-thumb" src="${p.img || ''}" onerror="this.src=''" alt="${p.name}"></td>
+    <tr class="${p.active?'':'inactive-row'}">
+      <td><img class="product-thumb" src="${p.img||''}" onerror="this.src=''" alt="${p.name}"></td>
       <td style="max-width:280px">${p.name}</td>
       <td>${p.category}</td>
       <td>€${Number(p.price).toFixed(2)}</td>
-      <td><span class="badge ${p.active ? 'badge-active' : 'badge-inactive'}">${p.active ? 'Active' : 'Hidden'}</span></td>
-      <td style="white-space:nowrap;display:flex;gap:0.4rem;padding-top:0.8rem">
-        <button class="btn small" onclick="openEdit(${p.id})">✏️ Edit</button>
-        <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active ? '🙈 Hide' : '👁 Show'}</button>
+      <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Active':'Hidden'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn small" onclick="openEdit(${p.id})" style="margin-right:4px">✏️ Edit</button>
+        <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active?'🙈 Hide':'👁 Show'}</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
 function openEdit(id) {
-  const p = ALL_PRODUCTS.find(x => x.id === id);
-  if (!p) return;
+  const p = ALL_PRODUCTS.find(x=>x.id===id); if(!p) return;
   document.getElementById('edit-id').value = p.id;
   document.getElementById('edit-name').value = p.name;
   document.getElementById('edit-price').value = p.price;
   document.getElementById('edit-cat').value = p.category;
-  document.getElementById('edit-img').value = p.img || '';
-  document.getElementById('edit-img-preview').src = p.img || '';
+  document.getElementById('edit-img').value = p.img||'';
+  document.getElementById('edit-img-preview').src = p.img||'';
   document.getElementById('edit-active').value = String(p.active);
   document.getElementById('edit-modal').classList.add('open');
 }
@@ -286,41 +356,89 @@ async function saveEdit() {
     active: document.getElementById('edit-active').value === 'true'
   };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify(body)
+    method:'PATCH', headers:headers(true), body:JSON.stringify(body)
   });
-  if (res.ok) {
-    const idx = ALL_PRODUCTS.findIndex(x => x.id == id);
-    ALL_PRODUCTS[idx] = { ...ALL_PRODUCTS[idx], ...body };
-    closeModal(); renderTable(); updateStats();
-    showToast('✓ Saved!');
-  } else { alert('Error saving. Try again.'); }
+  if(res.ok) {
+    const idx = ALL_PRODUCTS.findIndex(x=>x.id==id);
+    ALL_PRODUCTS[idx] = {...ALL_PRODUCTS[idx],...body};
+    closeModal(); renderTable(); updateStats(); showToast('✓ Saved!');
+  } else { alert('Error saving.'); }
 }
 
 async function toggleActive(id, current) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ active: !current })
+    method:'PATCH', headers:headers(true), body:JSON.stringify({active:!current})
   });
-  if (res.ok) {
-    const idx = ALL_PRODUCTS.findIndex(x => x.id == id);
+  if(res.ok) {
+    const idx = ALL_PRODUCTS.findIndex(x=>x.id==id);
     ALL_PRODUCTS[idx].active = !current;
     renderTable(); updateStats();
-    showToast(current ? '🙈 Item hidden' : '👁 Item visible');
+    showToast(current?'🙈 Hidden':'👁 Now visible');
   }
+}
+
+async function addCategory() {
+  const name = document.getElementById('new-cat-name').value.trim();
+  const emoji = document.getElementById('new-cat-emoji').value.trim() || '📦';
+  if (!name) { alert('Enter a category name.'); return; }
+  const sort = ALL_CATS.length + 1;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/categories`, {
+    method:'POST', headers:{...headers(true), 'Prefer':'return=representation'},
+    body: JSON.stringify({name, emoji, sort_order: sort, active: true})
+  });
+  if(res.ok) {
+    document.getElementById('new-cat-name').value = '';
+    document.getElementById('new-cat-emoji').value = '';
+    await loadCategories();
+    showToast('✓ Category added!');
+  } else { alert('Error adding category.'); }
+}
+
+async function deleteCategory(id, name) {
+  const count = ALL_PRODUCTS.filter(p=>p.category===name).length;
+  if (!confirm(`Delete "${name}"? ${count > 0 ? count+' products will move to "Other".' : ''}`)) return;
+  if (count > 0) {
+    await fetch(`${SUPABASE_URL}/rest/v1/products?category=eq.${encodeURIComponent(name)}`, {
+      method:'PATCH', headers:headers(true), body:JSON.stringify({category:'Other'})
+    });
+  }
+  await fetch(`${SUPABASE_URL}/rest/v1/categories?id=eq.${id}`, {
+    method:'DELETE', headers:headers(true)
+  });
+  await loadAll();
+  showToast('✓ Category deleted');
+}
+
+async function editCategory(id, name, emoji) {
+  const newName = prompt('Category name:', name);
+  if (!newName || newName === name) return;
+  const newEmoji = prompt('Emoji:', emoji) || emoji;
+  await fetch(`${SUPABASE_URL}/rest/v1/categories?id=eq.${id}`, {
+    method:'PATCH', headers:headers(true), body:JSON.stringify({name:newName, emoji:newEmoji})
+  });
+  if (name !== newName) {
+    await fetch(`${SUPABASE_URL}/rest/v1/products?category=eq.${encodeURIComponent(name)}`, {
+      method:'PATCH', headers:headers(true), body:JSON.stringify({category:newName})
+    });
+  }
+  await loadAll();
+  showToast('✓ Category updated');
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 </script>
 </body>
 </html>
