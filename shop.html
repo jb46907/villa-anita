@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grocery Order – Villa Anita</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--sand:#F5EFE0;--sand-dark:#E8DCC8;--terracotta:#C4704A;--terracotta-light:#D4886A;--sea:#2B6C8A;--text:#2C2416;--text-muted:#7A6A54;--white:#FDFAF5;--olive:#6B7C4A}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--sand);color:var(--text);min-height:100vh}
+nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(196,112,74,0.15);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:1rem}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--terracotta);text-decoration:none}
+.nav-back{font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}
+.nav-back:hover{color:var(--terracotta)}
+.cart-btn{background:var(--terracotta);color:var(--white);border:none;padding:0.6rem 1.2rem;font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.08em;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background 0.2s}
+.cart-btn:hover{background:var(--terracotta-light)}
+.cart-count{background:var(--white);color:var(--terracotta);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600}
+.page-header{background:var(--white);padding:2.5rem 2rem 2rem;border-bottom:1px solid var(--sand-dark)}
+.page-header h1{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;margin-bottom:0.3rem}
+.page-header p{color:var(--text-muted);font-size:0.9rem}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 130px)}
+.sidebar{background:var(--white);border-right:1px solid var(--sand-dark);padding:1.5rem 0;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto}
+.sidebar-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);padding:0 1.5rem;margin-bottom:0.8rem}
+.cat-btn{display:block;width:100%;text-align:left;padding:0.6rem 1.5rem;background:none;border:none;font-family:'Jost',sans-serif;font-size:0.85rem;color:var(--text-muted);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
+.cat-btn:hover{background:var(--sand);color:var(--text)}
+.cat-btn.active{background:var(--sand);color:var(--terracotta);border-left-color:var(--terracotta);font-weight:500}
+.main{padding:1.5rem 2rem}
+.search-bar{position:relative;margin-bottom:1.5rem}
+.search-bar input{width:100%;padding:0.8rem 1rem 0.8rem 2.5rem;border:1px solid var(--sand-dark);background:var(--white);font-family:'Jost',sans-serif;font-size:0.95rem;color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--terracotta)}
+.search-bar::before{content:'🔍';position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:0.9rem}
+.results-count{font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem}
+.loading{text-align:center;padding:4rem;color:var(--text-muted);font-size:0.9rem}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.product-card{background:var(--white);overflow:hidden;transition:transform 0.2s,box-shadow 0.2s}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(44,36,22,0.1)}
+.product-img{width:100%;height:140px;object-fit:contain;background:var(--sand);padding:0.5rem;display:block}
+.product-info{padding:0.8rem}
+.product-name{font-size:0.82rem;color:var(--text);line-height:1.4;margin-bottom:0.5rem;min-height:2.4em}
+.product-price{font-size:1rem;font-weight:500;color:var(--terracotta);margin-bottom:0.6rem}
+.product-controls{display:flex;align-items:center;gap:0.4rem}
+.qty-btn{width:28px;height:28px;background:var(--sand);border:1px solid var(--sand-dark);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;color:var(--text)}
+.qty-btn:hover{background:var(--terracotta);color:var(--white);border-color:var(--terracotta)}
+.qty-display{font-size:0.9rem;min-width:20px;text-align:center;font-weight:500}
+.add-btn{flex:1;background:var(--terracotta);color:var(--white);border:none;padding:0.4rem 0.6rem;font-family:'Jost',sans-serif;font-size:0.75rem;letter-spacing:0.08em;cursor:pointer;transition:background 0.15s}
+.add-btn:hover{background:var(--terracotta-light)}
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(44,36,22,0.5);z-index:200}
+.cart-overlay.open{display:block}
+.cart-panel{position:fixed;right:0;top:0;bottom:0;width:420px;max-width:100vw;background:var(--white);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s ease}
+.cart-panel.open{transform:translateX(0)}
+.cart-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--sand-dark);display:flex;justify-content:space-between;align-items:center}
+.cart-header h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300}
+.cart-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-muted)}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-empty{text-align:center;color:var(--text-muted);font-size:0.9rem;padding:3rem 0}
+.cart-item{display:flex;gap:0.8rem;padding:0.8rem 0;border-bottom:1px solid var(--sand)}
+.cart-item-img{width:50px;height:50px;object-fit:contain;background:var(--sand);flex-shrink:0;padding:2px}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:0.82rem;color:var(--text);line-height:1.3;margin-bottom:0.2rem}
+.cart-item-price{font-size:0.85rem;color:var(--terracotta);font-weight:500}
+.cart-item-controls{display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem}
+.cart-item-remove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.75rem;margin-left:auto}
+.cart-item-remove:hover{color:var(--terracotta)}
+.cart-footer{padding:1.5rem;border-top:1px solid var(--sand-dark)}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-size:1.05rem}
+.cart-total span:last-child{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--terracotta)}
+.order-form input{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--text);outline:none;margin-bottom:0.7rem;background:var(--white)}
+.order-form input:focus{border-color:var(--terracotta)}
+.date-label{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem}
+.date-note{font-size:0.75rem;color:var(--text-muted);margin:-0.3rem 0 0.7rem;padding:0.5rem 0.7rem;background:rgba(196,112,74,0.08);border-left:2px solid var(--terracotta);line-height:1.5}
+.order-success{display:none;background:rgba(107,124,74,0.1);border:1px solid var(--olive);padding:1rem;text-align:center;color:var(--olive);font-size:0.9rem;margin-top:1rem}
+.back-to-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;background:var(--terracotta);color:var(--white);border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(196,112,74,0.4);transition:background 0.2s,transform 0.2s;z-index:99}
+.back-to-top:hover{background:var(--terracotta-light);transform:translateY(-3px)}
+.back-to-top.visible{display:flex}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;overflow-x:auto;white-space:nowrap;display:flex;padding:0.5rem 1rem;border-right:none;border-bottom:1px solid var(--sand-dark)}
+  .cat-btn{display:inline-block;width:auto;padding:0.5rem 1rem;border-left:none;border-bottom:3px solid transparent;white-space:nowrap}
+  .cat-btn.active{border-bottom-color:var(--terracotta);border-left:none}
+  .sidebar-title{display:none}
+  .cart-panel{width:100vw}
+}
+@media(max-width:600px){
+  .main{padding:1rem}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:0.7rem}
+  nav{padding:0.9rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Back to Villa</a>
+  <a href="index.html" class="nav-logo">Villa Anita</a>
+  <button class="cart-btn" onclick="openCart()">
+    🛒 Cart <span class="cart-count" id="cart-count">0</span>
+  </button>
+</nav>
+
+<div class="page-header">
+  <h1>Grocery & Supply Order</h1>
+  <p>Browse and select items — we'll deliver to the villa. Payment in cash on delivery.</p>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-title">Categories</div>
+    <button class="cat-btn active" onclick="filterCat('All',this)">🛒 All items</button>
+    <button class="cat-btn" onclick="filterCat('Alcohol',this)">🍷 Alcohol</button>
+    <button class="cat-btn" onclick="filterCat('Beverages & Coffee',this)">☕ Beverages & Coffee</button>
+    <button class="cat-btn" onclick="filterCat('Dairy & Cheese',this)">🧀 Dairy & Cheese</button>
+    <button class="cat-btn" onclick="filterCat('Fruit & Vegetables',this)">🥦 Fruit & Vegetables</button>
+    <button class="cat-btn" onclick="filterCat('Pasta & Basics',this)">🍝 Pasta & Basics</button>
+    <button class="cat-btn" onclick="filterCat('Snacks & Sweets',this)">🍫 Snacks & Sweets</button>
+    <button class="cat-btn" onclick="filterCat('Meat & Fish',this)">🐟 Meat & Fish</button>
+    <button class="cat-btn" onclick="filterCat('Toiletries',this)">🧴 Toiletries</button>
+    <button class="cat-btn" onclick="filterCat('Household',this)">🧹 Household</button>
+    <button class="cat-btn" onclick="filterCat('Other',this)">📦 Other</button>
+  </div>
+
+  <div class="main">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search products..." oninput="renderProducts()">
+    </div>
+    <div class="results-count" id="results-count"></div>
+    <div id="products-grid" class="products-grid">
+      <div class="loading">Loading products... ⏳</div>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-header">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items"><div class="cart-empty">Your cart is empty</div></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total</span><span id="cart-total">€0.00</span></div>
+    <div class="order-form" id="order-form">
+      <input type="text" id="order-name" placeholder="Your name *">
+      <input type="text" id="order-contact" placeholder="Phone or email *">
+      <label class="date-label">Delivery date *</label>
+      <div class="date-note">⏱ Minimum 24h from now. Earlier delivery may be possible depending on availability — add a note below.</div>
+      <input type="date" id="order-date">
+      <input type="text" id="order-notes" placeholder="Notes (time preference, special requests...)">
+      <button class="add-btn" style="width:100%;padding:0.9rem;font-size:0.85rem;margin-top:0.3rem" onclick="submitOrder(event)">📧 Send Order</button>
+    </div>
+    <div class="order-success" id="order-success">✓ Order received! We will confirm and deliver on the selected date. Payment in cash on delivery.</div>
+  </div>
+</div>
+
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
+
+let ALL_PRODUCTS = [];
+let cart = {};
+let currentCat = 'All';
+
+async function loadProducts() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/products?active=eq.true&order=name.asc&limit=1000`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    ALL_PRODUCTS = await res.json();
+    renderProducts();
+  } catch(e) {
+    document.getElementById('products-grid').innerHTML = '<div class="loading">Error loading products. Please refresh.</div>';
+  }
+}
+
+function filterCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('search-input').value = '';
+  renderProducts();
+}
+
+function renderProducts() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = ALL_PRODUCTS.filter(p => {
+    const matchCat = currentCat === 'All' || p.category === currentCat;
+    const matchSearch = !q || p.name.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+  document.getElementById('results-count').textContent = filtered.length + ' items';
+  document.getElementById('products-grid').innerHTML = filtered.map(p => {
+    const qty = cart[p.id] || 0;
+    return `<div class="product-card">
+      <img class="product-img" src="${p.img || ''}" alt="${p.name}" loading="lazy" onerror="this.style.objectFit='contain';this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2260%22>📦</text></svg>'">
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">€${Number(p.price).toFixed(2)}</div>
+        <div class="product-controls">
+          ${qty > 0
+            ? `<button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+               <span class="qty-display">${qty}</span>
+               <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>`
+            : `<button class="add-btn" onclick="addItem(${p.id})">+ Add</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addItem(id) { cart[id] = 1; updateCartCount(); renderProducts(); }
+
+function changeQty(id, delta) {
+  cart[id] = (cart[id] || 0) + delta;
+  if (cart[id] <= 0) delete cart[id];
+  updateCartCount(); renderProducts();
+  if (document.getElementById('cart-panel').classList.contains('open')) renderCart();
+}
+
+function updateCartCount() {
+  document.getElementById('cart-count').textContent = Object.values(cart).reduce((a,b)=>a+b,0);
+}
+
+function openCart() { renderCart(); document.getElementById('cart-panel').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
+function closeCart() { document.getElementById('cart-panel').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
+
+function renderCart() {
+  const keys = Object.keys(cart);
+  const container = document.getElementById('cart-items');
+  if (!keys.length) { container.innerHTML = '<div class="cart-empty">Your cart is empty</div>'; document.getElementById('cart-total').textContent = '€0.00'; return; }
+  let total = 0;
+  container.innerHTML = keys.map(id => {
+    const p = ALL_PRODUCTS.find(x => x.id == id);
+    if (!p) return '';
+    const qty = cart[id]; const sub = p.price * qty; total += sub;
+    return `<div class="cart-item">
+      <img class="cart-item-img" src="${p.img || ''}" alt="${p.name}" onerror="this.src=''">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-price">€${Number(p.price).toFixed(2)} × ${qty} = €${sub.toFixed(2)}</div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" style="width:24px;height:24px" onclick="changeQty(${id},-1);renderCart()">−</button>
+          <span class="qty-display">${qty}</span>
+          <button class="qty-btn" style="width:24px;height:24px" onclick="changeQty(${id},1);renderCart()">+</button>
+          <button class="cart-item-remove" onclick="changeQty(${id},-999);renderCart()">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cart-total').textContent = '€' + total.toFixed(2);
+}
+
+async function submitOrder(e) {
+  const name = document.getElementById('order-name').value.trim();
+  const contact = document.getElementById('order-contact').value.trim();
+  const date = document.getElementById('order-date').value;
+  if (!name || !contact || !date) { alert('Please fill in your name, contact and delivery date.'); return; }
+  if (!Object.keys(cart).length) { alert('Your cart is empty!'); return; }
+  let total = 0;
+  const itemLines = Object.keys(cart).map(id => {
+    const p = ALL_PRODUCTS.find(x => x.id == id);
+    const qty = cart[id]; const sub = p.price * qty; total += sub;
+    return `${p.name} x${qty} = €${sub.toFixed(2)}`;
+  }).join('\n');
+  const notes = document.getElementById('order-notes').value;
+  const btn = e.target; btn.disabled = true; btn.textContent = '...';
+  const fd = new FormData();
+  fd.append('_subject', 'Grocery Order – ' + name + ' – ' + date);
+  fd.append('name', name); fd.append('contact', contact);
+  fd.append('delivery_date', date); fd.append('order_items', itemLines);
+  fd.append('total', '€' + total.toFixed(2));
+  if (notes) fd.append('notes', notes);
+  try {
+    const res = await fetch('https://formspree.io/f/mykakrkr', {method:'POST',body:fd,headers:{Accept:'application/json'}});
+    if (res.ok) {
+      cart = {}; updateCartCount();
+      document.getElementById('order-form').style.display = 'none';
+      document.getElementById('order-success').style.display = 'block';
+      renderCart();
+    } else { btn.disabled=false; btn.textContent='📧 Send Order'; alert('Error, please try again.'); }
+  } catch { btn.disabled=false; btn.textContent='📧 Send Order'; }
+}
+
+// Min date = tomorrow
+const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+const yyyy=tomorrow.getFullYear(), mm=String(tomorrow.getMonth()+1).padStart(2,'0'), dd=String(tomorrow.getDate()).padStart(2,'0');
+document.getElementById('order-date').min = `${yyyy}-${mm}-${dd}`;
+document.getElementById('order-date').value = `${yyyy}-${mm}-${dd}`;
+
+// Back to top
+window.addEventListener('scroll',()=>{
+  const btn=document.getElementById('back-to-top');
+  btn.classList.toggle('visible', window.scrollY > 400);
+});
+
+loadProducts();
+</script>
+</body>
+</html>

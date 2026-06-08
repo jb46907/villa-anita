@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Villa Anita Shop</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--sand:#F5EFE0;--sand-dark:#E8DCC8;--terracotta:#C4704A;--terracotta-light:#D4886A;--text:#2C2416;--text-muted:#7A6A54;--white:#FDFAF5;--olive:#6B7C4A;--red:#C0392B}
+body{font-family:'Jost',sans-serif;background:#f0f0f0;color:var(--text)}
+
+/* LOGIN */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand)}
+.login-box{background:var(--white);padding:2.5rem;width:320px;border-top:4px solid var(--terracotta)}
+.login-box h2{font-size:1.3rem;margin-bottom:1.5rem;font-weight:500}
+.login-box input{width:100%;padding:0.75rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.95rem;margin-bottom:1rem;outline:none}
+.login-box input:focus{border-color:var(--terracotta)}
+.btn{background:var(--terracotta);color:var(--white);border:none;padding:0.75rem 1.5rem;font-family:'Jost',sans-serif;font-size:0.85rem;cursor:pointer;transition:background 0.2s;letter-spacing:0.05em}
+.btn:hover{background:var(--terracotta-light)}
+.btn.danger{background:var(--red)}
+.btn.small{padding:0.4rem 0.8rem;font-size:0.75rem}
+.btn.outline{background:none;border:1px solid var(--terracotta);color:var(--terracotta)}
+.btn.outline:hover{background:var(--terracotta);color:var(--white)}
+.login-error{color:var(--red);font-size:0.85rem;margin-top:0.5rem;display:none}
+
+/* ADMIN LAYOUT */
+.admin-wrap{display:none;min-height:100vh}
+.admin-nav{background:var(--text);color:white;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.admin-nav h1{font-size:1.2rem;font-weight:500}
+.admin-nav-right{display:flex;align-items:center;gap:1rem}
+.admin-body{padding:2rem;max-width:1400px;margin:0 auto}
+
+/* STATS */
+.stats{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+.stat-card{background:var(--white);padding:1rem 1.5rem;flex:1;min-width:120px;border-top:3px solid var(--terracotta)}
+.stat-card .num{font-size:1.8rem;font-weight:500;color:var(--terracotta)}
+.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
+
+/* TOOLBAR */
+.toolbar{background:var(--white);padding:1rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.toolbar input, .toolbar select{padding:0.55rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)}
+.toolbar input:focus, .toolbar select:focus{border-color:var(--terracotta)}
+.toolbar input[type=text]{flex:1;min-width:200px}
+
+/* TABLE */
+.table-wrap{background:var(--white);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:0.85rem}
+th{background:#f8f8f8;padding:0.75rem 1rem;text-align:left;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--sand-dark);white-space:nowrap}
+td{padding:0.6rem 1rem;border-bottom:1px solid var(--sand);vertical-align:middle}
+tr:hover td{background:#fafafa}
+.product-thumb{width:40px;height:40px;object-fit:contain;background:var(--sand);padding:2px}
+.inactive-row td{opacity:0.45}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:500}
+.badge-active{background:#d4edda;color:#155724}
+.badge-inactive{background:#f8d7da;color:#721c24}
+
+/* EDIT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);padding:2rem;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:1.2rem;margin-bottom:1.5rem;font-weight:500}
+.modal-row{margin-bottom:1rem}
+.modal-row label{display:block;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.3rem}
+.modal-row input, .modal-row select{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none}
+.modal-row input:focus, .modal-row select:focus{border-color:var(--terracotta)}
+.modal-img-preview{width:80px;height:80px;object-fit:contain;background:var(--sand);margin-top:0.5rem;padding:4px}
+.modal-actions{display:flex;gap:0.8rem;margin-top:1.5rem;flex-wrap:wrap}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--olive);color:white;padding:0.7rem 1.5rem;font-size:0.85rem;z-index:600;display:none;border-radius:2px}
+.toast.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <h2>⚙️ Villa Anita Admin</h2>
+    <input type="password" id="login-password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <br>
+    <button class="btn" onclick="doLogin()" style="width:100%">Login</button>
+    <div class="login-error" id="login-error">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="admin-wrap">
+  <div class="admin-nav">
+    <h1>⚙️ Shop Admin — Villa Anita</h1>
+    <div class="admin-nav-right">
+      <a href="shop.html" target="_blank" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none">↗ View shop</a>
+      <button class="btn small outline" style="color:white;border-color:rgba(255,255,255,0.4)" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="stats">
+      <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total items</div></div>
+      <div class="stat-card"><div class="num" id="stat-active">—</div><div class="label">Active</div></div>
+      <div class="stat-card"><div class="num" id="stat-inactive">—</div><div class="label">Hidden</div></div>
+      <div class="stat-card"><div class="num" id="stat-cats">—</div><div class="label">Categories</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="admin-search" placeholder="🔍 Search by name..." oninput="renderTable()">
+      <select id="admin-cat" onchange="renderTable()">
+        <option value="">All categories</option>
+        <option>Alcohol</option>
+        <option>Beverages & Coffee</option>
+        <option>Dairy & Cheese</option>
+        <option>Fruit & Vegetables</option>
+        <option>Pasta & Basics</option>
+        <option>Snacks & Sweets</option>
+        <option>Meat & Fish</option>
+        <option>Toiletries</option>
+        <option>Household</option>
+        <option>Other</option>
+      </select>
+      <select id="admin-status" onchange="renderTable()">
+        <option value="">All</option>
+        <option value="true">Active only</option>
+        <option value="false">Hidden only</option>
+      </select>
+      <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>Edit Product</h3>
+    <input type="hidden" id="edit-id">
+    <div class="modal-row">
+      <label>Name</label>
+      <input type="text" id="edit-name">
+    </div>
+    <div class="modal-row">
+      <label>Price (€)</label>
+      <input type="number" id="edit-price" step="0.01" min="0">
+    </div>
+    <div class="modal-row">
+      <label>Category</label>
+      <select id="edit-cat">
+        <option>Alcohol</option>
+        <option>Beverages & Coffee</option>
+        <option>Dairy & Cheese</option>
+        <option>Fruit & Vegetables</option>
+        <option>Pasta & Basics</option>
+        <option>Snacks & Sweets</option>
+        <option>Meat & Fish</option>
+        <option>Toiletries</option>
+        <option>Household</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="modal-row">
+      <label>Image URL</label>
+      <input type="text" id="edit-img" oninput="document.getElementById('edit-img-preview').src=this.value">
+      <img id="edit-img-preview" class="modal-img-preview">
+    </div>
+    <div class="modal-row">
+      <label>Status</label>
+      <select id="edit-active">
+        <option value="true">Active (visible in shop)</option>
+        <option value="false">Hidden (not shown in shop)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="saveEdit()">💾 Save changes</button>
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
+const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDkwNTk5NSwiZXhwIjoyMDk2NDgxOTk1fQ.T4mGj7APMJQyTumIr5znnlFvNXE3UH6wVrMy_RMvRRk';
+const ADMIN_PASSWORD = 'villaanita2025';
+
+let ALL_PRODUCTS = [];
+
+function doLogin() {
+  const pw = document.getElementById('login-password').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-wrap').style.display = 'block';
+    loadProducts();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-wrap').style.display = 'none';
+  document.getElementById('login-password').value = '';
+}
+
+async function loadProducts() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?order=name.asc&limit=1000`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+  });
+  ALL_PRODUCTS = await res.json();
+  updateStats();
+  renderTable();
+}
+
+function updateStats() {
+  const active = ALL_PRODUCTS.filter(p => p.active).length;
+  const cats = new Set(ALL_PRODUCTS.map(p => p.category)).size;
+  document.getElementById('stat-total').textContent = ALL_PRODUCTS.length;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-inactive').textContent = ALL_PRODUCTS.length - active;
+  document.getElementById('stat-cats').textContent = cats;
+}
+
+function renderTable() {
+  const q = document.getElementById('admin-search').value.toLowerCase();
+  const cat = document.getElementById('admin-cat').value;
+  const status = document.getElementById('admin-status').value;
+  const filtered = ALL_PRODUCTS.filter(p => {
+    if (q && !p.name.toLowerCase().includes(q)) return false;
+    if (cat && p.category !== cat) return false;
+    if (status !== '' && String(p.active) !== status) return false;
+    return true;
+  });
+  document.getElementById('table-count').textContent = filtered.length + ' items';
+  document.getElementById('admin-table-body').innerHTML = filtered.map(p => `
+    <tr class="${p.active ? '' : 'inactive-row'}">
+      <td><img class="product-thumb" src="${p.img || ''}" onerror="this.src=''" alt="${p.name}"></td>
+      <td style="max-width:280px">${p.name}</td>
+      <td>${p.category}</td>
+      <td>€${Number(p.price).toFixed(2)}</td>
+      <td><span class="badge ${p.active ? 'badge-active' : 'badge-inactive'}">${p.active ? 'Active' : 'Hidden'}</span></td>
+      <td style="white-space:nowrap;display:flex;gap:0.4rem;padding-top:0.8rem">
+        <button class="btn small" onclick="openEdit(${p.id})">✏️ Edit</button>
+        <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active ? '🙈 Hide' : '👁 Show'}</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openEdit(id) {
+  const p = ALL_PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('edit-id').value = p.id;
+  document.getElementById('edit-name').value = p.name;
+  document.getElementById('edit-price').value = p.price;
+  document.getElementById('edit-cat').value = p.category;
+  document.getElementById('edit-img').value = p.img || '';
+  document.getElementById('edit-img-preview').src = p.img || '';
+  document.getElementById('edit-active').value = String(p.active);
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+async function saveEdit() {
+  const id = document.getElementById('edit-id').value;
+  const body = {
+    name: document.getElementById('edit-name').value,
+    price: parseFloat(document.getElementById('edit-price').value),
+    category: document.getElementById('edit-cat').value,
+    img: document.getElementById('edit-img').value,
+    active: document.getElementById('edit-active').value === 'true'
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify(body)
+  });
+  if (res.ok) {
+    const idx = ALL_PRODUCTS.findIndex(x => x.id == id);
+    ALL_PRODUCTS[idx] = { ...ALL_PRODUCTS[idx], ...body };
+    closeModal(); renderTable(); updateStats();
+    showToast('✓ Saved!');
+  } else { alert('Error saving. Try again.'); }
+}
+
+async function toggleActive(id, current) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ active: !current })
+  });
+  if (res.ok) {
+    const idx = ALL_PRODUCTS.findIndex(x => x.id == id);
+    ALL_PRODUCTS[idx].active = !current;
+    renderTable(); updateStats();
+    showToast(current ? '🙈 Item hidden' : '👁 Item visible');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
