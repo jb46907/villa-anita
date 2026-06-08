@@ -121,10 +121,11 @@ tr:hover td{background:#fafafa}
 .status-cancelled{background:#f8d7da;color:#721c24}
 
 @media print {
-  .receipt-actions{display:none!important}
-  .receipt-modal{position:static!important;background:none!important}
-  .receipt-wrap{box-shadow:none!important;max-height:none!important}
-  body > *:not(.receipt-modal){display:none!important}
+  body * { visibility: hidden; }
+  #receipt-content, #receipt-content *,
+  #dinner-quote-content, #dinner-quote-content * { visibility: visible; }
+  #receipt-content { position: fixed; top: 0; left: 0; width: 100%; }
+  #dinner-quote-content { position: fixed; top: 0; left: 0; width: 100%; }
 }
 </style>
 </head>
