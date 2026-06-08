@@ -309,6 +309,9 @@ async function submitOrder(e) {
   if(!name||!contact||!date){alert('Please fill in your name, contact and delivery date.');return;}
   if(!Object.keys(cart).length){alert('Your cart is empty!');return;}
   let total=0;
+  Object.keys(cart).forEach(id=>{const p=ALL_PRODUCTS.find(x=>x.id==id);if(p)total+=p.price*cart[id];});
+  if(total<100){alert(`Minimum order is €100.00. Your current total is €${total.toFixed(2)}. Please add more items.`);return;}
+  total=0;
   const itemLines=Object.keys(cart).map(id=>{
     const p=ALL_PRODUCTS.find(x=>x.id==id);
     const qty=cart[id],sub=p.price*qty; total+=sub;
