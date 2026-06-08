@@ -11,11 +11,23 @@
 :root{--sand:#F5EFE0;--sand-dark:#E8DCC8;--terracotta:#C4704A;--terracotta-light:#D4886A;--sea:#2B6C8A;--text:#2C2416;--text-muted:#7A6A54;--white:#FDFAF5;--olive:#6B7C4A}
 html{scroll-behavior:smooth}
 body{font-family:'Jost',sans-serif;background:var(--sand);color:var(--text);min-height:100vh}
+
+/* PASSWORD SCREEN */
+.pw-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand)}
+.pw-box{background:var(--white);padding:2.5rem;width:340px;border-top:4px solid var(--terracotta);text-align:center}
+.pw-box .logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--terracotta);margin-bottom:0.3rem}
+.pw-box p{font-size:0.85rem;color:var(--text-muted);margin-bottom:2rem}
+.pw-box input{width:100%;padding:0.8rem 1rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:1rem;outline:none;text-align:center;letter-spacing:0.2em;margin-bottom:0.8rem;background:var(--white)}
+.pw-box input:focus{border-color:var(--terracotta)}
+.pw-btn{width:100%;background:var(--terracotta);color:var(--white);border:none;padding:0.9rem;font-family:'Jost',sans-serif;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background 0.2s}
+.pw-btn:hover{background:var(--terracotta-light)}
+.pw-error{color:#c0392b;font-size:0.8rem;margin-top:0.5rem;display:none}
+
 nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(196,112,74,0.15);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:1rem}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--terracotta);text-decoration:none}
 .nav-back{font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}
 .nav-back:hover{color:var(--terracotta)}
-.cart-btn{background:var(--terracotta);color:var(--white);border:none;padding:0.6rem 1.2rem;font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.08em;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background 0.2s}
+.cart-btn{background:var(--terracotta);color:var(--white);border:none;padding:0.6rem 1.2rem;font-family:'Jost',sans-serif;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background 0.2s}
 .cart-btn:hover{background:var(--terracotta-light)}
 .cart-count{background:var(--white);color:var(--terracotta);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600}
 .page-header{background:var(--white);padding:2.5rem 2rem 2rem;border-bottom:1px solid var(--sand-dark)}
@@ -92,6 +104,19 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
 </head>
 <body>
 
+<!-- PASSWORD SCREEN -->
+<div class="pw-screen" id="pw-screen">
+  <div class="pw-box">
+    <div class="logo">Villa Anita</div>
+    <p>Enter the access code provided by your host</p>
+    <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="pw-btn" onclick="checkPassword()">Enter Shop</button>
+    <div class="pw-error" id="pw-error">Wrong code. Please ask your host.</div>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div id="shop-wrap" style="display:none">
 <nav>
   <a href="index.html" class="nav-back">← Back to Villa</a>
   <a href="index.html" class="nav-logo">Villa Anita</a>
@@ -106,21 +131,10 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
 </div>
 
 <div class="layout">
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-title">Categories</div>
-    <button class="cat-btn active" onclick="filterCat('All',this)">🛒 All items</button>
-    <button class="cat-btn" onclick="filterCat('Alcohol',this)">🍷 Alcohol</button>
-    <button class="cat-btn" onclick="filterCat('Beverages & Coffee',this)">☕ Beverages & Coffee</button>
-    <button class="cat-btn" onclick="filterCat('Dairy & Cheese',this)">🧀 Dairy & Cheese</button>
-    <button class="cat-btn" onclick="filterCat('Fruit & Vegetables',this)">🥦 Fruit & Vegetables</button>
-    <button class="cat-btn" onclick="filterCat('Pasta & Basics',this)">🍝 Pasta & Basics</button>
-    <button class="cat-btn" onclick="filterCat('Snacks & Sweets',this)">🍫 Snacks & Sweets</button>
-    <button class="cat-btn" onclick="filterCat('Meat & Fish',this)">🐟 Meat & Fish</button>
-    <button class="cat-btn" onclick="filterCat('Toiletries',this)">🧴 Toiletries</button>
-    <button class="cat-btn" onclick="filterCat('Household',this)">🧹 Household</button>
-    <button class="cat-btn" onclick="filterCat('Other',this)">📦 Other</button>
+    <div id="cat-list"></div>
   </div>
-
   <div class="main">
     <div class="search-bar">
       <input type="text" id="search-input" placeholder="Search products..." oninput="renderProducts()">
@@ -132,7 +146,6 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
   </div>
 </div>
 
-<!-- CART -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cart-panel">
   <div class="cart-header">
@@ -146,7 +159,7 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
       <input type="text" id="order-name" placeholder="Your name *">
       <input type="text" id="order-contact" placeholder="Phone or email *">
       <label class="date-label">Delivery date *</label>
-      <div class="date-note">⏱ Minimum 24h from now. Earlier delivery may be possible depending on availability — add a note below.</div>
+      <div class="date-note">⏱ Minimum 24h from now. Earlier delivery may be possible — add a note below.</div>
       <input type="date" id="order-date">
       <input type="text" id="order-notes" placeholder="Notes (time preference, special requests...)">
       <button class="add-btn" style="width:100%;padding:0.9rem;font-size:0.85rem;margin-top:0.3rem" onclick="submitOrder(event)">📧 Send Order</button>
@@ -156,25 +169,64 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
 </div>
 
 <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
 
+// --- SHOP PASSWORD ---
+const SHOP_PASSWORD = 'villa2025';
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value;
+  if (val === SHOP_PASSWORD) {
+    sessionStorage.setItem('shop_auth', '1');
+    document.getElementById('pw-screen').style.display = 'none';
+    document.getElementById('shop-wrap').style.display = 'block';
+    initShop();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+// Check if already logged in this session
+if (sessionStorage.getItem('shop_auth') === '1') {
+  document.getElementById('pw-screen').style.display = 'none';
+  document.getElementById('shop-wrap').style.display = 'block';
+}
+
+// --- SHOP LOGIC ---
 let ALL_PRODUCTS = [];
+let ALL_CATS = [];
 let cart = {};
 let currentCat = 'All';
 
+async function initShop() {
+  await Promise.all([loadCategories(), loadProducts()]);
+}
+
+async function loadCategories() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/categories?active=eq.true&order=sort_order.asc`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+  });
+  ALL_CATS = await res.json();
+  renderCatList();
+}
+
+function renderCatList() {
+  const list = document.getElementById('cat-list');
+  list.innerHTML = `<button class="cat-btn active" onclick="filterCat('All',this)">🛒 All items</button>` +
+    ALL_CATS.map(c => `<button class="cat-btn" onclick="filterCat('${c.name}',this)">${c.emoji} ${c.name}</button>`).join('');
+}
+
 async function loadProducts() {
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/products?active=eq.true&order=name.asc&limit=1000`, {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
-    });
-    ALL_PRODUCTS = await res.json();
-    renderProducts();
-  } catch(e) {
-    document.getElementById('products-grid').innerHTML = '<div class="loading">Error loading products. Please refresh.</div>';
-  }
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?active=eq.true&order=name.asc&limit=1000`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+  });
+  ALL_PRODUCTS = await res.json();
+  renderProducts();
 }
 
 function filterCat(cat, el) {
@@ -196,7 +248,7 @@ function renderProducts() {
   document.getElementById('products-grid').innerHTML = filtered.map(p => {
     const qty = cart[p.id] || 0;
     return `<div class="product-card">
-      <img class="product-img" src="${p.img || ''}" alt="${p.name}" loading="lazy" onerror="this.style.objectFit='contain';this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2260%22>📦</text></svg>'">
+      <img class="product-img" src="${p.img||''}" alt="${p.name}" loading="lazy" onerror="this.src=''">
       <div class="product-info">
         <div class="product-name">${p.name}</div>
         <div class="product-price">€${Number(p.price).toFixed(2)}</div>
@@ -212,33 +264,29 @@ function renderProducts() {
   }).join('');
 }
 
-function addItem(id) { cart[id] = 1; updateCartCount(); renderProducts(); }
-
+function addItem(id) { cart[id]=1; updateCartCount(); renderProducts(); }
 function changeQty(id, delta) {
-  cart[id] = (cart[id] || 0) + delta;
-  if (cart[id] <= 0) delete cart[id];
+  cart[id] = (cart[id]||0) + delta;
+  if (cart[id]<=0) delete cart[id];
   updateCartCount(); renderProducts();
   if (document.getElementById('cart-panel').classList.contains('open')) renderCart();
 }
-
 function updateCartCount() {
   document.getElementById('cart-count').textContent = Object.values(cart).reduce((a,b)=>a+b,0);
 }
-
 function openCart() { renderCart(); document.getElementById('cart-panel').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
 function closeCart() { document.getElementById('cart-panel').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
 
 function renderCart() {
   const keys = Object.keys(cart);
   const container = document.getElementById('cart-items');
-  if (!keys.length) { container.innerHTML = '<div class="cart-empty">Your cart is empty</div>'; document.getElementById('cart-total').textContent = '€0.00'; return; }
+  if (!keys.length) { container.innerHTML='<div class="cart-empty">Your cart is empty</div>'; document.getElementById('cart-total').textContent='€0.00'; return; }
   let total = 0;
   container.innerHTML = keys.map(id => {
-    const p = ALL_PRODUCTS.find(x => x.id == id);
-    if (!p) return '';
-    const qty = cart[id]; const sub = p.price * qty; total += sub;
+    const p = ALL_PRODUCTS.find(x=>x.id==id); if(!p) return '';
+    const qty=cart[id], sub=p.price*qty; total+=sub;
     return `<div class="cart-item">
-      <img class="cart-item-img" src="${p.img || ''}" alt="${p.name}" onerror="this.src=''">
+      <img class="cart-item-img" src="${p.img||''}" alt="${p.name}" onerror="this.src=''">
       <div class="cart-item-info">
         <div class="cart-item-name">${p.name}</div>
         <div class="cart-item-price">€${Number(p.price).toFixed(2)} × ${qty} = €${sub.toFixed(2)}</div>
@@ -251,53 +299,53 @@ function renderCart() {
       </div>
     </div>`;
   }).join('');
-  document.getElementById('cart-total').textContent = '€' + total.toFixed(2);
+  document.getElementById('cart-total').textContent = '€'+total.toFixed(2);
 }
 
 async function submitOrder(e) {
-  const name = document.getElementById('order-name').value.trim();
-  const contact = document.getElementById('order-contact').value.trim();
-  const date = document.getElementById('order-date').value;
-  if (!name || !contact || !date) { alert('Please fill in your name, contact and delivery date.'); return; }
-  if (!Object.keys(cart).length) { alert('Your cart is empty!'); return; }
-  let total = 0;
-  const itemLines = Object.keys(cart).map(id => {
-    const p = ALL_PRODUCTS.find(x => x.id == id);
-    const qty = cart[id]; const sub = p.price * qty; total += sub;
+  const name=document.getElementById('order-name').value.trim();
+  const contact=document.getElementById('order-contact').value.trim();
+  const date=document.getElementById('order-date').value;
+  if(!name||!contact||!date){alert('Please fill in your name, contact and delivery date.');return;}
+  if(!Object.keys(cart).length){alert('Your cart is empty!');return;}
+  let total=0;
+  const itemLines=Object.keys(cart).map(id=>{
+    const p=ALL_PRODUCTS.find(x=>x.id==id);
+    const qty=cart[id],sub=p.price*qty; total+=sub;
     return `${p.name} x${qty} = €${sub.toFixed(2)}`;
   }).join('\n');
-  const notes = document.getElementById('order-notes').value;
-  const btn = e.target; btn.disabled = true; btn.textContent = '...';
-  const fd = new FormData();
-  fd.append('_subject', 'Grocery Order – ' + name + ' – ' + date);
-  fd.append('name', name); fd.append('contact', contact);
-  fd.append('delivery_date', date); fd.append('order_items', itemLines);
-  fd.append('total', '€' + total.toFixed(2));
-  if (notes) fd.append('notes', notes);
+  const notes=document.getElementById('order-notes').value;
+  const btn=e.target; btn.disabled=true; btn.textContent='...';
+  const fd=new FormData();
+  fd.append('_subject','Grocery Order – '+name+' – '+date);
+  fd.append('name',name); fd.append('contact',contact);
+  fd.append('delivery_date',date); fd.append('order_items',itemLines);
+  fd.append('total','€'+total.toFixed(2));
+  if(notes) fd.append('notes',notes);
   try {
-    const res = await fetch('https://formspree.io/f/mykakrkr', {method:'POST',body:fd,headers:{Accept:'application/json'}});
-    if (res.ok) {
-      cart = {}; updateCartCount();
-      document.getElementById('order-form').style.display = 'none';
-      document.getElementById('order-success').style.display = 'block';
+    const res=await fetch('https://formspree.io/f/mykakrkr',{method:'POST',body:fd,headers:{Accept:'application/json'}});
+    if(res.ok){
+      cart={}; updateCartCount();
+      document.getElementById('order-form').style.display='none';
+      document.getElementById('order-success').style.display='block';
       renderCart();
     } else { btn.disabled=false; btn.textContent='📧 Send Order'; alert('Error, please try again.'); }
   } catch { btn.disabled=false; btn.textContent='📧 Send Order'; }
 }
 
-// Min date = tomorrow
-const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-const yyyy=tomorrow.getFullYear(), mm=String(tomorrow.getMonth()+1).padStart(2,'0'), dd=String(tomorrow.getDate()).padStart(2,'0');
-document.getElementById('order-date').min = `${yyyy}-${mm}-${dd}`;
-document.getElementById('order-date').value = `${yyyy}-${mm}-${dd}`;
+// Min date tomorrow
+const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+const yyyy=tomorrow.getFullYear(),mm=String(tomorrow.getMonth()+1).padStart(2,'0'),dd=String(tomorrow.getDate()).padStart(2,'0');
+const minDate=`${yyyy}-${mm}-${dd}`;
+document.getElementById('order-date').min=minDate;
+document.getElementById('order-date').value=minDate;
 
-// Back to top
 window.addEventListener('scroll',()=>{
-  const btn=document.getElementById('back-to-top');
-  btn.classList.toggle('visible', window.scrollY > 400);
+  document.getElementById('back-to-top').classList.toggle('visible',window.scrollY>400);
 });
 
-loadProducts();
+// Init if already authenticated
+if(sessionStorage.getItem('shop_auth')==='1') initShop();
 </script>
 </body>
 </html>
