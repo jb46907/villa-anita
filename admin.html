@@ -155,6 +155,7 @@ tr:hover td{background:#fafafa}
     <button class="admin-tab active" onclick="switchTab('products',this)">📦 Products</button>
     <button class="admin-tab" onclick="switchTab('categories',this)">🗂 Categories</button>
     <button class="admin-tab" onclick="switchTab('orders',this)">🧾 Orders</button>
+    <button class="admin-tab" onclick="switchTab('dinners',this)">🍽️ Dinners</button>
   </div>
 
   <div class="admin-body">
@@ -203,6 +204,27 @@ tr:hover td{background:#fafafa}
         <table>
           <thead><tr><th>Order #</th><th>Date</th><th>Guest</th><th>Contact</th><th>Delivery</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="orders-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DINNERS TAB -->
+    <div class="tab-panel" id="tab-dinners">
+      <div class="toolbar">
+        <select id="dinner-status-filter" onchange="renderDinners()">
+          <option value="">All bookings</option>
+          <option value="new">New</option>
+          <option value="quoted">Quoted</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <span id="dinners-count" style="font-size:0.8rem;color:var(--text-muted)"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Booking #</th><th>Received</th><th>Guest</th><th>Contact</th><th>Dinner date</th><th>Guests</th><th>Occasion</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="dinners-table-body"></tbody>
         </table>
       </div>
     </div>
@@ -269,6 +291,45 @@ tr:hover td{background:#fafafa}
   </div>
 </div>
 
+<!-- DINNER QUOTE MODAL -->
+<div class="receipt-modal" id="dinner-modal">
+  <div class="receipt-wrap" style="width:560px">
+    <div class="receipt-actions">
+      <button class="btn small green" onclick="saveDinnerQuote()">💾 Save Quote</button>
+      <button class="btn small" onclick="printDinnerQuote()">🖨️ Print Quote</button>
+      <button class="btn small outline" onclick="document.getElementById('dinner-modal').classList.remove('open')">Close</button>
+    </div>
+    <div style="padding:1.5rem;border-bottom:1px solid #eee">
+      <h3 style="margin-bottom:1rem;font-size:1rem">Set Quote Price</h3>
+      <input type="hidden" id="quote-booking-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div>
+          <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Price per person (€)</label>
+          <input type="number" id="quote-price" step="0.01" min="0" placeholder="45.00" oninput="updateQuoteTotal()" style="width:100%;padding:0.6rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none">
+        </div>
+        <div>
+          <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Discount (%)</label>
+          <input type="number" id="quote-discount" min="0" max="100" placeholder="0" oninput="updateQuoteTotal()" style="width:100%;padding:0.6rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div>
+          <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Valid until</label>
+          <input type="date" id="quote-valid" style="width:100%;padding:0.6rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <div style="font-size:1.1rem;font-weight:500;color:var(--terracotta)">Total: <span id="quote-total-display">—</span></div>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Note to guest</label>
+        <textarea id="quote-notes" placeholder="e.g. Includes welcome aperitif and coffee" style="width:100%;padding:0.6rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;resize:vertical;min-height:70px"></textarea>
+      </div>
+    </div>
+    <div class="receipt" id="dinner-quote-content"></div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
@@ -312,11 +373,175 @@ function headers(write=false) {
   return { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
 }
 
-let ALL_ORDERS = [];
+let ALL_DINNERS = [];
 
 async function loadAll() {
-  await Promise.all([loadProducts(), loadCategories(), loadOrders()]);
+  await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners()]);
 }
+
+async function loadDinners() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/dinner_bookings?order=created_at.desc&limit=500`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}` }
+  });
+  ALL_DINNERS = await res.json();
+  renderDinners();
+}
+
+function renderDinners() {
+  const statusFilter = document.getElementById('dinner-status-filter').value;
+  const filtered = ALL_DINNERS.filter(d => !statusFilter || d.status === statusFilter);
+  document.getElementById('dinners-count').textContent = filtered.length + ' bookings';
+  document.getElementById('dinners-table-body').innerHTML = filtered.map(d => {
+    const received = new Date(d.created_at).toLocaleDateString('en-GB');
+    const dinnerDate = d.dinner_date ? new Date(d.dinner_date).toLocaleDateString('en-GB') : '—';
+    const statusColors = {new:'#fff3cd',quoted:'#cce5ff',confirmed:'#d4edda',completed:'#e2e3e5',cancelled:'#f8d7da'};
+    const statusText = {new:'🆕 New',quoted:'💬 Quoted',confirmed:'✅ Confirmed',completed:'🏁 Completed',cancelled:'❌ Cancelled'};
+    return `<tr>
+      <td><strong>${d.booking_number}</strong></td>
+      <td style="white-space:nowrap">${received}</td>
+      <td>${d.guest_name}</td>
+      <td>${d.contact}</td>
+      <td style="white-space:nowrap">${dinnerDate}</td>
+      <td>${d.guests_count||'—'}</td>
+      <td>${d.occasion||'—'}</td>
+      <td>
+        <select class="status-badge" style="background:${statusColors[d.status]||'#eee'}" onchange="updateDinnerStatus(${d.id},this.value,this)">
+          <option value="new" ${d.status==='new'?'selected':''}>🆕 New</option>
+          <option value="quoted" ${d.status==='quoted'?'selected':''}>💬 Quoted</option>
+          <option value="confirmed" ${d.status==='confirmed'?'selected':''}>✅ Confirmed</option>
+          <option value="completed" ${d.status==='completed'?'selected':''}>🏁 Completed</option>
+          <option value="cancelled" ${d.status==='cancelled'?'selected':''}>❌ Cancelled</option>
+        </select>
+      </td>
+      <td style="white-space:nowrap">
+        <button class="btn small" onclick="openDinnerQuote(${d.id})">💬 Quote</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateDinnerStatus(id, status, el) {
+  const colors = {new:'#fff3cd',quoted:'#cce5ff',confirmed:'#d4edda',completed:'#e2e3e5',cancelled:'#f8d7da'};
+  el.style.background = colors[status]||'#eee';
+  await fetch(`${SUPABASE_URL}/rest/v1/dinner_bookings?id=eq.${id}`, {
+    method:'PATCH',
+    headers:{'apikey':SUPABASE_ANON,'Authorization':`Bearer ${authToken||SUPABASE_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({status})
+  });
+  const idx = ALL_DINNERS.findIndex(d=>d.id==id);
+  if(idx>=0) ALL_DINNERS[idx].status = status;
+  showToast('✓ Status updated');
+}
+
+function openDinnerQuote(id) {
+  const d = ALL_DINNERS.find(x=>x.id==id); if(!d) return;
+  document.getElementById('quote-booking-id').value = id;
+  document.getElementById('quote-price').value = d.price_per_person||'';
+  document.getElementById('quote-discount').value = d.discount_percent||0;
+  document.getElementById('quote-notes').value = d.quote_notes||'';
+  // Set valid until to 7 days from now
+  const v = new Date(); v.setDate(v.getDate()+7);
+  document.getElementById('quote-valid').value = d.valid_until || v.toISOString().split('T')[0];
+  updateQuoteTotal();
+  renderDinnerQuotePreview(d);
+  document.getElementById('dinner-modal').classList.add('open');
+}
+
+function updateQuoteTotal() {
+  const id = document.getElementById('quote-booking-id').value;
+  const d = ALL_DINNERS.find(x=>x.id==id); if(!d) return;
+  const price = parseFloat(document.getElementById('quote-price').value)||0;
+  const discount = parseInt(document.getElementById('quote-discount').value)||0;
+  const guests = parseInt(d.guests_count)||1;
+  const subtotal = price * guests;
+  const total = subtotal * (1 - discount/100);
+  document.getElementById('quote-total-display').textContent = total > 0 ? `€${total.toFixed(2)}` : '—';
+  renderDinnerQuotePreview(d);
+}
+
+function renderDinnerQuotePreview(d) {
+  const price = parseFloat(document.getElementById('quote-price').value)||0;
+  const discount = parseInt(document.getElementById('quote-discount').value)||0;
+  const quoteNotes = document.getElementById('quote-notes').value;
+  const validUntil = document.getElementById('quote-valid').value;
+  const guests = parseInt(d.guests_count)||1;
+  const subtotal = price * guests;
+  const discountAmt = subtotal * (discount/100);
+  const total = subtotal - discountAmt;
+  const dinnerDate = d.dinner_date ? new Date(d.dinner_date).toLocaleDateString('en-GB') : '—';
+  const validDate = validUntil ? new Date(validUntil).toLocaleDateString('en-GB') : '—';
+  const today = new Date().toLocaleDateString('en-GB');
+
+  document.getElementById('dinner-quote-content').innerHTML = `
+    <div class="receipt-header">
+      <div class="receipt-logo">VILLA ANITA</div>
+      <div class="receipt-sub">Private Dinner Quote</div>
+      <div class="receipt-sub">Dalmatia, Croatia · info@villaanita.hr</div>
+    </div>
+    <hr class="receipt-divider">
+    <div class="receipt-meta">
+      <div class="receipt-meta-row"><span>Quote #</span><span>${d.booking_number}</span></div>
+      <div class="receipt-meta-row"><span>Date issued</span><span>${today}</span></div>
+      <div class="receipt-meta-row"><span>Valid until</span><span>${validDate}</span></div>
+    </div>
+    <hr class="receipt-divider">
+    <div class="receipt-meta">
+      <div class="receipt-meta-row"><span>Guest</span><span>${d.guest_name}</span></div>
+      <div class="receipt-meta-row"><span>Contact</span><span>${d.contact}</span></div>
+      <div class="receipt-meta-row"><span>Dinner date</span><span>${dinnerDate}</span></div>
+      <div class="receipt-meta-row"><span>Time</span><span>${d.time_slot||'—'}</span></div>
+      <div class="receipt-meta-row"><span>Guests</span><span>${d.guests_count||'—'}</span></div>
+      ${d.occasion?`<div class="receipt-meta-row"><span>Occasion</span><span>${d.occasion}</span></div>`:''}
+    </div>
+    <hr class="receipt-divider">
+    <div style="margin-bottom:0.5rem"><strong>MENU</strong></div>
+    ${d.starters&&d.starters!=='None'?`<div style="margin-bottom:0.5rem"><em>Starters:</em><br>${d.starters}</div>`:''}
+    ${d.mains&&d.mains!=='None'?`<div style="margin-bottom:0.5rem"><em>Mains:</em><br>${d.mains}</div>`:''}
+    ${d.desserts&&d.desserts!=='None'?`<div style="margin-bottom:0.5rem"><em>Desserts:</em><br>${d.desserts}</div>`:''}
+    ${d.notes?`<div style="margin-top:0.5rem;color:#666;font-size:0.8rem"><em>Guest notes: ${d.notes}</em></div>`:''}
+    <hr class="receipt-divider">
+    ${price>0?`
+    <div class="receipt-meta">
+      <div class="receipt-meta-row"><span>Price per person</span><span>€${price.toFixed(2)}</span></div>
+      <div class="receipt-meta-row"><span>Number of guests</span><span>${guests}</span></div>
+      <div class="receipt-meta-row"><span>Subtotal</span><span>€${subtotal.toFixed(2)}</span></div>
+      ${discount>0?`<div class="receipt-meta-row"><span>Discount (${discount}%)</span><span>− €${discountAmt.toFixed(2)}</span></div>`:''}
+    </div>
+    <div class="receipt-total"><span>TOTAL</span><span>€${total.toFixed(2)}</span></div>
+    `:'<div style="text-align:center;color:#999;padding:1rem">Price not set yet</div>'}
+    <hr class="receipt-divider">
+    <div class="receipt-meta-row"><span>Payment</span><span>Cash on delivery</span></div>
+    ${quoteNotes?`<div style="margin-top:0.8rem;font-size:0.8rem"><em>${quoteNotes}</em></div>`:''}
+    <div class="receipt-footer">
+      Thank you for choosing Villa Anita!<br>
+      This quote is valid until ${validDate}.
+    </div>`;
+}
+
+async function saveDinnerQuote() {
+  const id = document.getElementById('quote-booking-id').value;
+  const d = ALL_DINNERS.find(x=>x.id==id); if(!d) return;
+  const price = parseFloat(document.getElementById('quote-price').value)||null;
+  const discount = parseInt(document.getElementById('quote-discount').value)||0;
+  const quoteNotes = document.getElementById('quote-notes').value;
+  const validUntil = document.getElementById('quote-valid').value||null;
+  const guests = parseInt(d.guests_count)||1;
+  const total = price ? price * guests * (1 - discount/100) : null;
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/dinner_bookings?id=eq.${id}`, {
+    method:'PATCH',
+    headers:{'apikey':SUPABASE_ANON,'Authorization':`Bearer ${authToken||SUPABASE_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({price_per_person:price,discount_percent:discount,total_price:total,quote_notes:quoteNotes,valid_until:validUntil,status:'quoted'})
+  });
+  if(res.ok) {
+    const idx = ALL_DINNERS.findIndex(x=>x.id==id);
+    ALL_DINNERS[idx] = {...ALL_DINNERS[idx],price_per_person:price,discount_percent:discount,total_price:total,quote_notes:quoteNotes,valid_until:validUntil,status:'quoted'};
+    renderDinners();
+    showToast('✓ Quote saved! Status → Quoted');
+  } else { alert('Error saving quote.'); }
+}
+
+function printDinnerQuote() { window.print(); }
 
 async function loadOrders() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?order=created_at.desc&limit=500`, {
@@ -557,6 +782,7 @@ function openReceipt(id) {
     <div class="receipt-header">
       <div class="receipt-logo">VILLA ANITA</div>
       <div class="receipt-sub">Grocery & Supply Order</div>
+      <div class="receipt-sub">Dalmatia, Croatia</div>
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -575,7 +801,8 @@ function openReceipt(id) {
     <div class="receipt-meta-row"><span>Status</span><span>${o.status.toUpperCase()}</span></div>
     <hr class="receipt-divider">
     <div class="receipt-footer">
-      Thank you for your order!
+      Thank you for your order!<br>
+      Villa Anita · info@villaanita.hr
     </div>`;
 
   document.getElementById('receipt-modal').classList.add('open');
