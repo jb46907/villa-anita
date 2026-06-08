@@ -854,6 +854,9 @@ setStars(5);
 // ===================== FORMSPREE =====================
 window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
 
+const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
+
 document.addEventListener('DOMContentLoaded', function() {
   // Večera forma
   document.getElementById('dinner-form').addEventListener('submit', async function(e) {
@@ -867,7 +870,39 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('hidden-starters').value = starters.length ? starters.join(', ') : 'Nije odabrano';
     document.getElementById('hidden-mains').value = mains.length ? mains.join(', ') : 'Nije odabrano';
     document.getElementById('hidden-desserts').value = desserts.length ? desserts.join(', ') : 'Nije odabrano';
+
+    const bookingNumber = 'D-' + Date.now().toString().slice(-6);
+    const guestName = this.querySelector('[name="ime_prezime"]').value.trim();
+    const contact = this.querySelector('[name="kontakt"]').value.trim();
+    const dinnerDate = this.querySelector('[name="datum"]').value;
+    const timeSlot = this.querySelector('[name="termin"]').value;
+    const guestsCount = this.querySelector('[name="broj_osoba"]').value;
+    const occasion = this.querySelector('[name="prigoda"]').value;
+    const notes = this.querySelector('[name="napomene"]').value;
+
+    // Save to Supabase
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/dinner_bookings`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          booking_number: bookingNumber,
+          guest_name: guestName,
+          contact: contact,
+          dinner_date: dinnerDate,
+          time_slot: timeSlot,
+          guests_count: guestsCount,
+          occasion: occasion,
+          starters: starters.join(', ') || 'None',
+          mains: mains.join(', ') || 'None',
+          desserts: desserts.join(', ') || 'None',
+          notes: notes
+        })
+      });
+    } catch(err) { console.warn('Supabase save failed:', err); }
+
     const data = new FormData(this);
+    data.append('booking_number', bookingNumber);
     try {
       const res = await fetch('https://formspree.io/f/mykakrkr', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       if (res.ok) {
