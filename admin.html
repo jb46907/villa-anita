@@ -133,7 +133,23 @@ tr:hover td{background:#fafafa}
   #dinner-quote-content { position: fixed; top: 0; left: 0; width: 100%; }
 }
 
-/* MOBILE */
+/* PRODUCT CARDS GRID */
+.product-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.8rem; padding: 1rem; background: #f0f0f0; }
+.product-card-admin { background: var(--white); display: flex; gap: 0; overflow: hidden; border: 1px solid var(--sand-dark); transition: box-shadow 0.2s; }
+.product-card-admin:hover { box-shadow: 0 2px 12px rgba(44,36,22,0.1); }
+.product-card-admin.inactive { opacity: 0.5; }
+.product-card-img { width: 90px; height: 90px; object-fit: contain; background: white; flex-shrink: 0; padding: 6px; border-right: 1px solid var(--sand-dark); }
+.product-card-body { flex: 1; padding: 0.7rem 0.9rem; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.product-card-name { font-size: 0.85rem; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 0.3rem; word-break: break-word; }
+.product-card-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.product-card-price { font-size: 0.95rem; font-weight: 500; color: var(--terracotta); }
+.product-card-cat { font-size: 0.7rem; background: var(--sand); color: var(--text-muted); padding: 2px 7px; border-radius: 10px; }
+.product-card-actions { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .product-cards-grid { grid-template-columns: 1fr; padding: 0.5rem; }
+  .product-card-img { width: 72px; height: 72px; }
+}
 @media (max-width: 768px) {
   .admin-nav { padding: 0.8rem 1rem; }
   .admin-nav h1 { font-size: 0.95rem; }
@@ -237,10 +253,7 @@ tr:hover td{background:#fafafa}
         <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
       </div>
       <div class="table-wrap">
-        <table>
-          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="admin-table-body"></tbody>
-        </table>
+        <div id="admin-table-body" class="product-cards-grid"></div>
       </div>
     </div>
 
@@ -676,17 +689,21 @@ function renderTable() {
   });
   document.getElementById('table-count').textContent = filtered.length + ' items';
   document.getElementById('admin-table-body').innerHTML = filtered.map(p => `
-    <tr class="${p.active?'':'inactive-row'}">
-      <td><img class="product-thumb" src="${p.img||''}" onerror="this.src=''" alt="${p.name}"></td>
-      <td data-label="Name" style="max-width:280px">${p.name}</td>
-      <td data-label="Category">${p.category}</td>
-      <td data-label="Price">€${Number(p.price).toFixed(2)}</td>
-      <td data-label="Status"><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Active':'Hidden'}</span></td>
-      <td style="white-space:nowrap">
-        <button class="btn small" onclick="openEdit(${p.id})" style="margin-right:4px">✏️ Edit</button>
-        <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active?'🙈 Hide':'👁 Show'}</button>
-      </td>
-    </tr>`).join('');
+    <div class="product-card-admin ${p.active?'':'inactive'}">
+      <img class="product-card-img" src="${p.img||''}" onerror="this.src=''" alt="${p.name}">
+      <div class="product-card-body">
+        <div class="product-card-name">${p.name}</div>
+        <div class="product-card-meta">
+          <span class="product-card-price">€${Number(p.price).toFixed(2)}</span>
+          <span class="product-card-cat">${p.category}</span>
+          <span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Active':'Hidden'}</span>
+        </div>
+        <div class="product-card-actions">
+          <button class="btn small" onclick="openEdit(${p.id})">✏️ Edit</button>
+          <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active?'🙈 Hide':'👁 Show'}</button>
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 function openEdit(id) {
