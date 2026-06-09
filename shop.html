@@ -154,15 +154,23 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
   </div>
   <div class="cart-items" id="cart-items"><div class="cart-empty">Your cart is empty</div></div>
   <div class="cart-footer">
-    <div class="cart-total"><span>Total</span><span id="cart-total">€0.00</span></div>
-    <div class="order-form" id="order-form">
-      <input type="text" id="order-name" placeholder="Your name *">
-      <input type="text" id="order-contact" placeholder="Phone or email *">
-      <label class="date-label">Delivery date *</label>
-      <div class="date-note">⏱ Minimum 24h from now. Earlier delivery may be possible — add a note below.</div>
-      <input type="date" id="order-date">
-      <input type="text" id="order-notes" placeholder="Notes (time preference, special requests...)">
-      <button class="add-btn" style="width:100%;padding:0.9rem;font-size:0.85rem;margin-top:0.3rem" onclick="submitOrder(event)">📧 Send Order</button>
+    <div class="cart-total" onclick="toggleCheckout()" style="cursor:pointer;user-select:none">
+      <span>Total</span>
+      <div style="display:flex;align-items:center;gap:0.8rem">
+        <span id="cart-total">€0.00</span>
+        <button class="add-btn" style="padding:0.4rem 1rem;font-size:0.8rem" id="checkout-toggle-btn">Checkout ▲</button>
+      </div>
+    </div>
+    <div id="checkout-form-wrap" style="display:none">
+      <div class="order-form" id="order-form">
+        <input type="text" id="order-name" placeholder="Your name *">
+        <input type="text" id="order-contact" placeholder="Phone or email *">
+        <label class="date-label">Delivery date *</label>
+        <div class="date-note">⏱ Minimum 24h from now. Earlier delivery may be possible — add a note below.</div>
+        <input type="date" id="order-date">
+        <input type="text" id="order-notes" placeholder="Notes (time preference, special requests...)">
+        <button class="add-btn" style="width:100%;padding:0.9rem;font-size:0.85rem;margin-top:0.3rem" onclick="submitOrder(event)">📧 Send Order</button>
+      </div>
     </div>
     <div class="order-success" id="order-success">✓ Order received! We will confirm and deliver on the selected date. Payment in cash on delivery.</div>
   </div>
@@ -292,6 +300,14 @@ function updateCardControls(id) {
 function updateCartCount() {
   document.getElementById('cart-count').textContent = Object.values(cart).reduce((a,b)=>a+b,0);
 }
+function toggleCheckout() {
+  const wrap = document.getElementById('checkout-form-wrap');
+  const btn = document.getElementById('checkout-toggle-btn');
+  const open = wrap.style.display === 'block';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? 'Checkout ▲' : 'Close ▼';
+}
+
 function openCart() { renderCart(); document.getElementById('cart-panel').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
 function closeCart() { document.getElementById('cart-panel').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
 
