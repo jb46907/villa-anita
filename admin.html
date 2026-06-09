@@ -132,6 +132,57 @@ tr:hover td{background:#fafafa}
   #receipt-content { position: fixed; top: 0; left: 0; width: 100%; }
   #dinner-quote-content { position: fixed; top: 0; left: 0; width: 100%; }
 }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .admin-nav { padding: 0.8rem 1rem; }
+  .admin-nav h1 { font-size: 0.95rem; }
+  .admin-tab { padding: 0.6rem 0.8rem; font-size: 0.7rem; letter-spacing: 0.03em; }
+  .admin-tabs { overflow-x: auto; white-space: nowrap; }
+  .admin-body { padding: 1rem; }
+
+  /* Stats 2 columns */
+  .stats { grid-template-columns: 1fr 1fr; display: grid; }
+  .stat-card { min-width: unset; }
+  .stat-card .num { font-size: 1.4rem; }
+
+  /* Toolbar stacked */
+  .toolbar { flex-direction: column; align-items: stretch; gap: 0.6rem; padding: 0.8rem; }
+  .toolbar input[type=text] { min-width: unset; width: 100%; }
+  .toolbar select { width: 100%; }
+
+  /* Tables — card layout instead of rows */
+  .table-wrap { overflow-x: unset; }
+  table thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { background: var(--white); margin-bottom: 0.8rem; padding: 0.8rem; border: 1px solid var(--sand-dark); position: relative; }
+  tr:hover td { background: transparent; }
+  td { padding: 0.2rem 0; border: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+  td::before { content: attr(data-label); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; min-width: 80px; flex-shrink: 0; }
+  td:empty { display: none; }
+
+  /* Product thumb smaller */
+  .product-thumb { width: 32px; height: 32px; }
+
+  /* Action buttons full width */
+  td:last-child { flex-wrap: wrap; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--sand); }
+  td:last-child::before { display: none; }
+
+  /* Categories grid 1 col */
+  .cats-grid { grid-template-columns: 1fr; }
+  .add-cat-form { flex-direction: column; }
+  .add-cat-form input { width: 100%; }
+  .add-cat-form input.emoji-input { width: 100%; }
+
+  /* Login box */
+  .login-box { width: 90vw; padding: 1.5rem; }
+
+  /* Modal full screen */
+  .modal { width: 95vw; padding: 1.2rem; }
+  .receipt-wrap { width: 95vw; }
+  .modal-actions { flex-direction: column; }
+  .modal-actions .btn { width: 100%; text-align: center; }
+}
 </style>
 </head>
 <body>
@@ -626,10 +677,10 @@ function renderTable() {
   document.getElementById('admin-table-body').innerHTML = filtered.map(p => `
     <tr class="${p.active?'':'inactive-row'}">
       <td><img class="product-thumb" src="${p.img||''}" onerror="this.src=''" alt="${p.name}"></td>
-      <td style="max-width:280px">${p.name}</td>
-      <td>${p.category}</td>
-      <td>€${Number(p.price).toFixed(2)}</td>
-      <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Active':'Hidden'}</span></td>
+      <td data-label="Name" style="max-width:280px">${p.name}</td>
+      <td data-label="Category">${p.category}</td>
+      <td data-label="Price">€${Number(p.price).toFixed(2)}</td>
+      <td data-label="Status"><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Active':'Hidden'}</span></td>
       <td style="white-space:nowrap">
         <button class="btn small" onclick="openEdit(${p.id})" style="margin-right:4px">✏️ Edit</button>
         <button class="btn small outline" onclick="toggleActive(${p.id},${p.active})">${p.active?'🙈 Hide':'👁 Show'}</button>
