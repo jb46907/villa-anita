@@ -140,7 +140,6 @@ tr:hover td{background:#fafafa}
 <div class="login-screen" id="login-screen">
   <div class="login-box">
     <h2>⚙️ Villa Anita Admin</h2>
-    <p>Sign in with your Supabase account</p>
     <input type="email" id="login-email" placeholder="Email address" onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
     <input type="password" id="login-password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn" onclick="doLogin()" style="width:100%">Login</button>
@@ -482,7 +481,7 @@ function renderDinnerQuotePreview(d) {
     <div class="receipt-header">
       <div class="receipt-logo">VILLA ANITA</div>
       <div class="receipt-sub">Private Dinner Quote</div>
-      <div class="receipt-sub">Dalmatia, Croatia · info@villaanita.hr</div>
+      
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -516,7 +515,7 @@ function renderDinnerQuotePreview(d) {
     <div class="receipt-total"><span>TOTAL</span><span>€${total.toFixed(2)}</span></div>
     `:'<div style="text-align:center;color:#999;padding:1rem">Price not set yet</div>'}
     <hr class="receipt-divider">
-    <div class="receipt-meta-row"><span>Payment</span><span>Cash on delivery</span></div>
+    <div class="receipt-meta-row"><span>Payment</span><span>Cash</span></div>
     ${quoteNotes?`<div style="margin-top:0.8rem;font-size:0.8rem"><em>${quoteNotes}</em></div>`:''}
     <div class="receipt-footer">
       Thank you for choosing Villa Anita!<br>
@@ -803,12 +802,12 @@ function openReceipt(id) {
     <div class="receipt-items">${itemsHTML}</div>
     <div class="receipt-total"><span>TOTAL</span><span>€${Number(o.total).toFixed(2)}</span></div>
     <hr class="receipt-divider">
-    <div class="receipt-meta-row"><span>Payment</span><span>Cash on delivery</span></div>
+    <div class="receipt-meta-row"><span>Payment</span><span>Cash</span></div>
     <div class="receipt-meta-row"><span>Status</span><span>${o.status.toUpperCase()}</span></div>
     <hr class="receipt-divider">
     <div class="receipt-footer">
       Thank you for your order!<br>
-      Villa Anita · info@villaanita.hr
+      Villa Anita
     </div>`;
 
   document.getElementById('receipt-modal').classList.add('open');
