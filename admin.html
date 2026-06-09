@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin – Villa Anita</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C4704A">
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -477,6 +482,7 @@ function renderDinnerQuotePreview(d) {
     <div class="receipt-header">
       <div class="receipt-logo">VILLA ANITA</div>
       <div class="receipt-sub">Private Dinner Quote</div>
+      <div class="receipt-sub">Dalmatia, Croatia · info@villaanita.hr</div>
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -510,7 +516,7 @@ function renderDinnerQuotePreview(d) {
     <div class="receipt-total"><span>TOTAL</span><span>€${total.toFixed(2)}</span></div>
     `:'<div style="text-align:center;color:#999;padding:1rem">Price not set yet</div>'}
     <hr class="receipt-divider">
-    <div class="receipt-meta-row"><span>Payment</span><span>Cash</span></div>
+    <div class="receipt-meta-row"><span>Payment</span><span>Cash on delivery</span></div>
     ${quoteNotes?`<div style="margin-top:0.8rem;font-size:0.8rem"><em>${quoteNotes}</em></div>`:''}
     <div class="receipt-footer">
       Thank you for choosing Villa Anita!<br>
@@ -782,6 +788,7 @@ function openReceipt(id) {
     <div class="receipt-header">
       <div class="receipt-logo">VILLA ANITA</div>
       <div class="receipt-sub">Grocery & Supply Order</div>
+      <div class="receipt-sub">Dalmatia, Croatia</div>
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -800,7 +807,8 @@ function openReceipt(id) {
     <div class="receipt-meta-row"><span>Status</span><span>${o.status.toUpperCase()}</span></div>
     <hr class="receipt-divider">
     <div class="receipt-footer">
-      Thank you for your order!
+      Thank you for your order!<br>
+      Villa Anita · info@villaanita.hr
     </div>`;
 
   document.getElementById('receipt-modal').classList.add('open');
