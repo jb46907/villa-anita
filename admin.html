@@ -348,7 +348,7 @@ tr:hover td{background:#fafafa}
 <div class="receipt-modal" id="receipt-modal">
   <div class="receipt-wrap">
     <div class="receipt-actions">
-      <button class="btn small" onclick="window.print()">🖨️ Print</button>
+      <button class="btn small" onclick="triggerPrint()">🖨️ Print</button>
       <button class="btn small outline" onclick="document.getElementById('receipt-modal').classList.remove('open')">Close</button>
     </div>
     <div class="receipt" id="receipt-content"></div>
@@ -887,6 +887,11 @@ function showToast(msg) {
 }
 
 document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+function triggerPrint() {
+  // Small delay allows Brave to treat it as user-initiated
+  setTimeout(function() { window.print(); }, 100);
+}
 </script>
 </body>
 </html>
