@@ -247,7 +247,7 @@ function renderProducts() {
   document.getElementById('results-count').textContent = filtered.length + ' items';
   document.getElementById('products-grid').innerHTML = filtered.map(p => {
     const qty = cart[p.id] || 0;
-    return `<div class="product-card">
+    return `<div class="product-card" data-id="${p.id}">
       <img class="product-img" src="${p.img||''}" alt="${p.name}" loading="lazy" onerror="this.src=''">
       <div class="product-info">
         <div class="product-name">${p.name}</div>
@@ -264,12 +264,30 @@ function renderProducts() {
   }).join('');
 }
 
-function addItem(id) { cart[id]=1; updateCartCount(); renderProducts(); }
+function addItem(id) {
+  cart[id] = 1;
+  updateCartCount();
+  updateCardControls(id);
+}
+
 function changeQty(id, delta) {
   cart[id] = (cart[id]||0) + delta;
-  if (cart[id]<=0) delete cart[id];
-  updateCartCount(); renderProducts();
+  if (cart[id] <= 0) delete cart[id];
+  updateCartCount();
+  updateCardControls(id);
   if (document.getElementById('cart-panel').classList.contains('open')) renderCart();
+}
+
+function updateCardControls(id) {
+  const card = document.querySelector(`.product-card[data-id="${id}"]`);
+  if (!card) return;
+  const qty = cart[id] || 0;
+  const controls = card.querySelector('.product-controls');
+  controls.innerHTML = qty > 0
+    ? `<button class="qty-btn" onclick="changeQty(${id},-1)">−</button>
+       <span class="qty-display">${qty}</span>
+       <button class="qty-btn" onclick="changeQty(${id},1)">+</button>`
+    : `<button class="add-btn" onclick="addItem(${id})">+ Add</button>`;
 }
 function updateCartCount() {
   document.getElementById('cart-count').textContent = Object.values(cart).reduce((a,b)=>a+b,0);
