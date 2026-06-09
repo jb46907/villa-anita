@@ -95,6 +95,10 @@ tr:hover td{background:#fafafa}
 .modal-row input,.modal-row select{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)}
 .modal-row input:focus,.modal-row select:focus{border-color:var(--terracotta)}
 .modal-img-preview{width:80px;height:80px;object-fit:contain;background:var(--sand);margin-top:0.5rem;padding:4px}
+.upload-btn{display:inline-flex;align-items:center;gap:0.4rem;background:var(--sea);color:white;border:none;padding:0.5rem 1rem;font-family:'Jost',sans-serif;font-size:0.8rem;cursor:pointer;margin-top:0.5rem;transition:background 0.2s}
+.upload-btn:hover{background:#235a75}
+.upload-progress{font-size:0.8rem;color:var(--text-muted);margin-top:0.4rem;display:none}
+input[type=file]{display:none}
 .modal-actions{display:flex;gap:0.8rem;margin-top:1.5rem;flex-wrap:wrap}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--olive);color:white;padding:0.7rem 1.5rem;font-size:0.85rem;z-index:600;display:none;border-radius:2px}
 .toast.show{display:block}
@@ -330,8 +334,11 @@ tr:hover td{background:#fafafa}
       <select id="add-cat"></select>
     </div>
     <div class="modal-row">
-      <label>Image URL</label>
-      <input type="text" id="add-img" placeholder="https://..." oninput="document.getElementById('add-img-preview').src=this.value">
+      <label>Image</label>
+      <input type="text" id="add-img" placeholder="https://... or upload below" oninput="document.getElementById('add-img-preview').src=this.value">
+      <input type="file" id="add-img-file" accept="image/*" onchange="uploadImage('add')">
+      <button class="upload-btn" onclick="document.getElementById('add-img-file').click()">📷 Upload photo</button>
+      <div class="upload-progress" id="add-upload-progress">Uploading...</div>
       <img id="add-img-preview" class="modal-img-preview">
     </div>
     <div class="modal-row">
@@ -360,8 +367,11 @@ tr:hover td{background:#fafafa}
       <select id="edit-cat"></select>
     </div>
     <div class="modal-row">
-      <label>Image URL</label>
-      <input type="text" id="edit-img" oninput="document.getElementById('edit-img-preview').src=this.value">
+      <label>Image</label>
+      <input type="text" id="edit-img" placeholder="https://..." oninput="document.getElementById('edit-img-preview').src=this.value">
+      <input type="file" id="edit-img-file" accept="image/*" onchange="uploadImage('edit')">
+      <button class="upload-btn" onclick="document.getElementById('edit-img-file').click()">📷 Upload photo</button>
+      <div class="upload-progress" id="edit-upload-progress">Uploading...</div>
       <img id="edit-img-preview" class="modal-img-preview">
     </div>
     <div class="modal-row">
@@ -736,6 +746,51 @@ function renderTable() {
         </div>
       </div>
     </div>`).join('');
+}
+
+async function uploadImage(modalType) {
+  const fileInput = document.getElementById(modalType + '-img-file');
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const progress = document.getElementById(modalType + '-upload-progress');
+  const imgInput = document.getElementById(modalType + '-img');
+  const imgPreview = document.getElementById(modalType + '-img-preview');
+
+  progress.style.display = 'block';
+  progress.textContent = 'Uploading...';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = 'product-' + Date.now() + '.' + ext;
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/product-images/${filename}`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authToken||SUPABASE_ANON}`,
+          'Content-Type': file.type,
+          'x-upsert': 'true'
+        },
+        body: file
+      }
+    );
+
+    if (res.ok) {
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/product-images/${filename}`;
+      imgInput.value = publicUrl;
+      imgPreview.src = publicUrl;
+      progress.textContent = '✓ Uploaded!';
+      setTimeout(() => { progress.style.display = 'none'; }, 2000);
+    } else {
+      const err = await res.json();
+      progress.textContent = 'Error: ' + (err.message || 'Upload failed');
+    }
+  } catch(e) {
+    progress.textContent = 'Upload failed. Check connection.';
+  }
+  fileInput.value = '';
 }
 
 function openAddProduct() {
