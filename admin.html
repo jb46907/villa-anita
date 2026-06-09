@@ -64,7 +64,7 @@ table{width:100%;border-collapse:collapse;font-size:0.85rem}
 th{background:#f8f8f8;padding:0.75rem 1rem;text-align:left;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--sand-dark);white-space:nowrap}
 td{padding:0.6rem 1rem;border-bottom:1px solid var(--sand);vertical-align:middle}
 tr:hover td{background:#fafafa}
-.product-thumb{width:40px;height:40px;object-fit:contain;background:var(--sand);padding:2px}
+.product-thumb{width:64px;height:64px;object-fit:contain;background:white;padding:4px;border:1px solid var(--sand-dark)}
 .inactive-row td{opacity:0.45}
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:500}
 .badge-active{background:#d4edda;color:#155724}
@@ -114,7 +114,7 @@ tr:hover td{background:#fafafa}
 .receipt-meta-row span:first-child{color:#666}
 .receipt-items{margin:1rem 0}
 .receipt-item{display:flex;justify-content:space-between;margin-bottom:0.3rem;gap:1rem}
-.receipt-item-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.receipt-item-name{flex:1;overflow:hidden;word-break:break-word;white-space:normal;min-width:0}
 .receipt-item-qty{color:#666;white-space:nowrap;margin:0 0.5rem}
 .receipt-item-price{white-space:nowrap;font-weight:500}
 .receipt-total{display:flex;justify-content:space-between;font-weight:700;font-size:1rem;border-top:1px solid #999;padding-top:0.5rem;margin-top:0.5rem}
@@ -129,8 +129,16 @@ tr:hover td{background:#fafafa}
   body * { visibility: hidden; }
   #receipt-content, #receipt-content *,
   #dinner-quote-content, #dinner-quote-content * { visibility: visible; }
-  #receipt-content { position: fixed; top: 0; left: 0; width: 100%; }
-  #dinner-quote-content { position: fixed; top: 0; left: 0; width: 100%; }
+  #receipt-content {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+  }
+  #dinner-quote-content {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+  }
 }
 
 /* MOBILE */
@@ -162,7 +170,7 @@ tr:hover td{background:#fafafa}
   td:empty { display: none; }
 
   /* Product thumb smaller */
-  .product-thumb { width: 32px; height: 32px; }
+  .product-thumb { width: 48px; height: 48px; }
 
   /* Action buttons full width */
   td:last-child { flex-wrap: wrap; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--sand); }
@@ -373,8 +381,9 @@ tr:hover td{background:#fafafa}
           <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Valid until</label>
           <input type="date" id="quote-valid" style="width:100%;padding:0.6rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none">
         </div>
-        <div style="display:flex;align-items:flex-end">
-          <div style="font-size:1.1rem;font-weight:500;color:var(--terracotta)">Total: <span id="quote-total-display">—</span></div>
+        <div>
+          <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.3rem">Calculated total</label>
+          <div style="font-size:1.3rem;font-weight:500;color:var(--terracotta);padding:0.6rem 0">€ <span id="quote-total-display">—</span></div>
         </div>
       </div>
       <div>
