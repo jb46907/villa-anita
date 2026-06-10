@@ -262,7 +262,39 @@ input[type=file]{display:none}
         </select>
         <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
         <button class="btn green" onclick="openAddProduct()" style="margin-left:auto">+ Add Product</button>
+        <button class="btn outline" onclick="toggleBulkPanel()">💶 Bulk pricing</button>
       </div>
+
+      <!-- BULK PRICING PANEL -->
+      <div id="bulk-panel" style="display:none;background:var(--white);padding:1.2rem 1.5rem;margin-bottom:1rem;border-left:4px solid var(--sea)">
+        <div style="font-size:0.9rem;font-weight:500;margin-bottom:1rem">💶 Bulk Price Adjustment</div>
+        <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:0.3rem">
+            <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Apply to</label>
+            <select id="bulk-cat" style="padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)">
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.3rem">
+            <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Type</label>
+            <select id="bulk-type" style="padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)">
+              <option value="percent">Percentage (%)</option>
+              <option value="fixed">Fixed amount (€)</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.3rem">
+            <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Value (+/−)</label>
+            <input type="number" id="bulk-value" step="0.01" placeholder="e.g. 10 or -5" style="padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;width:130px">
+          </div>
+          <button class="btn" onclick="previewBulk()">👁 Preview</button>
+        </div>
+        <div id="bulk-preview" style="display:none;margin-top:1rem;padding:0.8rem 1rem;background:rgba(43,108,138,0.06);border:1px solid rgba(43,108,138,0.2);font-size:0.85rem;line-height:1.6"></div>
+        <div id="bulk-confirm-wrap" style="display:none;margin-top:0.8rem">
+          <button class="btn green" onclick="applyBulk()">✓ Apply changes</button>
+          <button class="btn outline" onclick="cancelBulk()" style="margin-left:0.5rem">Cancel</button>
+        </div>
+      </div>
+
       <div class="table-wrap">
         <div id="admin-table-body" class="product-cards-grid"></div>
       </div>
@@ -820,6 +852,91 @@ async function uploadImage(modalType) {
     progress.textContent = 'Upload failed. Check connection.';
   }
   fileInput.value = '';
+}
+
+let bulkPending = null;
+
+function toggleBulkPanel() {
+  const panel = document.getElementById('bulk-panel');
+  const isOpen = panel.style.display === 'block';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    // Populate category select
+    document.getElementById('bulk-cat').innerHTML = '<option value="">All categories</option>' +
+      ALL_CATS.map(c => `<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
+    cancelBulk();
+  }
+}
+
+function previewBulk() {
+  const cat = document.getElementById('bulk-cat').value;
+  const type = document.getElementById('bulk-type').value;
+  const value = parseFloat(document.getElementById('bulk-value').value);
+  if (isNaN(value) || value === 0) { showToast('⚠️ Enter a value (e.g. 10 or -5)'); return; }
+
+  const targets = ALL_PRODUCTS.filter(p => !cat || p.category === cat);
+  if (!targets.length) { showToast('⚠️ No products in that category'); return; }
+
+  // Calculate new prices
+  const changes = targets.map(p => {
+    let newPrice;
+    if (type === 'percent') newPrice = p.price * (1 + value/100);
+    else newPrice = p.price + value;
+    newPrice = Math.max(0.01, Math.round(newPrice * 100) / 100);
+    return { id: p.id, oldPrice: p.price, newPrice };
+  });
+
+  bulkPending = changes;
+
+  const examples = changes.slice(0, 3).map(c => {
+    const p = ALL_PRODUCTS.find(x => x.id === c.id);
+    return `${p.name.substring(0,40)}: €${Number(c.oldPrice).toFixed(2)} → <strong>€${c.newPrice.toFixed(2)}</strong>`;
+  }).join('<br>');
+
+  const dir = value > 0 ? 'increase' : 'decrease';
+  const amount = type === 'percent' ? Math.abs(value) + '%' : '€' + Math.abs(value).toFixed(2);
+
+  document.getElementById('bulk-preview').innerHTML =
+    `Will <strong>${dir}</strong> prices by <strong>${amount}</strong> for <strong>${changes.length} products</strong>${cat ? ' in <strong>'+cat+'</strong>' : ''}.<br><br>Examples:<br>${examples}${changes.length > 3 ? '<br>...' : ''}`;
+  document.getElementById('bulk-preview').style.display = 'block';
+  document.getElementById('bulk-confirm-wrap').style.display = 'block';
+}
+
+function cancelBulk() {
+  bulkPending = null;
+  document.getElementById('bulk-preview').style.display = 'none';
+  document.getElementById('bulk-confirm-wrap').style.display = 'none';
+  document.getElementById('bulk-value').value = '';
+}
+
+async function applyBulk() {
+  if (!bulkPending || !bulkPending.length) return;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Applying...';
+
+  let success = 0;
+  // Update in batches via individual PATCH (Supabase REST has no bulk update with different values)
+  for (const change of bulkPending) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${change.id}`, {
+        method: 'PATCH',
+        headers: headers(true),
+        body: JSON.stringify({ price: change.newPrice })
+      });
+      if (res.ok) {
+        const idx = ALL_PRODUCTS.findIndex(p => p.id === change.id);
+        if (idx >= 0) ALL_PRODUCTS[idx].price = change.newPrice;
+        success++;
+      }
+    } catch {}
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✓ Apply changes';
+  cancelBulk();
+  renderTable();
+  showToast(`✓ Updated ${success} prices!`);
 }
 
 function openAddProduct() {
