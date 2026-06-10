@@ -328,6 +328,27 @@ input[type=file]{display:none}
   </div>
 </div>
 
+<!-- EDIT CATEGORY MODAL -->
+<div class="modal-overlay" id="cat-modal">
+  <div class="modal" style="width:400px">
+    <h3>✏️ Edit Category</h3>
+    <input type="hidden" id="cat-edit-id">
+    <input type="hidden" id="cat-edit-oldname">
+    <div class="modal-row">
+      <label>Emoji</label>
+      <input type="text" id="cat-edit-emoji" maxlength="2" style="width:80px;text-align:center;font-size:1.2rem">
+    </div>
+    <div class="modal-row">
+      <label>Category name</label>
+      <input type="text" id="cat-edit-name">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="saveCategoryEdit()">💾 Save</button>
+      <button class="btn outline" onclick="closeCatModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADD PRODUCT MODAL -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
@@ -935,18 +956,36 @@ async function deleteCategory(id, name) {
   showToast('✓ Category deleted');
 }
 
-async function editCategory(id, name, emoji) {
-  const newName = prompt('Category name:', name);
-  if (!newName || newName === name) return;
-  const newEmoji = prompt('Emoji:', emoji) || emoji;
+function editCategory(id, name, emoji) {
+  document.getElementById('cat-edit-id').value = id;
+  document.getElementById('cat-edit-oldname').value = name;
+  document.getElementById('cat-edit-name').value = name;
+  document.getElementById('cat-edit-emoji').value = emoji;
+  document.getElementById('cat-modal').classList.add('open');
+  lockBody();
+}
+
+function closeCatModal() {
+  document.getElementById('cat-modal').classList.remove('open');
+  unlockBody();
+}
+
+async function saveCategoryEdit() {
+  const id = document.getElementById('cat-edit-id').value;
+  const oldName = document.getElementById('cat-edit-oldname').value;
+  const newName = document.getElementById('cat-edit-name').value.trim();
+  const newEmoji = document.getElementById('cat-edit-emoji').value.trim() || '📦';
+  if (!newName) { showToast('⚠️ Enter a category name'); return; }
+
   await fetch(`${SUPABASE_URL}/rest/v1/categories?id=eq.${id}`, {
     method:'PATCH', headers:headers(true), body:JSON.stringify({name:newName, emoji:newEmoji})
   });
-  if (name !== newName) {
-    await fetch(`${SUPABASE_URL}/rest/v1/products?category=eq.${encodeURIComponent(name)}`, {
+  if (oldName !== newName) {
+    await fetch(`${SUPABASE_URL}/rest/v1/products?category=eq.${encodeURIComponent(oldName)}`, {
       method:'PATCH', headers:headers(true), body:JSON.stringify({category:newName})
     });
   }
+  closeCatModal();
   await loadAll();
   showToast('✓ Category updated');
 }
@@ -1050,6 +1089,7 @@ function showToast(msg) {
 
 document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
+document.getElementById('cat-modal').addEventListener('click',function(e){if(e.target===this)closeCatModal();});
 
 function triggerPrint() {
   // Small delay allows Brave to treat it as user-initiated
