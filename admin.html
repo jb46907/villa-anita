@@ -15,6 +15,7 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--sand:#F5EFE0;--sand-dark:#E8DCC8;--terracotta:#C4704A;--terracotta-light:#D4886A;--text:#2C2416;--text-muted:#7A6A54;--white:#FDFAF5;--olive:#6B7C4A;--red:#C0392B}
 body{font-family:'Jost',sans-serif;background:#f0f0f0;color:var(--text)}
+body.modal-open{overflow:hidden;position:fixed;width:100%}
 
 /* LOGIN */
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand)}
@@ -396,7 +397,7 @@ input[type=file]{display:none}
   <div class="receipt-wrap">
     <div class="receipt-actions">
       <button class="btn small" onclick="triggerPrint()">🖨️ Print</button>
-      <button class="btn small outline" onclick="document.getElementById('receipt-modal').classList.remove('open')">Close</button>
+      <button class="btn small outline" onclick="document.getElementById('receipt-modal').classList.remove('open');unlockBody()">Close</button>
     </div>
     <div class="receipt" id="receipt-content"></div>
   </div>
@@ -408,7 +409,7 @@ input[type=file]{display:none}
     <div class="receipt-actions">
       <button class="btn small green" onclick="saveDinnerQuote()">💾 Save Quote</button>
       <button class="btn small" onclick="printDinnerQuote()">🖨️ Print Quote</button>
-      <button class="btn small outline" onclick="document.getElementById('dinner-modal').classList.remove('open')">Close</button>
+      <button class="btn small outline" onclick="document.getElementById('dinner-modal').classList.remove('open');unlockBody()">Close</button>
     </div>
     <div style="padding:1.5rem;border-bottom:1px solid #eee">
       <h3 style="margin-bottom:1rem;font-size:1rem">Set Quote Price</h3>
@@ -557,6 +558,7 @@ function openDinnerQuote(id) {
   updateQuoteTotal();
   renderDinnerQuotePreview(d);
   document.getElementById('dinner-modal').classList.add('open');
+  lockBody();
 }
 
 function updateQuoteTotal() {
@@ -803,9 +805,10 @@ function openAddProduct() {
   // Populate categories
   document.getElementById('add-cat').innerHTML = ALL_CATS.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
   document.getElementById('add-modal').classList.add('open');
+  lockBody();
 }
 
-function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
+function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); unlockBody(); }
 
 async function saveNewProduct() {
   const name = document.getElementById('add-name').value.trim();
@@ -846,6 +849,9 @@ async function deleteProduct(id, name) {
   } else { alert('Error deleting product.'); }
 }
 
+function lockBody() { document.body.classList.add('modal-open'); }
+function unlockBody() { document.body.classList.remove('modal-open'); }
+
 function openEdit(id) {
   const p = ALL_PRODUCTS.find(x=>x.id===id); if(!p) return;
   document.getElementById('edit-id').value = p.id;
@@ -856,9 +862,10 @@ function openEdit(id) {
   document.getElementById('edit-img-preview').src = p.img||'';
   document.getElementById('edit-active').value = String(p.active);
   document.getElementById('edit-modal').classList.add('open');
+  lockBody();
 }
 
-function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); unlockBody(); }
 
 async function saveEdit() {
   const id = document.getElementById('edit-id').value;
@@ -1020,6 +1027,7 @@ function openReceipt(id) {
     </div>`;
 
   document.getElementById('receipt-modal').classList.add('open');
+  lockBody();
 }
 
 function switchTab(name, el) {
