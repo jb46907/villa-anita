@@ -493,6 +493,8 @@ let ALL_DINNERS = [];
 
 async function loadAll() {
   await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners()]);
+  // Re-render category counts now that products are guaranteed loaded
+  renderCatGrid();
 }
 
 async function loadDinners() {
