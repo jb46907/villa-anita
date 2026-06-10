@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin – Villa Anita</title>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -16,6 +16,7 @@
 :root{--sand:#F5EFE0;--sand-dark:#E8DCC8;--terracotta:#C4704A;--terracotta-light:#D4886A;--text:#2C2416;--text-muted:#7A6A54;--white:#FDFAF5;--olive:#6B7C4A;--red:#C0392B}
 body{font-family:'Jost',sans-serif;background:#f0f0f0;color:var(--text)}
 body.modal-open{overflow:hidden;position:fixed;width:100%}
+button, .btn, .admin-tab, select { touch-action: manipulation; }
 
 /* LOGIN */
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand)}
