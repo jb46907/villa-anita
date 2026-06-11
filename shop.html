@@ -96,6 +96,14 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
 .shop-alert{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--white);border:1px solid var(--terracotta);border-left:4px solid var(--terracotta);padding:1rem 1.5rem;font-size:0.9rem;color:var(--text);z-index:300;box-shadow:0 6px 24px rgba(44,36,22,0.18);max-width:90vw;width:380px;opacity:0;pointer-events:none;transition:opacity 0.25s,transform 0.25s;line-height:1.5}
 .shop-alert.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .shop-alert strong{color:var(--terracotta)}
+.delivery-progress{padding:0.8rem 1.5rem;background:var(--white);border-bottom:1px solid var(--sand)}
+.dp-text{font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center}
+.dp-text strong{color:var(--terracotta)}
+.dp-bar{height:8px;background:var(--sand);border-radius:4px;overflow:hidden}
+.dp-fill{height:100%;background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light));border-radius:4px;transition:width 0.4s ease;width:0%}
+.dp-fill.complete{background:linear-gradient(90deg,var(--olive),#8aa860)}
+.cart-fee-row{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:0.4rem}
+.cart-fee-row .free{color:var(--olive);font-weight:500}
 @media(max-width:900px){
   .layout{grid-template-columns:1fr}
   .sidebar{position:static;height:auto;overflow-x:auto;white-space:nowrap;display:flex;padding:0.5rem 1rem;border-right:none;border-bottom:1px solid var(--sand-dark)}
@@ -161,8 +169,16 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
     <h2>Your Order</h2>
     <button class="cart-close" onclick="closeCart()">✕</button>
   </div>
+  <div class="delivery-progress" id="delivery-progress" style="display:none">
+    <div class="dp-text"><span id="dp-label">🚚 Free delivery above €75</span><span id="dp-amount"></span></div>
+    <div class="dp-bar"><div class="dp-fill" id="dp-fill"></div></div>
+  </div>
   <div class="cart-items" id="cart-items"><div class="cart-empty">Your cart is empty</div></div>
   <div class="cart-footer">
+    <div id="cart-fees" style="display:none">
+      <div class="cart-fee-row"><span>Subtotal</span><span id="cart-subtotal">€0.00</span></div>
+      <div class="cart-fee-row"><span>Delivery</span><span id="cart-delivery">€0.00</span></div>
+    </div>
     <div class="cart-total" onclick="toggleCheckout()" style="cursor:pointer;user-select:none">
       <span>Total</span>
       <div style="display:flex;align-items:center;gap:0.8rem">
@@ -221,9 +237,20 @@ let ALL_PRODUCTS = [];
 let ALL_CATS = [];
 let cart = {};
 let currentCat = 'All';
+let SETTINGS = { min_order: 30, delivery_fee: 10, free_delivery_above: 75 };
+
+async function loadSettings() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const data = await res.json();
+    if (data && data[0]) SETTINGS = data[0];
+  } catch {}
+}
 
 async function initShop() {
-  await Promise.all([loadCategories(), loadProducts()]);
+  await Promise.all([loadCategories(), loadProducts(), loadSettings()]);
 }
 
 async function loadCategories() {
@@ -322,10 +349,62 @@ function toggleCheckout() {
 function openCart() { renderCart(); document.getElementById('cart-panel').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
 function closeCart() { document.getElementById('cart-panel').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
 
+function getCartSubtotal() {
+  let sub = 0;
+  Object.keys(cart).forEach(id => {
+    const p = ALL_PRODUCTS.find(x => x.id == id);
+    if (p) sub += p.price * cart[id];
+  });
+  return sub;
+}
+
+function updateDeliveryUI(subtotal) {
+  const prog = document.getElementById('delivery-progress');
+  const feesWrap = document.getElementById('cart-fees');
+  const threshold = Number(SETTINGS.free_delivery_above);
+  const fee = Number(SETTINGS.delivery_fee);
+
+  if (subtotal <= 0) {
+    prog.style.display = 'none';
+    feesWrap.style.display = 'none';
+    return { fee: 0 };
+  }
+
+  prog.style.display = 'block';
+  feesWrap.style.display = 'block';
+
+  const remaining = threshold - subtotal;
+  const pct = Math.min(100, (subtotal / threshold) * 100);
+  const fill = document.getElementById('dp-fill');
+  fill.style.width = pct + '%';
+
+  if (remaining > 0) {
+    document.getElementById('dp-label').innerHTML = `🚚 Add <strong>€${remaining.toFixed(2)}</strong> more for FREE delivery!`;
+    document.getElementById('dp-amount').textContent = `€${subtotal.toFixed(2)} / €${threshold.toFixed(2)}`;
+    fill.classList.remove('complete');
+    document.getElementById('cart-subtotal').textContent = '€' + subtotal.toFixed(2);
+    document.getElementById('cart-delivery').textContent = '€' + fee.toFixed(2);
+    document.getElementById('cart-delivery').className = '';
+    return { fee };
+  } else {
+    document.getElementById('dp-label').innerHTML = `🎉 You've unlocked <strong>FREE delivery</strong>!`;
+    document.getElementById('dp-amount').textContent = '';
+    fill.classList.add('complete');
+    document.getElementById('cart-subtotal').textContent = '€' + subtotal.toFixed(2);
+    document.getElementById('cart-delivery').innerHTML = '<span class="free">FREE 🎉</span>';
+    return { fee: 0 };
+  }
+}
+
 function renderCart() {
   const keys = Object.keys(cart);
   const container = document.getElementById('cart-items');
-  if (!keys.length) { container.innerHTML='<div class="cart-empty">Your cart is empty</div>'; document.getElementById('cart-total').textContent='€0.00'; return; }
+  if (!keys.length) {
+    container.innerHTML='<div class="cart-empty">Your cart is empty</div>';
+    document.getElementById('cart-total').textContent='€0.00';
+    updateDeliveryUI(0);
+    return;
+  }
   let total = 0;
   container.innerHTML = keys.map(id => {
     const p = ALL_PRODUCTS.find(x=>x.id==id); if(!p) return '';
@@ -344,7 +423,9 @@ function renderCart() {
       </div>
     </div>`;
   }).join('');
-  document.getElementById('cart-total').textContent = '€'+total.toFixed(2);
+  const delivery = updateDeliveryUI(total);
+  const grandTotal = total + delivery.fee;
+  document.getElementById('cart-total').textContent = '€' + grandTotal.toFixed(2);
 }
 
 let alertTimer = null;
@@ -364,14 +445,17 @@ async function submitOrder(e) {
   if(!Object.keys(cart).length){showAlert('🛒 Your cart is empty!');return;}
   let total=0;
   Object.keys(cart).forEach(id=>{const p=ALL_PRODUCTS.find(x=>x.id==id);if(p)total+=p.price*cart[id];});
-  if(total<100){showAlert(`⚠️ Minimum order is <strong>€100.00</strong>.<br>Your current total is <strong>€${total.toFixed(2)}</strong>. Please add more items.`);return;}
+  const minOrder = Number(SETTINGS.min_order);
+  if(total<minOrder){showAlert(`⚠️ Minimum order is <strong>€${minOrder.toFixed(2)}</strong>.<br>Your current total is <strong>€${total.toFixed(2)}</strong>. Please add more items.`);return;}
   total=0;
   const items=Object.keys(cart).map(id=>{
     const p=ALL_PRODUCTS.find(x=>x.id==id);
     const qty=cart[id],sub=p.price*qty; total+=sub;
     return {id:p.id, name:p.name, price:p.price, qty, sub};
   });
-  const itemLines=items.map(i=>`${i.name} x${i.qty} = €${i.sub.toFixed(2)}`).join('\n');
+  const deliveryFee = total >= Number(SETTINGS.free_delivery_above) ? 0 : Number(SETTINGS.delivery_fee);
+  const grandTotal = total + deliveryFee;
+  const itemLines=items.map(i=>`${i.name} x${i.qty} = €${i.sub.toFixed(2)}`).join('\n') + `\nDelivery: ${deliveryFee > 0 ? '€'+deliveryFee.toFixed(2) : 'FREE'}`;
   const notes=document.getElementById('order-notes').value;
   const orderNumber='VA-'+Date.now().toString().slice(-6);
   const btn=e.target; btn.disabled=true; btn.textContent='...';
@@ -381,7 +465,7 @@ async function submitOrder(e) {
     await fetch(`${SUPABASE_URL}/rest/v1/orders`,{
       method:'POST',
       headers:{'apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({order_number:orderNumber,guest_name:name,contact,delivery_date:date,notes,items,total})
+      body:JSON.stringify({order_number:orderNumber,guest_name:name,contact,delivery_date:date,notes,items:[...items,{name:'Delivery',price:deliveryFee,qty:1,sub:deliveryFee}],total:grandTotal})
     });
   } catch(err){ console.warn('Supabase save failed:',err); }
 
@@ -391,7 +475,7 @@ async function submitOrder(e) {
   fd.append('order_number',orderNumber);
   fd.append('name',name); fd.append('contact',contact);
   fd.append('delivery_date',date); fd.append('order_items',itemLines);
-  fd.append('total','€'+total.toFixed(2));
+  fd.append('total','€'+grandTotal.toFixed(2)+' (incl. delivery)');
   if(notes) fd.append('notes',notes);
   try {
     const res=await fetch('https://formspree.io/f/mykakrkr',{method:'POST',body:fd,headers:{Accept:'application/json'}});
