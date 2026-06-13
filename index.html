@@ -247,7 +247,7 @@
     <p class="hero-location">Dalmacija, Hrvatska</p>
     <p class="hero-desc" data-i18n="hero_desc">Predivna villa s pogledom na more, okružena mediteranskim zelenilom. Savršeno mjesto za odmor u srcu Dalmacije – privatnost, elegancija i autentičan dalmatinski ugođaj.</p>
     <div class="hero-cta">
-      <a href="#booking" class="btn-primary" data-i18n="hero_cta1">Rezervirajte večeru</a>
+      <a href="#booking" class="btn-primary" id="hero-dinner-cta" data-i18n="hero_cta1">Rezervirajte večeru</a>
       <a href="#gallery" class="btn-outline" data-i18n="hero_cta2">Pogledajte villu</a>
     </div>
   </div>
@@ -880,6 +880,9 @@ document.addEventListener('DOMContentLoaded', function() {
         switchTab('info');
         const dinnerContent = document.getElementById('tab-dinner');
         if (dinnerContent) dinnerContent.classList.remove('active');
+        // Hide hero "Book a private dinner" button
+        const heroCta = document.getElementById('hero-dinner-cta');
+        if (heroCta) heroCta.style.display = 'none';
       }
     } catch(e) { console.warn('Dinner check failed', e); }
   })();
