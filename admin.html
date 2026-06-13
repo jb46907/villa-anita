@@ -359,6 +359,13 @@ input[type=file]{display:none}
           <label>Free delivery above (€)</label>
           <input type="number" id="set-free-above" step="0.01" min="0">
         </div>
+        <div class="modal-row" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--sand-dark)">
+          <label>Private Dinner availability</label>
+          <select id="set-dinner-enabled" style="width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)">
+            <option value="true">🍽️ Enabled (form visible on website)</option>
+            <option value="false">🚫 Disabled (form hidden)</option>
+          </select>
+        </div>
         <button class="btn green" onclick="saveSettings()" style="width:100%;margin-top:0.5rem">💾 Save Settings</button>
         <div style="margin-top:1.5rem;padding:1rem;background:var(--sand);border-left:3px solid var(--terracotta)">
           <div style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.6rem">Currently active</div>
@@ -366,6 +373,7 @@ input[type=file]{display:none}
             <div>Minimum order: <strong id="cur-min">—</strong></div>
             <div>Delivery fee: <strong id="cur-fee">—</strong></div>
             <div>Free delivery above: <strong id="cur-free">—</strong></div>
+            <div>Private dinner: <strong id="cur-dinner">—</strong></div>
           </div>
         </div>
       </div>
@@ -592,6 +600,7 @@ async function loadSettings() {
       document.getElementById('set-min-order').value = SHOP_SETTINGS.min_order;
       document.getElementById('set-delivery-fee').value = SHOP_SETTINGS.delivery_fee;
       document.getElementById('set-free-above').value = SHOP_SETTINGS.free_delivery_above;
+      document.getElementById('set-dinner-enabled').value = String(SHOP_SETTINGS.dinner_enabled);
       updateCurrentSettingsDisplay();
     }
   } catch(e) { console.warn('Settings load failed', e); }
@@ -605,22 +614,25 @@ function updateCurrentSettingsDisplay() {
   if (m) m.textContent = '€' + Number(SHOP_SETTINGS.min_order).toFixed(2);
   if (f) f.textContent = '€' + Number(SHOP_SETTINGS.delivery_fee).toFixed(2);
   if (fr) fr.textContent = '€' + Number(SHOP_SETTINGS.free_delivery_above).toFixed(2);
+  const dn = document.getElementById('cur-dinner');
+  if (dn) dn.textContent = SHOP_SETTINGS.dinner_enabled ? '🍽️ Enabled' : '🚫 Disabled';
 }
 
 async function saveSettings() {
   const min_order = parseFloat(document.getElementById('set-min-order').value);
   const delivery_fee = parseFloat(document.getElementById('set-delivery-fee').value);
   const free_delivery_above = parseFloat(document.getElementById('set-free-above').value);
+  const dinner_enabled = document.getElementById('set-dinner-enabled').value === 'true';
   if (isNaN(min_order) || isNaN(delivery_fee) || isNaN(free_delivery_above)) {
     showToast('⚠️ Please fill in all fields'); return;
   }
   const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1`, {
     method: 'PATCH',
     headers: headers(true),
-    body: JSON.stringify({ min_order, delivery_fee, free_delivery_above })
+    body: JSON.stringify({ min_order, delivery_fee, free_delivery_above, dinner_enabled })
   });
   if (res.ok) {
-    SHOP_SETTINGS = { id: 1, min_order, delivery_fee, free_delivery_above };
+    SHOP_SETTINGS = { id: 1, min_order, delivery_fee, free_delivery_above, dinner_enabled };
     updateCurrentSettingsDisplay();
     showToast('✓ Settings saved!');
   } else showToast('❌ Error saving settings');
@@ -1277,6 +1289,7 @@ function switchTab(name, el) {
     document.getElementById('set-min-order').value = SHOP_SETTINGS.min_order;
     document.getElementById('set-delivery-fee').value = SHOP_SETTINGS.delivery_fee;
     document.getElementById('set-free-above').value = SHOP_SETTINGS.free_delivery_above;
+    document.getElementById('set-dinner-enabled').value = String(SHOP_SETTINGS.dinner_enabled);
     updateCurrentSettingsDisplay();
   }
 }
