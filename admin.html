@@ -573,11 +573,57 @@ function headers(write=false) {
 }
 
 let ALL_DINNERS = [];
+let SHOP_SETTINGS = null;
 
 async function loadAll() {
   await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners(), loadSettings()]);
   // Re-render category counts now that products are guaranteed loaded
   renderCatGrid();
+}
+
+async function loadSettings() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}` }
+    });
+    const data = await res.json();
+    if (data && data[0]) {
+      SHOP_SETTINGS = data[0];
+      document.getElementById('set-min-order').value = SHOP_SETTINGS.min_order;
+      document.getElementById('set-delivery-fee').value = SHOP_SETTINGS.delivery_fee;
+      document.getElementById('set-free-above').value = SHOP_SETTINGS.free_delivery_above;
+      updateCurrentSettingsDisplay();
+    }
+  } catch(e) { console.warn('Settings load failed', e); }
+}
+
+function updateCurrentSettingsDisplay() {
+  if (!SHOP_SETTINGS) return;
+  const m = document.getElementById('cur-min');
+  const f = document.getElementById('cur-fee');
+  const fr = document.getElementById('cur-free');
+  if (m) m.textContent = '€' + Number(SHOP_SETTINGS.min_order).toFixed(2);
+  if (f) f.textContent = '€' + Number(SHOP_SETTINGS.delivery_fee).toFixed(2);
+  if (fr) fr.textContent = '€' + Number(SHOP_SETTINGS.free_delivery_above).toFixed(2);
+}
+
+async function saveSettings() {
+  const min_order = parseFloat(document.getElementById('set-min-order').value);
+  const delivery_fee = parseFloat(document.getElementById('set-delivery-fee').value);
+  const free_delivery_above = parseFloat(document.getElementById('set-free-above').value);
+  if (isNaN(min_order) || isNaN(delivery_fee) || isNaN(free_delivery_above)) {
+    showToast('⚠️ Please fill in all fields'); return;
+  }
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1`, {
+    method: 'PATCH',
+    headers: headers(true),
+    body: JSON.stringify({ min_order, delivery_fee, free_delivery_above })
+  });
+  if (res.ok) {
+    SHOP_SETTINGS = { id: 1, min_order, delivery_fee, free_delivery_above };
+    updateCurrentSettingsDisplay();
+    showToast('✓ Settings saved!');
+  } else showToast('❌ Error saving settings');
 }
 
 async function loadDinners() {
@@ -1227,6 +1273,12 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
   if (name === 'categories') renderCatGrid();
+  if (name === 'settings' && SHOP_SETTINGS) {
+    document.getElementById('set-min-order').value = SHOP_SETTINGS.min_order;
+    document.getElementById('set-delivery-fee').value = SHOP_SETTINGS.delivery_fee;
+    document.getElementById('set-free-above').value = SHOP_SETTINGS.free_delivery_above;
+    updateCurrentSettingsDisplay();
+  }
 }
 
 function showToast(msg) {
