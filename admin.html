@@ -360,7 +360,14 @@ input[type=file]{display:none}
           <input type="number" id="set-free-above" step="0.01" min="0">
         </div>
         <button class="btn green" onclick="saveSettings()" style="width:100%;margin-top:0.5rem">💾 Save Settings</button>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:1rem;line-height:1.5">Changes apply immediately to the shop. Guests with the shop already open will see new values after refreshing.</p>
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--sand);border-left:3px solid var(--terracotta)">
+          <div style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.6rem">Currently active</div>
+          <div style="font-size:0.85rem;line-height:1.8">
+            <div>Minimum order: <strong id="cur-min">—</strong></div>
+            <div>Delivery fee: <strong id="cur-fee">—</strong></div>
+            <div>Free delivery above: <strong id="cur-free">—</strong></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1219,6 +1226,7 @@ function switchTab(name, el) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
+  if (name === 'categories') renderCatGrid();
 }
 
 function showToast(msg) {
