@@ -863,26 +863,27 @@ const SUPABASE_URL = 'https://httlppoakkmuijtngrjh.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0dGxwcG9ha2ttdWlqdG5ncmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDU5OTUsImV4cCI6MjA5NjQ4MTk5NX0.HVwbgtUsasNDSDDzqEHIRXhM58_VSmnT6aO2dw1W25s';
 
 // Check if private dinner is enabled
-(async function checkDinnerEnabled() {
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1&select=dinner_enabled`, {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
-    });
-    const data = await res.json();
-    if (data && data[0] && data[0].dinner_enabled === false) {
-      // Hide the dinner tab and show message
-      const dinnerTab = document.querySelector('.tab-btn');
-      const dinnerContent = document.getElementById('tab-dinner');
-      if (dinnerContent) {
-        dinnerContent.innerHTML = '<div style="text-align:center;padding:3rem 1rem;color:var(--text-muted)"><p style="font-size:1.1rem;margin-bottom:0.5rem">🍽️</p><p data-i18n="dinner_unavailable">Private dinner bookings are currently unavailable. Please check back later or contact us directly.</p></div>';
+document.addEventListener('DOMContentLoaded', function() {
+  (async function checkDinnerEnabled() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1&select=dinner_enabled`, {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+      });
+      const data = await res.json();
+      if (data && data[0] && data[0].dinner_enabled === false) {
+        const tabs = document.querySelectorAll('.booking-tabs .tab-btn');
+        if (tabs[0]) tabs[0].style.display = 'none';
+        const title = document.querySelector('#booking .section-title');
+        const eyebrow = document.querySelector('#booking .section-eyebrow');
+        if (title) { title.removeAttribute('data-i18n'); title.textContent = 'Accommodation Enquiry'; }
+        if (eyebrow) { eyebrow.removeAttribute('data-i18n'); eyebrow.textContent = 'Get in touch'; }
+        switchTab('info');
+        const dinnerContent = document.getElementById('tab-dinner');
+        if (dinnerContent) dinnerContent.classList.remove('active');
       }
-      // Hide the dinner tab button, switch to stay tab
-      if (dinnerTab) dinnerTab.style.display = 'none';
-      const stayTab = document.querySelectorAll('.tab-btn')[1];
-      if (stayTab) { switchTab('info'); }
-    }
-  } catch(e) { console.warn('Dinner check failed', e); }
-})();
+    } catch(e) { console.warn('Dinner check failed', e); }
+  })();
+});
 
 document.addEventListener('DOMContentLoaded', function() {
   // Večera forma
