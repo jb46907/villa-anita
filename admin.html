@@ -239,6 +239,7 @@ input[type=file]{display:none}
     <button class="admin-tab" onclick="switchTab('categories',this)">🗂 Categories</button>
     <button class="admin-tab" onclick="switchTab('orders',this)">🧾 Orders</button>
     <button class="admin-tab" onclick="switchTab('dinners',this)">🍽️ Dinners</button>
+    <button class="admin-tab" onclick="switchTab('gallery',this)">📸 Gallery</button>
     <button class="admin-tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
   </div>
 
@@ -341,6 +342,37 @@ input[type=file]{display:none}
           <tbody id="dinners-table-body"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- GALLERY TAB -->
+    <div class="tab-panel" id="tab-gallery">
+      <div style="background:var(--white);padding:1.2rem 1.5rem;margin-bottom:1rem">
+        <div style="font-size:0.9rem;font-weight:500;margin-bottom:1rem">📸 Add Villa Photo</div>
+        <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:0.3rem">
+            <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Category</label>
+            <select id="gal-category" style="padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;background:var(--white)">
+              <option>Pool & Terrace</option>
+              <option>Bedroom</option>
+              <option>Kitchen</option>
+              <option>Living Room</option>
+              <option>Bathroom</option>
+              <option>Garden</option>
+              <option>Sea View</option>
+              <option>Exterior</option>
+              <option>Activity Room</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.3rem;flex:1;min-width:160px">
+            <label style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Caption (optional)</label>
+            <input type="text" id="gal-caption" placeholder="e.g. Morning view" style="padding:0.6rem 0.8rem;border:1px solid var(--sand-dark);font-family:'Jost',sans-serif;font-size:0.9rem;outline:none;width:100%">
+          </div>
+        </div>
+        <input type="file" id="gal-img-file" accept="image/*" style="display:none" onchange="uploadGalleryImage()">
+        <button type="button" onclick="document.getElementById('gal-img-file').click()" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#2B6C8A;color:#ffffff;border:none;padding:0.9rem 1rem;font-family:'Jost',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;margin-top:0.8rem;width:100%;border-radius:2px">📷 Take photo / Upload image</button>
+        <div id="gal-upload-progress" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;display:none">Uploading...</div>
+      </div>
+      <div class="product-cards-grid" id="gallery-grid"></div>
     </div>
 
     <!-- SETTINGS TAB -->
@@ -582,9 +614,92 @@ function headers(write=false) {
 
 let ALL_DINNERS = [];
 let SHOP_SETTINGS = null;
+let ALL_GALLERY = [];
+
+async function loadGallery() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/villa_gallery?order=category.asc,sort_order.asc`, {
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}` }
+  });
+  ALL_GALLERY = await res.json();
+  renderGallery();
+}
+
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  if (!ALL_GALLERY.length) {
+    grid.innerHTML = '<div style="padding:2rem;color:var(--text-muted);text-align:center;grid-column:1/-1">No photos yet. Upload your first villa photo above.</div>';
+    return;
+  }
+  grid.innerHTML = ALL_GALLERY.map(g => `
+    <div class="product-card-admin">
+      <img class="product-card-img" src="${g.img}" onerror="this.src=''" alt="${g.category}">
+      <div class="product-card-body">
+        <div class="product-card-name">${g.category}</div>
+        <div class="product-card-meta">
+          ${g.caption ? `<span class="product-card-cat">${g.caption}</span>` : ''}
+        </div>
+        <div class="product-card-actions">
+          <button class="btn small danger" onclick="deleteGalleryImage(${g.id})">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function uploadGalleryImage() {
+  const fileInput = document.getElementById('gal-img-file');
+  const file = fileInput.files[0];
+  if (!file) return;
+  const progress = document.getElementById('gal-upload-progress');
+  const category = document.getElementById('gal-category').value;
+  const caption = document.getElementById('gal-caption').value.trim();
+
+  progress.style.display = 'block';
+  progress.textContent = 'Uploading...';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = 'villa-' + Date.now() + '.' + ext;
+
+  try {
+    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/product-images/${filename}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken||SUPABASE_ANON}`, 'Content-Type': file.type, 'x-upsert': 'true' },
+      body: file
+    });
+    if (!upRes.ok) { progress.textContent = 'Upload failed.'; return; }
+
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/product-images/${filename}`;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/villa_gallery`, {
+      method: 'POST',
+      headers: { ...headers(true), 'Prefer': 'return=representation' },
+      body: JSON.stringify({ category, img: publicUrl, caption: caption || null, sort_order: ALL_GALLERY.length })
+    });
+    if (res.ok) {
+      const newImg = await res.json();
+      ALL_GALLERY.push(newImg[0]);
+      document.getElementById('gal-caption').value = '';
+      renderGallery();
+      progress.textContent = '✓ Uploaded!';
+      setTimeout(() => { progress.style.display = 'none'; }, 2000);
+    } else { progress.textContent = 'Error saving.'; }
+  } catch(e) { progress.textContent = 'Upload failed.'; }
+  fileInput.value = '';
+}
+
+async function deleteGalleryImage(id) {
+  if (!confirm('Delete this photo?')) return;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/villa_gallery?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}`, 'Prefer': 'return=minimal' }
+  });
+  if (res.ok) {
+    ALL_GALLERY = ALL_GALLERY.filter(g => g.id !== id);
+    renderGallery();
+    showToast('🗑️ Photo deleted');
+  }
+}
 
 async function loadAll() {
-  await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners(), loadSettings()]);
+  await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners(), loadSettings(), loadGallery()]);
   // Re-render category counts now that products are guaranteed loaded
   renderCatGrid();
 }

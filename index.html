@@ -265,7 +265,8 @@
     <p class="section-eyebrow" data-i18n="gallery_eyebrow">Prostori i ugođaj</p>
     <h2 class="section-title" data-i18n="gallery_title">Upoznajte Villu Anitu</h2>
   </div>
-  <div class="gallery-grid">
+  <div class="gallery-grid" id="gallery-grid">
+    <!-- Fallback static gallery (shown if no photos in database) -->
     <div class="gallery-item"><div class="gallery-item-inner gi-1" style="height:100%"></div><span class="gallery-label" data-i18n="g1">Bazen & terasa</span></div>
     <div class="gallery-item"><div class="gallery-item-inner gi-2" style="height:100%"></div><span class="gallery-label" data-i18n="g2">Spavaća soba</span></div>
     <div class="gallery-item"><div class="gallery-item-inner gi-3" style="height:100%"></div><span class="gallery-label" data-i18n="g3">Vrt & masline</span></div>
@@ -273,6 +274,18 @@
     <div class="gallery-item"><div class="gallery-item-inner gi-5" style="height:100%"></div><span class="gallery-label" data-i18n="g5">Pogled na more</span></div>
   </div>
 </section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(20,16,10,0.95);z-index:1000;align-items:center;justify-content:center">
+  <button id="lb-close" style="position:absolute;top:1.5rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;z-index:1002">✕</button>
+  <button id="lb-prev" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.8rem;cursor:pointer;width:48px;height:48px;border-radius:50%;z-index:1002">‹</button>
+  <button id="lb-next" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.8rem;cursor:pointer;width:48px;height:48px;border-radius:50%;z-index:1002">›</button>
+  <div style="text-align:center;max-width:90vw;max-height:90vh">
+    <img id="lb-img" src="" style="max-width:90vw;max-height:80vh;object-fit:contain;border-radius:2px">
+    <div id="lb-caption" style="color:rgba(255,255,255,0.85);font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;margin-top:1rem"></div>
+    <div id="lb-counter" style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:0.3rem"></div>
+  </div>
+</div>
 
 <!-- SADRŽAJI -->
 <section class="amenities-section" id="amenities">
@@ -469,26 +482,18 @@ Would 100% return and recommend. The he house is a residential area but we took 
       <p class="review-author">Vidar Holm</p>
       <p class="review-country">Sweden · Sep 2025.</p>
     </div>
-    <div class="review-card">
+    <div class="review-card hidden">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">"We stayed here as 8 boys and had an amazing time, the pictures really don’t do it justice, just a short Uber right away from Split where the nightlife was great. The host was very welcoming and responsive, we would like the Thank Petar and Jerry for making the check in and check out process so smooth and without problems. I can’t recommend this villa anymore, amazing."</p>
+      <p class="review-text">"We stayed here as 8 boys and had an amazing time, the pictures really don't do it justice, just a short Uber right away from Split where the nightlife was great. The host was very welcoming and responsive, we would like the Thank Petar and Jerry for making the check in and check out process so smooth and without problems. I can't recommend this villa anymore, amazing."</p>
       <p class="review-author">Mathieu Gilles</p>
       <p class="review-country">France · Jun 2025.</p>
     </div>
-    <div class="review-card">
+    <div class="review-card hidden">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">"The villa was truly stunning with exceptional views and a lovely pool with outdoor sun lounges and seating area you could really stay there all day. With two kitchens and plenty of bedrooms and bathrooms it's perfect for big groups/families and the place is immaculate. Petar and his family were extremely helpful during our stay and very easy to contact with any questions or issues. Could not recommend this villa enough. The location was great with shops and a lovely Italian restaurant nearby then it is only a 15 min drive into Split city centre where Ubers are only 15 euro one way and easy to get to and from or hire a car for your stay with plenty of space on the gated driveway.</p>
+      <p class="review-text">"The villa was truly stunning with exceptional views and a lovely pool with outdoor sun lounges and seating area you could really stay there all day. With two kitchens and plenty of bedrooms and bathrooms it's perfect for big groups/families and the place is immaculate. Petar and his family were extremely helpful during our stay and very easy to contact with any questions or issues. Could not recommend this villa enough. The location was great with shops and a lovely Italian restaurant nearby then it is only a 15 min drive into Split city centre where Ubers are only 15 euro one way and easy to get to and from or hire a car for your stay with plenty of space on the gated driveway."</p>
       <p class="review-author">Joe Harte</p>
       <p class="review-country">UK · Jun 2025.</p>
     </div>
-    <!-- Primjer skrivene recenzije — makni klasu "hidden" kad hoćeš da se prikaže odmah
-    <div class="review-card hidden">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"Ovdje ide tekst recenzije..."</p>
-      <p class="review-author">Ime Prezime</p>
-      <p class="review-country">🇭🇷 Hrvatska · Kolovoz 2024.</p>
-    </div>
-    -->
   </div>
   <button class="btn-show-more" id="btn-show-more" onclick="showMoreReviews()" data-i18n="btn_show_more">Prikaži sve recenzije ↓</button>
 
@@ -797,6 +802,75 @@ function setLang(lang) {
 document.addEventListener('DOMContentLoaded', function() { setLang('en'); });
 document.getElementById('footer-year').textContent = new Date().getFullYear();
 
+// ===================== VILLA GALLERY + LIGHTBOX =====================
+let GALLERY_IMAGES = [];
+let lbIndex = 0;
+
+async function loadVillaGallery() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/villa_gallery?order=category.asc,sort_order.asc`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const data = await res.json();
+    if (data && data.length) {
+      GALLERY_IMAGES = data;
+      renderVillaGallery();
+    }
+  } catch(e) { console.warn('Gallery load failed', e); }
+}
+
+function renderVillaGallery() {
+  const grid = document.getElementById('gallery-grid');
+  if (!GALLERY_IMAGES.length) return;
+  // Reset grid to simple responsive layout for dynamic images
+  grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(220px, 1fr))';
+  grid.style.gridTemplateRows = 'none';
+  grid.innerHTML = GALLERY_IMAGES.map((g, i) => `
+    <div class="gallery-item" style="height:220px" onclick="openLightbox(${i})">
+      <div class="gallery-item-inner" style="height:100%;background-image:url('${g.img}')"></div>
+      <span class="gallery-label">${g.caption || g.category}</span>
+    </div>`).join('');
+}
+
+function openLightbox(i) {
+  lbIndex = i;
+  showLightboxImage();
+  document.getElementById('lightbox').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function showLightboxImage() {
+  const g = GALLERY_IMAGES[lbIndex];
+  if (!g) return;
+  document.getElementById('lb-img').src = g.img;
+  document.getElementById('lb-caption').textContent = g.caption || g.category;
+  document.getElementById('lb-counter').textContent = `${lbIndex + 1} / ${GALLERY_IMAGES.length}`;
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+  showLightboxImage();
+}
+
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lb-prev').addEventListener('click', () => lbNav(-1));
+document.getElementById('lb-next').addEventListener('click', () => lbNav(1));
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('lightbox').style.display === 'flex') {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  }
+});
+
 // ===================== RECENZIJE PRIKAŽI VIŠE =====================
 let reviewsExpanded = false;
 function showMoreReviews() {
@@ -878,6 +952,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
 // Check if private dinner is enabled
 document.addEventListener('DOMContentLoaded', function() {
+  loadVillaGallery();
   (async function checkDinnerEnabled() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1&select=dinner_enabled`, {
