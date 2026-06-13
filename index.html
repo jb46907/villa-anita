@@ -832,19 +832,16 @@ function renderVillaGallery() {
     GALLERY_BY_CAT[g.category].push(g);
   });
 
-  // Reset grid to responsive category tiles
-  grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(240px, 1fr))';
-  grid.style.gridTemplateRows = 'none';
-
+  // Keep original layout (2fr 1fr 1fr, first tile spans 2 rows) - don't override CSS
   // One tile per category showing first image + count
   grid.innerHTML = Object.keys(GALLERY_BY_CAT).map(cat => {
     const imgs = GALLERY_BY_CAT[cat];
     const cover = imgs[0].img;
     const count = imgs.length;
     return `
-      <div class="gallery-item" style="height:240px" onclick="openCategoryLightbox('${cat.replace(/'/g,"\\'")}')">
+      <div class="gallery-item" onclick="openCategoryLightbox('${cat.replace(/'/g,"\\'")}')">
         <div class="gallery-item-inner" style="height:100%;background-image:url('${cover}')"></div>
-        <span class="gallery-label">${cat}${count > 1 ? ` · ${count} photos` : ''}</span>
+        <span class="gallery-label">${cat}${count > 1 ? ` · ${count}` : ''}</span>
       </div>`;
   }).join('');
 }
@@ -897,6 +894,22 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight') lbNav(1);
   }
 });
+
+// Touch swipe for lightbox
+let touchStartX = 0;
+let touchEndX = 0;
+const lbImg = document.getElementById('lb-img');
+lbImg.addEventListener('touchstart', function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+lbImg.addEventListener('touchend', function(e) {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchEndX - touchStartX;
+  if (Math.abs(diff) > 50 && lbList.length > 1) {
+    if (diff < 0) lbNav(1);   // swipe left → next
+    else lbNav(-1);            // swipe right → prev
+  }
+}, { passive: true });
 
 // ===================== RECENZIJE PRIKAŽI VIŠE =====================
 let reviewsExpanded = false;
