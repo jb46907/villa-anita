@@ -804,6 +804,8 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 
 // ===================== VILLA GALLERY + LIGHTBOX =====================
 let GALLERY_IMAGES = [];
+let GALLERY_BY_CAT = {};
+let lbList = [];
 let lbIndex = 0;
 
 async function loadVillaGallery() {
@@ -822,38 +824,63 @@ async function loadVillaGallery() {
 function renderVillaGallery() {
   const grid = document.getElementById('gallery-grid');
   if (!GALLERY_IMAGES.length) return;
-  // Reset grid to simple responsive layout for dynamic images
-  grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(220px, 1fr))';
+
+  // Group images by category
+  GALLERY_BY_CAT = {};
+  GALLERY_IMAGES.forEach(g => {
+    if (!GALLERY_BY_CAT[g.category]) GALLERY_BY_CAT[g.category] = [];
+    GALLERY_BY_CAT[g.category].push(g);
+  });
+
+  // Reset grid to responsive category tiles
+  grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(240px, 1fr))';
   grid.style.gridTemplateRows = 'none';
-  grid.innerHTML = GALLERY_IMAGES.map((g, i) => `
-    <div class="gallery-item" style="height:220px" onclick="openLightbox(${i})">
-      <div class="gallery-item-inner" style="height:100%;background-image:url('${g.img}')"></div>
-      <span class="gallery-label">${g.caption || g.category}</span>
-    </div>`).join('');
+
+  // One tile per category showing first image + count
+  grid.innerHTML = Object.keys(GALLERY_BY_CAT).map(cat => {
+    const imgs = GALLERY_BY_CAT[cat];
+    const cover = imgs[0].img;
+    const count = imgs.length;
+    return `
+      <div class="gallery-item" style="height:240px" onclick="openCategoryLightbox('${cat.replace(/'/g,"\\'")}')">
+        <div class="gallery-item-inner" style="height:100%;background-image:url('${cover}')"></div>
+        <span class="gallery-label">${cat}${count > 1 ? ` · ${count} photos` : ''}</span>
+      </div>`;
+  }).join('');
 }
 
-function openLightbox(i) {
-  lbIndex = i;
+function openCategoryLightbox(cat) {
+  lbList = GALLERY_BY_CAT[cat] || [];
+  if (!lbList.length) return;
+  lbIndex = 0;
   showLightboxImage();
   document.getElementById('lightbox').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
 }
 
 function showLightboxImage() {
-  const g = GALLERY_IMAGES[lbIndex];
+  const g = lbList[lbIndex];
   if (!g) return;
   document.getElementById('lb-img').src = g.img;
   document.getElementById('lb-caption').textContent = g.caption || g.category;
-  document.getElementById('lb-counter').textContent = `${lbIndex + 1} / ${GALLERY_IMAGES.length}`;
+  document.getElementById('lb-counter').textContent = lbList.length > 1 ? `${lbIndex + 1} / ${lbList.length}` : '';
+  // Hide arrows if only one image
+  const showArrows = lbList.length > 1;
+  document.getElementById('lb-prev').style.display = showArrows ? 'block' : 'none';
+  document.getElementById('lb-next').style.display = showArrows ? 'block' : 'none';
 }
 
 function closeLightbox() {
   document.getElementById('lightbox').style.display = 'none';
   document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.width = '';
 }
 
 function lbNav(dir) {
-  lbIndex = (lbIndex + dir + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+  lbIndex = (lbIndex + dir + lbList.length) % lbList.length;
   showLightboxImage();
 }
 
