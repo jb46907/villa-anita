@@ -102,6 +102,7 @@ nav{background:rgba(253,250,245,0.97);backdrop-filter:blur(8px);border-bottom:1p
 .dp-bar{height:8px;background:var(--sand);border-radius:4px;overflow:hidden}
 .dp-fill{height:100%;background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light));border-radius:4px;transition:width 0.4s ease;width:0%}
 .dp-fill.complete{background:linear-gradient(90deg,var(--olive),#8aa860)}
+.dp-fill.below-min{background:linear-gradient(90deg,#c0392b,#e07a5f)}
 .cart-fee-row{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:0.4rem}
 .cart-fee-row .free{color:var(--olive);font-weight:500}
 @media(max-width:900px){
@@ -361,6 +362,7 @@ function getCartSubtotal() {
 function updateDeliveryUI(subtotal) {
   const prog = document.getElementById('delivery-progress');
   const feesWrap = document.getElementById('cart-fees');
+  const minOrder = Number(SETTINGS.min_order);
   const threshold = Number(SETTINGS.free_delivery_above);
   const fee = Number(SETTINGS.delivery_fee);
 
@@ -373,27 +375,47 @@ function updateDeliveryUI(subtotal) {
   prog.style.display = 'block';
   feesWrap.style.display = 'block';
 
-  const remaining = threshold - subtotal;
-  const pct = Math.min(100, (subtotal / threshold) * 100);
   const fill = document.getElementById('dp-fill');
-  fill.style.width = pct + '%';
+  const label = document.getElementById('dp-label');
+  const amount = document.getElementById('dp-amount');
+  document.getElementById('cart-subtotal').textContent = '€' + subtotal.toFixed(2);
 
-  if (remaining > 0) {
-    document.getElementById('dp-label').innerHTML = `🚚 Add <strong>€${remaining.toFixed(2)}</strong> more for FREE delivery!`;
-    document.getElementById('dp-amount').textContent = `€${subtotal.toFixed(2)} / €${threshold.toFixed(2)}`;
+  // PHASE 1: Below minimum order
+  if (subtotal < minOrder) {
+    const remaining = minOrder - subtotal;
+    const pct = Math.min(100, (subtotal / minOrder) * 100);
+    fill.style.width = pct + '%';
     fill.classList.remove('complete');
-    document.getElementById('cart-subtotal').textContent = '€' + subtotal.toFixed(2);
+    fill.classList.add('below-min');
+    label.innerHTML = `🛒 Add <strong>€${remaining.toFixed(2)}</strong> more to place your order <span style="opacity:0.7">(min €${minOrder.toFixed(2)})</span>`;
+    amount.textContent = `€${subtotal.toFixed(2)} / €${minOrder.toFixed(2)}`;
     document.getElementById('cart-delivery').textContent = '€' + fee.toFixed(2);
     document.getElementById('cart-delivery').className = '';
     return { fee };
-  } else {
-    document.getElementById('dp-label').innerHTML = `🎉 You've unlocked <strong>FREE delivery</strong>!`;
-    document.getElementById('dp-amount').textContent = '';
-    fill.classList.add('complete');
-    document.getElementById('cart-subtotal').textContent = '€' + subtotal.toFixed(2);
-    document.getElementById('cart-delivery').innerHTML = '<span class="free">FREE 🎉</span>';
-    return { fee: 0 };
   }
+
+  // PHASE 2: Above minimum, below free delivery
+  fill.classList.remove('below-min');
+  if (subtotal < threshold) {
+    const remaining = threshold - subtotal;
+    // Bar fills from minOrder->threshold range
+    const pct = Math.min(100, ((subtotal - minOrder) / (threshold - minOrder)) * 100);
+    fill.style.width = pct + '%';
+    fill.classList.remove('complete');
+    label.innerHTML = `🚚 Add <strong>€${remaining.toFixed(2)}</strong> more for FREE delivery!`;
+    amount.textContent = `€${subtotal.toFixed(2)} / €${threshold.toFixed(2)}`;
+    document.getElementById('cart-delivery').textContent = '€' + fee.toFixed(2);
+    document.getElementById('cart-delivery').className = '';
+    return { fee };
+  }
+
+  // PHASE 3: Free delivery unlocked
+  fill.style.width = '100%';
+  fill.classList.add('complete');
+  label.innerHTML = `🎉 You've unlocked <strong>FREE delivery</strong>!`;
+  amount.textContent = '';
+  document.getElementById('cart-delivery').innerHTML = '<span class="free">FREE 🎉</span>';
+  return { fee: 0 };
 }
 
 function renderCart() {
