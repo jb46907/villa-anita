@@ -832,9 +832,15 @@ function renderVillaGallery() {
     GALLERY_BY_CAT[g.category].push(g);
   });
 
-  // Keep original layout (2fr 1fr 1fr, first tile spans 2 rows) - don't override CSS
-  // One tile per category showing first image + count
-  grid.innerHTML = Object.keys(GALLERY_BY_CAT).map(cat => {
+  // Fixed display order - Pool & Terrace first (large tile), then others
+  const order = ['Pool & Terrace', 'Bedroom', 'Garden', 'Kitchen', 'Sea View', 'Living Room', 'Bathroom', 'Exterior', 'Activity Room'];
+  const cats = Object.keys(GALLERY_BY_CAT).sort((a, b) => {
+    const ia = order.indexOf(a); const ib = order.indexOf(b);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+  });
+
+  // Keep original layout (2fr 1fr 1fr, first tile spans 2 rows)
+  grid.innerHTML = cats.map(cat => {
     const imgs = GALLERY_BY_CAT[cat];
     const cover = imgs[0].img;
     const count = imgs.length;
@@ -846,15 +852,19 @@ function renderVillaGallery() {
   }).join('');
 }
 
+let savedScrollY = 0;
+
 function openCategoryLightbox(cat) {
   lbList = GALLERY_BY_CAT[cat] || [];
   if (!lbList.length) return;
   lbIndex = 0;
   showLightboxImage();
   document.getElementById('lightbox').style.display = 'flex';
+  savedScrollY = window.scrollY;
   document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
+  document.body.style.top = `-${savedScrollY}px`;
 }
 
 function showLightboxImage() {
@@ -874,6 +884,8 @@ function closeLightbox() {
   document.body.style.overflow = '';
   document.body.style.position = '';
   document.body.style.width = '';
+  document.body.style.top = '';
+  window.scrollTo(0, savedScrollY);
 }
 
 function lbNav(dir) {
