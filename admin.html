@@ -346,6 +346,28 @@ input[type=file]{display:none}
 
     <!-- GALLERY TAB -->
     <div class="tab-panel" id="tab-gallery">
+      <!-- HERO IMAGES -->
+      <div style="background:var(--white);padding:1.2rem 1.5rem;margin-bottom:1rem">
+        <div style="font-size:0.9rem;font-weight:500;margin-bottom:0.3rem">🌅 Homepage Hero Images</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem">The two large featured images at the top of the homepage.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div style="text-align:center">
+            <div style="font-size:0.8rem;font-weight:500;margin-bottom:0.5rem">View of the Adriatic Sea</div>
+            <img id="hero-sea-preview" src="" onerror="this.style.opacity=0.2" style="width:100%;height:120px;object-fit:cover;background:var(--sand);border:1px solid var(--sand-dark);margin-bottom:0.5rem">
+            <input type="file" id="hero-sea-file" accept="image/*" style="display:none" onchange="uploadHeroImage('sea')">
+            <button type="button" onclick="document.getElementById('hero-sea-file').click()" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;background:#2B6C8A;color:#fff;border:none;padding:0.7rem;font-family:'Jost',sans-serif;font-size:0.82rem;cursor:pointer;width:100%;border-radius:2px">📷 Change image</button>
+            <div id="hero-sea-progress" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;display:none">Uploading...</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.8rem;font-weight:500;margin-bottom:0.5rem">Dinner Terrace</div>
+            <img id="hero-terrace-preview" src="" onerror="this.style.opacity=0.2" style="width:100%;height:120px;object-fit:cover;background:var(--sand);border:1px solid var(--sand-dark);margin-bottom:0.5rem">
+            <input type="file" id="hero-terrace-file" accept="image/*" style="display:none" onchange="uploadHeroImage('terrace')">
+            <button type="button" onclick="document.getElementById('hero-terrace-file').click()" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;background:#2B6C8A;color:#fff;border:none;padding:0.7rem;font-family:'Jost',sans-serif;font-size:0.82rem;cursor:pointer;width:100%;border-radius:2px">📷 Change image</button>
+            <div id="hero-terrace-progress" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;display:none">Uploading...</div>
+          </div>
+        </div>
+      </div>
+
       <div style="background:var(--white);padding:1.2rem 1.5rem;margin-bottom:1rem">
         <div style="font-size:0.9rem;font-weight:500;margin-bottom:1rem">📸 Add Villa Photo</div>
         <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:flex-end">
@@ -615,6 +637,54 @@ function headers(write=false) {
 let ALL_DINNERS = [];
 let SHOP_SETTINGS = null;
 let ALL_GALLERY = [];
+let HERO_IMAGES = {};
+
+async function loadHeroImages() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/hero_images`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}` }
+    });
+    const data = await res.json();
+    data.forEach(h => { HERO_IMAGES[h.id] = h.img; });
+    if (HERO_IMAGES.sea) document.getElementById('hero-sea-preview').src = HERO_IMAGES.sea;
+    if (HERO_IMAGES.terrace) document.getElementById('hero-terrace-preview').src = HERO_IMAGES.terrace;
+  } catch(e) { console.warn('Hero load failed', e); }
+}
+
+async function uploadHeroImage(which) {
+  const fileInput = document.getElementById('hero-' + which + '-file');
+  const file = fileInput.files[0];
+  if (!file) return;
+  const progress = document.getElementById('hero-' + which + '-progress');
+  progress.style.display = 'block';
+  progress.textContent = 'Uploading...';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = 'hero-' + which + '-' + Date.now() + '.' + ext;
+
+  try {
+    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/product-images/${filename}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken||SUPABASE_ANON}`, 'Content-Type': file.type, 'x-upsert': 'true' },
+      body: file
+    });
+    if (!upRes.ok) { progress.textContent = 'Upload failed.'; return; }
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/product-images/${filename}`;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/hero_images?id=eq.${which}`, {
+      method: 'PATCH',
+      headers: headers(true),
+      body: JSON.stringify({ img: publicUrl, updated_at: new Date().toISOString() })
+    });
+    if (res.ok) {
+      HERO_IMAGES[which] = publicUrl;
+      document.getElementById('hero-' + which + '-preview').src = publicUrl;
+      document.getElementById('hero-' + which + '-preview').style.opacity = 1;
+      progress.textContent = '✓ Updated!';
+      setTimeout(() => { progress.style.display = 'none'; }, 2000);
+    } else { progress.textContent = 'Error saving.'; }
+  } catch(e) { progress.textContent = 'Upload failed.'; }
+  fileInput.value = '';
+}
 
 async function loadGallery() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/villa_gallery?order=category.asc,sort_order.asc`, {
@@ -699,7 +769,7 @@ async function deleteGalleryImage(id) {
 }
 
 async function loadAll() {
-  await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners(), loadSettings(), loadGallery()]);
+  await Promise.all([loadProducts(), loadCategories(), loadOrders(), loadDinners(), loadSettings(), loadGallery(), loadHeroImages()]);
   // Re-render category counts now that products are guaranteed loaded
   renderCatGrid();
 }

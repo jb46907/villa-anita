@@ -253,8 +253,8 @@
   </div>
   <div class="hero-right">
     <div style="display:grid; grid-template-rows:1fr 1fr; height:100%;">
-      <div class="hero-img hero-img-main"><p class="img-caption" data-i18n="hero_img1">Pogled na Jadransko more</p></div>
-      <div class="hero-img hero-img-sec"><p class="img-caption" data-i18n="hero_img2">Terasa za večeru</p></div>
+      <div class="hero-img hero-img-main" id="hero-img-sea"><p class="img-caption" data-i18n="hero_img1">Pogled na Jadransko more</p></div>
+      <div class="hero-img hero-img-sec" id="hero-img-terrace"><p class="img-caption" data-i18n="hero_img2">Terasa za večeru</p></div>
     </div>
   </div>
 </div>
@@ -802,6 +802,27 @@ function setLang(lang) {
 document.addEventListener('DOMContentLoaded', function() { setLang('en'); });
 document.getElementById('footer-year').textContent = new Date().getFullYear();
 
+// ===================== HERO IMAGES =====================
+async function loadHeroImages() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/hero_images`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const data = await res.json();
+    data.forEach(h => {
+      if (!h.img) return;
+      if (h.id === 'sea') {
+        const el = document.getElementById('hero-img-sea');
+        if (el) el.style.backgroundImage = `url('${h.img}')`;
+      }
+      if (h.id === 'terrace') {
+        const el = document.getElementById('hero-img-terrace');
+        if (el) el.style.backgroundImage = `url('${h.img}')`;
+      }
+    });
+  } catch(e) { console.warn('Hero load failed', e); }
+}
+
 // ===================== VILLA GALLERY + LIGHTBOX =====================
 let GALLERY_IMAGES = [];
 let GALLERY_BY_CAT = {};
@@ -1005,6 +1026,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // Check if private dinner is enabled
 document.addEventListener('DOMContentLoaded', function() {
   loadVillaGallery();
+  loadHeroImages();
   (async function checkDinnerEnabled() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/shop_settings?id=eq.1&select=dinner_enabled`, {
