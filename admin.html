@@ -263,6 +263,12 @@ input[type=file]{display:none}
           <option value="true">Active only</option>
           <option value="false">Hidden only</option>
         </select>
+        <select id="admin-sort" onchange="renderTable()">
+          <option value="name-asc">Name (A→Z)</option>
+          <option value="name-desc">Name (Z→A)</option>
+          <option value="price-asc">Price (low→high)</option>
+          <option value="price-desc">Price (high→low)</option>
+        </select>
         <span id="table-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
         <button class="btn green" onclick="openAddProduct()" style="margin-left:auto">+ Add Product</button>
         <button class="btn outline" onclick="toggleBulkPanel()">💶 Bulk pricing</button>
@@ -1061,6 +1067,16 @@ function renderTable() {
     if (cat && p.category !== cat) return false;
     if (status !== '' && String(p.active) !== status) return false;
     return true;
+  });
+
+  // Sorting
+  const sort = document.getElementById('admin-sort') ? document.getElementById('admin-sort').value : 'name-asc';
+  filtered.sort((a, b) => {
+    if (sort === 'name-asc') return a.name.localeCompare(b.name);
+    if (sort === 'name-desc') return b.name.localeCompare(a.name);
+    if (sort === 'price-asc') return Number(a.price) - Number(b.price);
+    if (sort === 'price-desc') return Number(b.price) - Number(a.price);
+    return 0;
   });
   document.getElementById('table-count').textContent = filtered.length + ' items';
   document.getElementById('admin-table-body').innerHTML = filtered.map(p => `
