@@ -339,7 +339,7 @@ input[type=file]{display:none}
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Order #</th><th>Date</th><th>Guest</th><th>Contact</th><th>Delivery</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Order #</th><th>Date</th><th>Guest</th><th>Contact</th><th>Delivery</th><th>Total</th><th>Profit</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="orders-table-body"></tbody>
         </table>
       </div>
@@ -1501,14 +1501,31 @@ function renderOrders() {
   document.getElementById('orders-table-body').innerHTML = filtered.map(o => {
     const date = new Date(o.created_at).toLocaleDateString('en-GB');
     const delivery = o.delivery_date ? new Date(o.delivery_date).toLocaleDateString('en-GB') : '—';
+    // Calculate profit for this order
+    let profit = 0;
+    let hasCost = false;
+    let items = o.items;
+    if (typeof items === 'string') { try { items = JSON.parse(items); } catch { items = []; } }
+    if (Array.isArray(items)) {
+      items.forEach(it => {
+        if (it.name === 'Delivery') return;
+        const prod = ALL_PRODUCTS.find(p => p.name === it.name);
+        if (prod && prod.cost > 0) {
+          profit += (Number(prod.price) - Number(prod.cost)) * Number(it.qty || 0);
+          hasCost = true;
+        }
+      });
+    }
+    const profitDisplay = hasCost ? `€${profit.toFixed(2)}` : '—';
     return `<tr>
-      <td><strong>${o.order_number}</strong></td>
-      <td style="white-space:nowrap">${date}</td>
-      <td>${o.guest_name}</td>
-      <td>${o.contact}</td>
-      <td style="white-space:nowrap">${delivery}</td>
-      <td style="font-weight:500;color:var(--terracotta)">€${Number(o.total).toFixed(2)}</td>
-      <td>
+      <td data-label="Order #"><strong>${o.order_number}</strong></td>
+      <td data-label="Date">${date}</td>
+      <td data-label="Guest">${o.guest_name}</td>
+      <td data-label="Contact">${o.contact}</td>
+      <td data-label="Delivery">${delivery}</td>
+      <td data-label="Total" style="font-weight:500;color:var(--terracotta)">€${Number(o.total).toFixed(2)}</td>
+      <td data-label="Profit" style="font-weight:500;color:var(--olive)">${profitDisplay}</td>
+      <td data-label="Status">
         <select class="status-badge status-${o.status}" onchange="updateOrderStatus(${o.id},this.value,this)">
           <option value="pending" ${o.status==='pending'?'selected':''}>⏳ Pending</option>
           <option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ Confirmed</option>
