@@ -664,6 +664,12 @@ async function doLogin() {
     const data = await res.json();
     if (data.access_token) {
       authToken = data.access_token;
+      // Save session for 12 hours
+      const expiry = Date.now() + 12 * 60 * 60 * 1000;
+      try {
+        localStorage.setItem('va_admin_token', data.access_token);
+        localStorage.setItem('va_admin_expiry', String(expiry));
+      } catch {}
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-wrap').style.display = 'block';
       loadAll();
@@ -677,9 +683,31 @@ async function doLogin() {
 
 async function logout() {
   authToken = null;
+  try {
+    localStorage.removeItem('va_admin_token');
+    localStorage.removeItem('va_admin_expiry');
+  } catch {}
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('admin-wrap').style.display = 'none';
   document.getElementById('login-password').value = '';
+}
+
+// Auto-login from saved session
+function tryRestoreSession() {
+  try {
+    const token = localStorage.getItem('va_admin_token');
+    const expiry = parseInt(localStorage.getItem('va_admin_expiry') || '0');
+    if (token && expiry > Date.now()) {
+      authToken = token;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      loadAll();
+    } else if (token) {
+      // Expired - clean up
+      localStorage.removeItem('va_admin_token');
+      localStorage.removeItem('va_admin_expiry');
+    }
+  } catch {}
 }
 
 function headers(write=false) {
@@ -1628,6 +1656,9 @@ function triggerPrint() {
   // Small delay allows Brave to treat it as user-initiated
   setTimeout(function() { window.print(); }, 100);
 }
+
+// Restore session on page load
+tryRestoreSession();
 </script>
 </body>
 </html>
