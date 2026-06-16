@@ -1510,7 +1510,7 @@ function renderOrders() {
       items.forEach(it => {
         if (it.name === 'Delivery') return;
         const prod = ALL_PRODUCTS.find(p => p.name === it.name);
-        if (prod && prod.cost > 0) {
+        if (prod && Number(prod.cost) > 0) {
           profit += (Number(prod.price) - Number(prod.cost)) * Number(it.qty || 0);
           hasCost = true;
         }
@@ -1636,7 +1636,7 @@ function renderStats() {
       categoryCounts[cat].qty += qty;
       categoryCounts[cat].revenue += Number(it.sub || 0);
       // Profit = (selling - cost) * qty, using current product cost
-      if (prod && prod.cost > 0) {
+      if (prod && Number(prod.cost) > 0) {
         totalProfit += (Number(prod.price) - Number(prod.cost)) * qty;
       }
     });
