@@ -381,6 +381,7 @@ input[type=file]{display:none}
       <div class="stats" style="margin-bottom:1.5rem">
         <div class="stat-card"><div class="num" id="st-orders">—</div><div class="label">Orders</div></div>
         <div class="stat-card"><div class="num" id="st-revenue">—</div><div class="label">Total revenue</div></div>
+        <div class="stat-card" style="border-top-color:var(--olive)"><div class="num" id="st-profit" style="color:var(--olive)">—</div><div class="label">Est. profit</div></div>
         <div class="stat-card"><div class="num" id="st-avg">—</div><div class="label">Avg basket</div></div>
         <div class="stat-card"><div class="num" id="st-items">—</div><div class="label">Items sold</div></div>
       </div>
@@ -531,7 +532,8 @@ input[type=file]{display:none}
   <div class="modal">
     <h3>➕ Add New Product</h3>
     <div class="modal-row"><label>Name *</label><input type="text" id="add-name" placeholder="Product name"></div>
-    <div class="modal-row"><label>Price (€) *</label><input type="number" id="add-price" step="0.01" min="0" placeholder="0.00"></div>
+    <div class="modal-row"><label>Selling price (€) *</label><input type="number" id="add-price" step="0.01" min="0" placeholder="0.00"></div>
+    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="add-cost" step="0.01" min="0" placeholder="0.00 (optional)"></div>
     <div class="modal-row">
       <label>Category *</label>
       <select id="add-cat"></select>
@@ -564,7 +566,8 @@ input[type=file]{display:none}
     <h3>Edit Product</h3>
     <input type="hidden" id="edit-id">
     <div class="modal-row"><label>Name</label><input type="text" id="edit-name"></div>
-    <div class="modal-row"><label>Price (€)</label><input type="number" id="edit-price" step="0.01" min="0"></div>
+    <div class="modal-row"><label>Selling price (€)</label><input type="number" id="edit-price" step="0.01" min="0" oninput="updateMarginPreview()"></div>
+    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="edit-cost" step="0.01" min="0" oninput="updateMarginPreview()"><div id="margin-preview" style="font-size:0.8rem;color:var(--olive);margin-top:0.4rem"></div></div>
     <div class="modal-row">
       <label>Category</label>
       <select id="edit-cat"></select>
@@ -1306,6 +1309,7 @@ async function applyBulk() {
 function openAddProduct() {
   document.getElementById('add-name').value = '';
   document.getElementById('add-price').value = '';
+  document.getElementById('add-cost').value = '';
   document.getElementById('add-img').value = '';
   document.getElementById('add-img-preview').src = '';
   document.getElementById('add-active').value = 'true';
@@ -1320,6 +1324,7 @@ function closeAddModal() { document.getElementById('add-modal').classList.remove
 async function saveNewProduct() {
   const name = document.getElementById('add-name').value.trim();
   const price = parseFloat(document.getElementById('add-price').value);
+  const cost = parseFloat(document.getElementById('add-cost').value) || 0;
   const category = document.getElementById('add-cat').value;
   const img = document.getElementById('add-img').value.trim();
   const active = document.getElementById('add-active').value === 'true';
@@ -1330,7 +1335,7 @@ async function saveNewProduct() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/products`, {
     method: 'POST',
     headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken||SUPABASE_ANON}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-    body: JSON.stringify({ name, price, category, img, active })
+    body: JSON.stringify({ name, price, cost, category, img, active })
   });
   if (res.ok) {
     const newProduct = await res.json();
@@ -1359,12 +1364,29 @@ async function deleteProduct(id, name) {
 function lockBody() { document.body.classList.add('modal-open'); }
 function unlockBody() { document.body.classList.remove('modal-open'); }
 
+function updateMarginPreview() {
+  const price = parseFloat(document.getElementById('edit-price').value) || 0;
+  const cost = parseFloat(document.getElementById('edit-cost').value) || 0;
+  const el = document.getElementById('margin-preview');
+  if (!el) return;
+  if (cost > 0 && price > 0) {
+    const profit = price - cost;
+    const pct = (profit / cost * 100);
+    el.textContent = `Profit: €${profit.toFixed(2)} (${pct.toFixed(0)}% markup)`;
+    el.style.color = profit >= 0 ? 'var(--olive)' : 'var(--red)';
+  } else {
+    el.textContent = '';
+  }
+}
+
 function openEdit(id) {
   const p = ALL_PRODUCTS.find(x=>x.id===id); if(!p) return;
   document.getElementById('edit-id').value = p.id;
   document.getElementById('edit-name').value = p.name;
   document.getElementById('edit-price').value = p.price;
+  document.getElementById('edit-cost').value = p.cost || '';
   document.getElementById('edit-cat').value = p.category;
+  updateMarginPreview();
   document.getElementById('edit-img').value = p.img||'';
   document.getElementById('edit-img-preview').src = p.img||'';
   document.getElementById('edit-active').value = String(p.active);
@@ -1379,6 +1401,7 @@ async function saveEdit() {
   const body = {
     name: document.getElementById('edit-name').value,
     price: parseFloat(document.getElementById('edit-price').value),
+    cost: parseFloat(document.getElementById('edit-cost').value) || 0,
     category: document.getElementById('edit-cat').value,
     img: document.getElementById('edit-img').value,
     active: document.getElementById('edit-active').value === 'true'
@@ -1575,6 +1598,7 @@ function renderStats() {
   const productCounts = {};
   const categoryCounts = {};
   let totalItems = 0;
+  let totalProfit = 0;
 
   orders.forEach(o => {
     let items = o.items;
@@ -1588,18 +1612,23 @@ function renderStats() {
       if (!productCounts[it.name]) productCounts[it.name] = { qty: 0, revenue: 0 };
       productCounts[it.name].qty += qty;
       productCounts[it.name].revenue += Number(it.sub || 0);
-      // Category - look up from ALL_PRODUCTS
+      // Category + profit - look up from ALL_PRODUCTS
       const prod = ALL_PRODUCTS.find(p => p.name === it.name);
       const cat = prod ? prod.category : 'Other';
       if (!categoryCounts[cat]) categoryCounts[cat] = { qty: 0, revenue: 0 };
       categoryCounts[cat].qty += qty;
       categoryCounts[cat].revenue += Number(it.sub || 0);
+      // Profit = (selling - cost) * qty, using current product cost
+      if (prod && prod.cost > 0) {
+        totalProfit += (Number(prod.price) - Number(prod.cost)) * qty;
+      }
     });
   });
 
   // Update stat cards
   document.getElementById('st-orders').textContent = orderCount;
   document.getElementById('st-revenue').textContent = '€' + totalRevenue.toFixed(0);
+  document.getElementById('st-profit').textContent = totalProfit > 0 ? '€' + totalProfit.toFixed(0) : '—';
   document.getElementById('st-avg').textContent = '€' + avgBasket.toFixed(0);
   document.getElementById('st-items').textContent = totalItems;
 
