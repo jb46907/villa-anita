@@ -116,6 +116,12 @@ input[type=file]{display:none}
 .modal-actions{display:flex;gap:0.8rem;margin-top:1.5rem;flex-wrap:wrap}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--olive);color:white;padding:0.7rem 1.5rem;font-size:0.85rem;z-index:600;display:none;border-radius:2px}
 .toast.show{display:block}
+.stat-bar-row{margin-bottom:0.7rem}
+.stat-bar-label{display:flex;justify-content:space-between;margin-bottom:0.2rem;font-size:0.82rem}
+.stat-bar-label .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:0.5rem}
+.stat-bar-label .val{color:var(--terracotta);font-weight:500;white-space:nowrap}
+.stat-bar-track{height:6px;background:var(--sand);border-radius:3px;overflow:hidden}
+.stat-bar-fill{height:100%;background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light));border-radius:3px}
 
 /* RECEIPT */
 .receipt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;align-items:center;justify-content:center}
@@ -248,6 +254,7 @@ input[type=file]{display:none}
     <button class="admin-tab" onclick="switchTab('categories',this)">🗂 Categories</button>
     <button class="admin-tab" onclick="switchTab('orders',this)">🧾 Orders</button>
     <button class="admin-tab" onclick="switchTab('dinners',this)">🍽️ Dinners</button>
+    <button class="admin-tab" onclick="switchTab('stats',this)">📊 Stats</button>
     <button class="admin-tab" onclick="switchTab('gallery',this)">📸 Gallery</button>
     <button class="admin-tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
   </div>
@@ -356,6 +363,37 @@ input[type=file]{display:none}
           <thead><tr><th>Booking #</th><th>Received</th><th>Guest</th><th>Contact</th><th>Dinner date</th><th>Guests</th><th>Occasion</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="dinners-table-body"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-panel" id="tab-stats">
+      <div class="toolbar">
+        <select id="stats-period" onchange="renderStats()">
+          <option value="all">All time</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+        <span style="font-size:0.8rem;color:var(--text-muted)">Based on grocery orders</span>
+      </div>
+
+      <div class="stats" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="num" id="st-orders">—</div><div class="label">Orders</div></div>
+        <div class="stat-card"><div class="num" id="st-revenue">—</div><div class="label">Total revenue</div></div>
+        <div class="stat-card"><div class="num" id="st-avg">—</div><div class="label">Avg basket</div></div>
+        <div class="stat-card"><div class="num" id="st-items">—</div><div class="label">Items sold</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div style="background:var(--white);padding:1.5rem">
+          <h3 style="font-size:0.95rem;font-weight:500;margin-bottom:1rem">🏆 Top Products</h3>
+          <div id="st-top-products" style="font-size:0.85rem"></div>
+        </div>
+        <div style="background:var(--white);padding:1.5rem">
+          <h3 style="font-size:0.95rem;font-weight:500;margin-bottom:1rem">📂 Top Categories</h3>
+          <div id="st-top-cats" style="font-size:0.85rem"></div>
+        </div>
       </div>
     </div>
 
@@ -1489,12 +1527,84 @@ function openReceipt(id) {
   lockBody();
 }
 
+function renderStats() {
+  const period = document.getElementById('stats-period').value;
+  let orders = ALL_ORDERS.filter(o => o.status !== 'cancelled');
+
+  // Filter by period
+  if (period !== 'all') {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - parseInt(period));
+    orders = orders.filter(o => new Date(o.created_at) >= cutoff);
+  }
+
+  // Totals
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+  const orderCount = orders.length;
+  const avgBasket = orderCount ? totalRevenue / orderCount : 0;
+
+  // Aggregate products
+  const productCounts = {};
+  const categoryCounts = {};
+  let totalItems = 0;
+
+  orders.forEach(o => {
+    let items = o.items;
+    if (typeof items === 'string') { try { items = JSON.parse(items); } catch { items = []; } }
+    if (!Array.isArray(items)) return;
+    items.forEach(it => {
+      if (it.name === 'Delivery') return; // skip delivery line
+      const qty = Number(it.qty || 0);
+      totalItems += qty;
+      // Product
+      if (!productCounts[it.name]) productCounts[it.name] = { qty: 0, revenue: 0 };
+      productCounts[it.name].qty += qty;
+      productCounts[it.name].revenue += Number(it.sub || 0);
+      // Category - look up from ALL_PRODUCTS
+      const prod = ALL_PRODUCTS.find(p => p.name === it.name);
+      const cat = prod ? prod.category : 'Other';
+      if (!categoryCounts[cat]) categoryCounts[cat] = { qty: 0, revenue: 0 };
+      categoryCounts[cat].qty += qty;
+      categoryCounts[cat].revenue += Number(it.sub || 0);
+    });
+  });
+
+  // Update stat cards
+  document.getElementById('st-orders').textContent = orderCount;
+  document.getElementById('st-revenue').textContent = '€' + totalRevenue.toFixed(0);
+  document.getElementById('st-avg').textContent = '€' + avgBasket.toFixed(0);
+  document.getElementById('st-items').textContent = totalItems;
+
+  // Top products (by qty)
+  const topProducts = Object.entries(productCounts).sort((a,b) => b[1].qty - a[1].qty).slice(0, 10);
+  const maxQty = topProducts.length ? topProducts[0][1].qty : 1;
+  document.getElementById('st-top-products').innerHTML = topProducts.length
+    ? topProducts.map(([name, d]) => `
+      <div class="stat-bar-row">
+        <div class="stat-bar-label"><span class="name">${name}</span><span class="val">${d.qty}× · €${d.revenue.toFixed(0)}</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${(d.qty/maxQty*100)}%"></div></div>
+      </div>`).join('')
+    : '<div style="color:var(--text-muted)">No orders yet</div>';
+
+  // Top categories (by revenue)
+  const topCats = Object.entries(categoryCounts).sort((a,b) => b[1].revenue - a[1].revenue);
+  const maxCatRev = topCats.length ? topCats[0][1].revenue : 1;
+  document.getElementById('st-top-cats').innerHTML = topCats.length
+    ? topCats.map(([cat, d]) => `
+      <div class="stat-bar-row">
+        <div class="stat-bar-label"><span class="name">${cat}</span><span class="val">€${d.revenue.toFixed(0)} · ${d.qty}×</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${(d.revenue/maxCatRev*100)}%"></div></div>
+      </div>`).join('')
+    : '<div style="color:var(--text-muted)">No orders yet</div>';
+}
+
 function switchTab(name, el) {
   document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
   if (name === 'categories') renderCatGrid();
+  if (name === 'stats') renderStats();
   if (name === 'settings' && SHOP_SETTINGS) {
     document.getElementById('set-min-order').value = SHOP_SETTINGS.min_order;
     document.getElementById('set-delivery-fee').value = SHOP_SETTINGS.delivery_fee;
