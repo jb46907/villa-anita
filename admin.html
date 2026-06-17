@@ -1367,8 +1367,8 @@ function unlockBody() { document.body.classList.remove('modal-open'); }
 function checkCjenoteka(which) {
   const name = document.getElementById(which + '-name').value.trim();
   if (!name) { showToast('⚠️ Enter a product name first'); return; }
-  // Google site-search on cjenoteka.hr - reliably finds the product page
-  const query = encodeURIComponent('site:cjenoteka.hr ' + name);
+  // Plain Google search: product name + cjenoteka keyword
+  const query = encodeURIComponent(name + ' cjenoteka');
   window.open('https://www.google.com/search?q=' + query, '_blank');
 }
 
