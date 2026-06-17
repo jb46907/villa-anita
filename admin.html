@@ -533,7 +533,8 @@ input[type=file]{display:none}
     <h3>➕ Add New Product</h3>
     <div class="modal-row"><label>Name *</label><input type="text" id="add-name" placeholder="Product name"></div>
     <div class="modal-row"><label>Selling price (€) *</label><input type="number" id="add-price" step="0.01" min="0" placeholder="0.00"></div>
-    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="add-cost" step="0.01" min="0" placeholder="0.00 (optional)"></div>
+    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="add-cost" step="0.01" min="0" placeholder="0.00 (optional)">
+      <button type="button" onclick="checkCjenoteka('add')" style="display:inline-flex;align-items:center;gap:0.4rem;background:none;border:1px solid var(--sea);color:var(--sea);padding:0.5rem 0.9rem;font-family:'Jost',sans-serif;font-size:0.8rem;cursor:pointer;margin-top:0.5rem;border-radius:2px">🔍 Check prices on Cjenoteka</button></div>
     <div class="modal-row">
       <label>Category *</label>
       <select id="add-cat"></select>
@@ -567,7 +568,8 @@ input[type=file]{display:none}
     <input type="hidden" id="edit-id">
     <div class="modal-row"><label>Name</label><input type="text" id="edit-name"></div>
     <div class="modal-row"><label>Selling price (€)</label><input type="number" id="edit-price" step="0.01" min="0" oninput="updateMarginPreview()"></div>
-    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="edit-cost" step="0.01" min="0" oninput="updateMarginPreview()"><div id="margin-preview" style="font-size:0.8rem;color:var(--olive);margin-top:0.4rem"></div></div>
+    <div class="modal-row"><label>Cost / purchase price (€)</label><input type="number" id="edit-cost" step="0.01" min="0" oninput="updateMarginPreview()"><div id="margin-preview" style="font-size:0.8rem;color:var(--olive);margin-top:0.4rem"></div>
+      <button type="button" onclick="checkCjenoteka('edit')" style="display:inline-flex;align-items:center;gap:0.4rem;background:none;border:1px solid var(--sea);color:var(--sea);padding:0.5rem 0.9rem;font-family:'Jost',sans-serif;font-size:0.8rem;cursor:pointer;margin-top:0.5rem;border-radius:2px">🔍 Check prices on Cjenoteka</button></div>
     <div class="modal-row">
       <label>Category</label>
       <select id="edit-cat"></select>
@@ -1363,6 +1365,14 @@ async function deleteProduct(id, name) {
 
 function lockBody() { document.body.classList.add('modal-open'); }
 function unlockBody() { document.body.classList.remove('modal-open'); }
+
+function checkCjenoteka(which) {
+  const name = document.getElementById(which + '-name').value.trim();
+  if (!name) { showToast('⚠️ Enter a product name first'); return; }
+  // Google site-search on cjenoteka.hr - reliably finds the product page
+  const query = encodeURIComponent('site:cjenoteka.hr ' + name);
+  window.open('https://www.google.com/search?q=' + query, '_blank');
+}
 
 function updateMarginPreview() {
   const price = parseFloat(document.getElementById('edit-price').value) || 0;
