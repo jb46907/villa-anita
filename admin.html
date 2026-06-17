@@ -1005,9 +1005,7 @@ function renderDinnerQuotePreview(d) {
 
   document.getElementById('dinner-quote-content').innerHTML = `
     <div class="receipt-header">
-      <div class="receipt-logo">VILLA ANITA</div>
-      <div class="receipt-sub">Private Dinner Quote</div>
-      
+      <div class="receipt-logo">PRIVATE DINNER QUOTE</div>
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -1044,7 +1042,7 @@ function renderDinnerQuotePreview(d) {
     <div class="receipt-meta-row"><span>Payment</span><span>Cash</span></div>
     ${quoteNotes?`<div style="margin-top:0.8rem;font-size:0.8rem"><em>${quoteNotes}</em></div>`:''}
     <div class="receipt-footer">
-      Thank you for choosing Villa Anita!<br>
+      Thank you!<br>
       This quote is valid until ${validDate}.
     </div>`;
 }
@@ -1576,9 +1574,7 @@ function openReceipt(id) {
 
   document.getElementById('receipt-content').innerHTML = `
     <div class="receipt-header">
-      <div class="receipt-logo">VILLA ANITA</div>
-      <div class="receipt-sub">Grocery & Supply Order</div>
-      <div class="receipt-sub">Dalmatia, Croatia</div>
+      <div class="receipt-logo">GROCERIES &amp; SUPPLY</div>
     </div>
     <hr class="receipt-divider">
     <div class="receipt-meta">
@@ -1597,8 +1593,7 @@ function openReceipt(id) {
     <div class="receipt-meta-row"><span>Status</span><span>${o.status.toUpperCase()}</span></div>
     <hr class="receipt-divider">
     <div class="receipt-footer">
-      Thank you for your order!<br>
-      Villa Anita
+      Thank you for your order!
     </div>`;
 
   document.getElementById('receipt-modal').classList.add('open');
