@@ -274,7 +274,12 @@ async function loadCategories() {
 function renderCatList() {
   const list = document.getElementById('cat-list');
   list.innerHTML = `<button class="cat-btn active" onclick="filterCat('All',this)">🛒 All items</button>` +
-    ALL_CATS.map(c => `<button class="cat-btn" onclick="filterCat('${c.name}',this)">${c.emoji} ${c.name}</button>`).join('');
+    ALL_CATS.map(c => `<button class="cat-btn" onclick="filterCat('${c.name}',this)">${c.emoji} ${c.name}${c.locked ? ' 🔒' : ''}</button>`).join('');
+}
+
+function isCatLocked(catName) {
+  const c = ALL_CATS.find(x => x.name === catName);
+  return c && c.locked === true;
 }
 
 async function loadProducts() {
@@ -295,7 +300,22 @@ function filterCat(cat, el) {
 
 function renderProducts() {
   const q = document.getElementById('search-input').value.toLowerCase();
+
+  // If viewing a single locked category, show maintenance message
+  if (currentCat !== 'All' && isCatLocked(currentCat)) {
+    document.getElementById('results-count').textContent = '';
+    document.getElementById('products-grid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🔧</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--text);margin-bottom:0.5rem">Under maintenance</div>
+        <div style="font-size:0.9rem">This category is being updated and is temporarily unavailable.<br>Please check back soon or browse other categories.</div>
+      </div>`;
+    return;
+  }
+
   const filtered = ALL_PRODUCTS.filter(p => {
+    // Hide products from locked categories when viewing "All"
+    if (isCatLocked(p.category)) return false;
     const matchCat = currentCat === 'All' || p.category === currentCat;
     const matchSearch = !q || p.name.toLowerCase().includes(q);
     return matchCat && matchSearch;
