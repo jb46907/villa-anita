@@ -1420,8 +1420,17 @@ async function deleteProduct(id, name) {
   } else { alert('Error deleting product.'); }
 }
 
-function lockBody() { document.body.classList.add('modal-open'); }
-function unlockBody() { document.body.classList.remove('modal-open'); }
+let modalScrollY = 0;
+function lockBody() {
+  modalScrollY = window.scrollY;
+  document.body.style.top = `-${modalScrollY}px`;
+  document.body.classList.add('modal-open');
+}
+function unlockBody() {
+  document.body.classList.remove('modal-open');
+  document.body.style.top = '';
+  window.scrollTo(0, modalScrollY);
+}
 
 function checkCjenoteka(which) {
   const name = document.getElementById(which + '-name').value.trim();
