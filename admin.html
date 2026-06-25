@@ -669,14 +669,10 @@ async function doLogin() {
     const data = await res.json();
     if (data.access_token) {
       authToken = data.access_token;
-      // Save session for 12 hours
-      const expiry = Date.now() + 12 * 60 * 60 * 1000;
-      try {
-        localStorage.setItem('va_admin_token', data.access_token);
-        localStorage.setItem('va_admin_expiry', String(expiry));
-      } catch {}
+      saveSession(data);
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-wrap').style.display = 'block';
+      scheduleTokenRefresh(data.expires_in || 3600);
       loadAll();
     } else {
       document.getElementById('login-error').style.display = 'block';
@@ -686,10 +682,51 @@ async function doLogin() {
   }
 }
 
+function saveSession(data) {
+  // Keep admin "remembered" for 12h, but token itself refreshes hourly
+  const expiry = Date.now() + 12 * 60 * 60 * 1000;
+  try {
+    localStorage.setItem('va_admin_token', data.access_token);
+    if (data.refresh_token) localStorage.setItem('va_admin_refresh', data.refresh_token);
+    localStorage.setItem('va_admin_expiry', String(expiry));
+  } catch {}
+}
+
+let refreshTimer = null;
+function scheduleTokenRefresh(expiresInSeconds) {
+  clearTimeout(refreshTimer);
+  // Refresh 5 minutes before expiry (Supabase tokens last ~1h)
+  const refreshInMs = Math.max((expiresInSeconds - 300) * 1000, 30000);
+  refreshTimer = setTimeout(refreshAccessToken, refreshInMs);
+}
+
+async function refreshAccessToken() {
+  const refreshToken = localStorage.getItem('va_admin_refresh');
+  if (!refreshToken) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refreshToken })
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      authToken = data.access_token;
+      saveSession(data);
+      scheduleTokenRefresh(data.expires_in || 3600);
+    } else {
+      // Refresh failed - session truly expired
+      logout();
+    }
+  } catch {}
+}
+
 async function logout() {
   authToken = null;
+  clearTimeout(refreshTimer);
   try {
     localStorage.removeItem('va_admin_token');
+    localStorage.removeItem('va_admin_refresh');
     localStorage.removeItem('va_admin_expiry');
   } catch {}
   document.getElementById('login-screen').style.display = 'flex';
@@ -701,15 +738,21 @@ async function logout() {
 function tryRestoreSession() {
   try {
     const token = localStorage.getItem('va_admin_token');
+    const refreshToken = localStorage.getItem('va_admin_refresh');
     const expiry = parseInt(localStorage.getItem('va_admin_expiry') || '0');
     if (token && expiry > Date.now()) {
       authToken = token;
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-wrap').style.display = 'block';
-      loadAll();
+      // Immediately refresh token to make sure it's fresh, then load
+      if (refreshToken) {
+        refreshAccessToken().then(() => loadAll());
+      } else {
+        loadAll();
+      }
     } else if (token) {
-      // Expired - clean up
       localStorage.removeItem('va_admin_token');
+      localStorage.removeItem('va_admin_refresh');
       localStorage.removeItem('va_admin_expiry');
     }
   } catch {}
