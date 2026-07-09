@@ -127,6 +127,20 @@
 
   /* REVIEWS */
   .reviews-section { background: var(--sand); }
+  .rules-section { background: var(--white); }
+  .rules-wrap { max-width: 820px; margin: 0 auto; }
+  .rules-intro { text-align: center; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; max-width: 620px; margin: 0 auto 2.5rem; }
+  .rules-checkout { display: inline-block; background: rgba(196,112,74,0.1); border-left: 3px solid var(--terracotta); padding: 0.7rem 1.2rem; font-size: 0.95rem; letter-spacing: 0.05em; font-weight: 500; margin: 0 auto 2.5rem; }
+  .rules-checkout-wrap { text-align: center; }
+  .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2.5rem; }
+  .rule-block { }
+  .rule-block h3 { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terracotta); font-weight: 500; margin-bottom: 0.6rem; }
+  .rule-block ul { list-style: none; }
+  .rule-block li { position: relative; padding-left: 1rem; margin-bottom: 0.5rem; font-size: 0.88rem; line-height: 1.6; color: var(--text); }
+  .rule-block li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 5px; height: 5px; border-radius: 50%; background: var(--terracotta); }
+  .rules-note { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 2.5rem; line-height: 1.6; }
+  @media (max-width: 700px) { .rules-grid { grid-template-columns: 1fr; gap: 1.2rem; } }
+
   .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem; }
   .review-card { background: var(--white); padding: 1.5rem; border-top: 3px solid var(--terracotta); }
   .review-stars { color: var(--terracotta); font-size: 1rem; margin-bottom: 0.8rem; letter-spacing: 2px; }
@@ -213,6 +227,7 @@
     <li><a href="#gallery" data-i18n="nav_gallery">Galerija</a></li>
     <li><a href="#amenities" data-i18n="nav_amenities">Sadržaji</a></li>
     <li><a href="#booking" data-i18n="nav_booking">Rezervacija</a></li>
+    <li><a href="#rules" data-i18n="nav_rules">Kućni red</a></li>
     <li><a href="#reviews" data-i18n="nav_reviews">Recenzije</a></li>
     <li><a href="#contact" data-i18n="nav_contact">Kontakt</a></li>
   </ul>
@@ -235,6 +250,7 @@
   <a href="#gallery" onclick="closeMenu()" data-i18n="nav_gallery">Galerija</a>
   <a href="#amenities" onclick="closeMenu()" data-i18n="nav_amenities">Sadržaji</a>
   <a href="#booking" onclick="closeMenu()" data-i18n="nav_booking">Rezervacija</a>
+  <a href="#rules" onclick="closeMenu()" data-i18n="nav_rules">Kućni red</a>
   <a href="#reviews" onclick="closeMenu()" data-i18n="nav_reviews">Recenzije</a>
   <a href="#contact" onclick="closeMenu()" data-i18n="nav_contact">Kontakt</a>
   <div class="mobile-lang">
@@ -536,6 +552,68 @@ Would 100% return and recommend. The he house is a residential area but we took 
 </section>
 
 <!-- KONTAKT -->
+
+<!-- KUĆNI RED -->
+<section class="rules-section" id="rules">
+  <div class="section-header">
+    <p class="section-eyebrow" data-i18n="rules_eyebrow">Za ugodan boravak</p>
+    <h2 class="section-title" data-i18n="rules_title">Kućni red</h2>
+  </div>
+  <div class="rules-wrap">
+    <p class="rules-intro" data-i18n="rules_intro">Please respect the house rules to make your stay as pleasant as possible. When leaving the property, lock the front door, close the sun umbrellas, turn off the lights and all electrical appliances, and turn off the water. The keys must be returned to the host upon checkout.</p>
+
+    <div class="rules-checkout-wrap">
+      <div class="rules-checkout" data-i18n="rules_checkout">CHECKOUT: by 10:00 AM</div>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-block">
+        <h3 data-i18n="rules_guests_t">Maximum number of guests</h3>
+        <ul>
+          <li data-i18n="rules_guests_1">10 guests. Bringing other people who are not registered as guests is prohibited.</li>
+          <li data-i18n="rules_guests_2">Organizing parties and gatherings is strictly prohibited.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h3 data-i18n="rules_pets_t">Pets &amp; smoking</h3>
+        <ul>
+          <li data-i18n="rules_pets_1">Pets are not allowed.</li>
+          <li data-i18n="rules_pets_2">Smoking inside the house is prohibited. Smoking is allowed outside, with butts disposed of in ashtrays.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h3 data-i18n="rules_pool_t">Pool use</h3>
+        <ul>
+          <li data-i18n="rules_pool_1">Pool use is at your own risk. Children must be supervised by adults at all times.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h3 data-i18n="rules_equip_t">Equipment and furniture</h3>
+        <ul>
+          <li data-i18n="rules_equip_1">Please handle the equipment and furniture with care, and report any damage to the host immediately.</li>
+          <li data-i18n="rules_equip_2">It is forbidden to take devices and equipment (towels, blankets, etc.) out of the house.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h3 data-i18n="rules_fire_t">Fire safety</h3>
+        <ul>
+          <li data-i18n="rules_fire_1">It is not allowed to bring weapons, explosives, or flammable materials into the house.</li>
+          <li data-i18n="rules_fire_2">The owner has the right to enter the house in the guest's absence in exceptional circumstances to prevent damage or danger, and will inform the guest at the first next contact.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h3 data-i18n="rules_liab_t">Liability</h3>
+        <ul>
+          <li data-i18n="rules_liab_1">The owners are not responsible for any injuries to guests or theft of personal belongings.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="rules-note" data-i18n="rules_note">In case of non-compliance with house rules, the host has the right to cancel further services to the guest. Thank you!</p>
+  </div>
+</section>
+
+<!-- KONTAKT -->
 <section class="contact-section" id="contact">
   <p class="section-eyebrow" data-i18n="contact_eyebrow">Povežimo se</p>
   <h2 class="section-title" style="color:var(--white);font-family:'Cormorant Garamond',serif;font-weight:300;" data-i18n="contact_title">Kontaktirajte nas</h2>
@@ -554,7 +632,8 @@ Would 100% return and recommend. The he house is a residential area but we took 
 // ===================== PRIJEVODI =====================
 const i18n = {
   hr: {
-    nav_gallery:'Galerija', nav_amenities:'Sadržaji', nav_booking:'Rezervacija', nav_reviews:'Recenzije', nav_contact:'Kontakt',
+    nav_gallery:'Galerija', nav_amenities:'Sadržaji', nav_booking:'Rezervacija', nav_rules:'Kućni red', nav_reviews:'Recenzije', nav_contact:'Kontakt',
+    rules_eyebrow:'Za ugodan boravak', rules_title:'Kućni red', rules_intro:'Molimo poštujte kućni red kako bi vaš boravak bio što ugodniji. Pri odlasku iz objekta zaključajte ulazna vrata, sklopite suncobrane, ugasite svjetla i sve električne uređaje te zatvorite vodu. Ključeve je potrebno vratiti domaćinu prilikom odjave.', rules_checkout:'ODJAVA: do 10:00', rules_guests_t:'Najveći broj gostiju', rules_guests_1:'10 gostiju. Dovođenje osoba koje nisu prijavljene kao gosti je zabranjeno.', rules_guests_2:'Organiziranje zabava i okupljanja strogo je zabranjeno.', rules_pets_t:'Ljubimci i pušenje', rules_pets_1:'Kućni ljubimci nisu dozvoljeni.', rules_pets_2:'Pušenje u kući je zabranjeno. Pušenje je dozvoljeno vani, opuške odlažite u pepeljare.', rules_pool_t:'Korištenje bazena', rules_pool_1:'Korištenje bazena je na vlastitu odgovornost. Djeca moraju biti pod nadzorom odraslih u svakom trenutku.', rules_equip_t:'Oprema i namještaj', rules_equip_1:'Molimo pažljivo rukujte opremom i namještajem te svaku štetu odmah prijavite domaćinu.', rules_equip_2:'Zabranjeno je iznositi uređaje i opremu (ručnike, deke i sl.) iz kuće.', rules_fire_t:'Protupožarna sigurnost', rules_fire_1:'Zabranjeno je unositi oružje, eksploziv ili zapaljive materijale u kuću.', rules_fire_2:'Vlasnik ima pravo ući u kuću u odsutnosti gosta u iznimnim okolnostima kako bi spriječio moguću štetu ili opasnost, o čemu će gosta obavijestiti prvom sljedećom prilikom.', rules_liab_t:'Odgovornost', rules_liab_1:'Vlasnici ne odgovaraju za ozljede gostiju niti za krađu osobnih stvari.', rules_note:'U slučaju nepoštivanja kućnog reda, domaćin ima pravo otkazati daljnje usluge gostu. Hvala!',
     hero_eyebrow:'Ekskluzivni smještaj · Dalmacija', hero_sub:'Vaš dom na obali Jadrana',
     hero_desc:'Predivna villa s pogledom na more, okružena mediteranskim zelenilom. Savršeno mjesto za odmor u srcu Dalmacije.',
     hero_cta1:'Rezervirajte večeru', hero_cta2:'Pogledajte villu',
@@ -593,7 +672,8 @@ const i18n = {
     ph_notes:'Alergije, posebne želje...', ph_message:'Vaša pitanja...', ph_review:'Opišite Vaš boravak...', ph_country:'Hrvatska', btn_show_more:'Prikaži sve recenzije ↓', btn_show_less:'Sakrij ↑'
   },
   en: {
-    nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_reviews:'Reviews', nav_contact:'Contact',
+    nav_gallery:'Gallery', nav_amenities:'Amenities', nav_booking:'Book', nav_rules:'House rules', nav_reviews:'Reviews', nav_contact:'Contact',
+    rules_eyebrow:'For a pleasant stay', rules_title:'House rules', rules_intro:'Please respect the house rules to make your stay as pleasant as possible. When leaving the property, lock the front door, close the sun umbrellas, turn off the lights and all electrical appliances, and turn off the water. The keys must be returned to the host upon checkout.', rules_checkout:'CHECKOUT: by 10:00 AM', rules_guests_t:'Maximum number of guests', rules_guests_1:'10 guests. Bringing other people who are not registered as guests is prohibited.', rules_guests_2:'Organizing parties and gatherings is strictly prohibited.', rules_pets_t:'Pets & smoking', rules_pets_1:'Pets are not allowed.', rules_pets_2:'Smoking inside the house is prohibited. Smoking is allowed outside, with butts disposed of in ashtrays.', rules_pool_t:'Pool use', rules_pool_1:'Pool use is at your own risk. Children must be supervised by adults at all times.', rules_equip_t:'Equipment and furniture', rules_equip_1:'Please handle the equipment and furniture with care, and report any damage to the host immediately.', rules_equip_2:'It is forbidden to take devices and equipment (towels, blankets, etc.) out of the house.', rules_fire_t:'Fire safety', rules_fire_1:'It is not allowed to bring weapons, explosives, or flammable materials into the house.', rules_fire_2:'The owner has the right to enter the house in the guest\'s absence in exceptional circumstances to prevent damage or danger, and will inform the guest at the first next contact.', rules_liab_t:'Liability', rules_liab_1:'The owners are not responsible for any injuries to guests or theft of personal belongings.', rules_note:'In case of non-compliance with house rules, the host has the right to cancel further services to the guest. Thank you!',
     hero_eyebrow:'Exclusive accommodation · Dalmatia', hero_sub:'Your home on the Adriatic coast',
     hero_desc:'Beautiful villa with sea views, surrounded by Mediterranean greenery. The perfect retreat in the heart of Dalmatia.',
     hero_cta1:'Book a private dinner', hero_cta2:'View the villa',
@@ -632,7 +712,8 @@ const i18n = {
     ph_notes:'Allergies, special requests...', ph_message:'Your questions...', ph_review:'Describe your stay...', ph_country:'Croatia', btn_show_more:'Show all reviews ↓', btn_show_less:'Show less ↑'
   },
   de: {
-    nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
+    nav_gallery:'Galerie', nav_amenities:'Ausstattung', nav_booking:'Buchen', nav_rules:'Hausordnung', nav_reviews:'Bewertungen', nav_contact:'Kontakt',
+    rules_eyebrow:'Für einen angenehmen Aufenthalt', rules_title:'Hausordnung', rules_intro:'Bitte beachten Sie die Hausordnung, damit Ihr Aufenthalt so angenehm wie möglich wird. Beim Verlassen des Hauses schließen Sie bitte die Haustür ab, klappen Sie die Sonnenschirme zusammen, schalten Sie das Licht und alle Elektrogeräte aus und drehen Sie das Wasser ab. Die Schlüssel sind beim Auschecken dem Gastgeber zurückzugeben.', rules_checkout:'ABREISE: bis 10:00 Uhr', rules_guests_t:'Maximale Gästezahl', rules_guests_1:'10 Gäste. Das Mitbringen von Personen, die nicht als Gäste registriert sind, ist untersagt.', rules_guests_2:'Das Veranstalten von Partys und Versammlungen ist strengstens untersagt.', rules_pets_t:'Haustiere & Rauchen', rules_pets_1:'Haustiere sind nicht erlaubt.', rules_pets_2:'Rauchen im Haus ist verboten. Draußen ist Rauchen erlaubt, Zigarettenstummel bitte in die Aschenbecher.', rules_pool_t:'Poolnutzung', rules_pool_1:'Die Nutzung des Pools erfolgt auf eigene Gefahr. Kinder müssen jederzeit von Erwachsenen beaufsichtigt werden.', rules_equip_t:'Ausstattung und Möbel', rules_equip_1:'Bitte gehen Sie sorgsam mit Ausstattung und Möbeln um und melden Sie Schäden umgehend dem Gastgeber.', rules_equip_2:'Es ist untersagt, Geräte und Ausstattung (Handtücher, Decken usw.) aus dem Haus zu nehmen.', rules_fire_t:'Brandschutz', rules_fire_1:'Es ist nicht gestattet, Waffen, Sprengstoff oder brennbare Materialien ins Haus zu bringen.', rules_fire_2:'Der Eigentümer hat das Recht, das Haus in Abwesenheit des Gastes in Ausnahmefällen zu betreten, um Schäden oder Gefahren abzuwenden, und wird den Gast beim nächsten Kontakt darüber informieren.', rules_liab_t:'Haftung', rules_liab_1:'Die Eigentümer haften nicht für Verletzungen der Gäste oder den Diebstahl persönlicher Gegenstände.', rules_note:'Bei Nichteinhaltung der Hausordnung hat der Gastgeber das Recht, weitere Leistungen zu verweigern. Vielen Dank!',
     hero_eyebrow:'Exklusive Unterkunft · Dalmatien', hero_sub:'Ihr Zuhause an der Adriaküste',
     hero_desc:'Wunderschöne Villa mit Meerblick, umgeben von mediterranem Grün. Der perfekte Rückzugsort im Herzen Dalmatiens.',
     hero_cta1:'Privates Abendessen buchen', hero_cta2:'Villa ansehen',
@@ -671,7 +752,8 @@ const i18n = {
     ph_notes:'Allergien, besondere Wünsche...', ph_message:'Ihre Fragen...', ph_review:'Beschreiben Sie Ihren Aufenthalt...', ph_country:'Kroatien', btn_show_more:'Alle Bewertungen ↓', btn_show_less:'Weniger ↑'
   },
   nl: {
-    nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_reviews:'Recensies', nav_contact:'Contact',
+    nav_gallery:'Galerij', nav_amenities:'Faciliteiten', nav_booking:'Reserveren', nav_rules:'Huisregels', nav_reviews:'Recensies', nav_contact:'Contact',
+    rules_eyebrow:'Voor een aangenaam verblijf', rules_title:'Huisregels', rules_intro:'Respecteer de huisregels om uw verblijf zo aangenaam mogelijk te maken. Sluit bij het verlaten van het pand de voordeur af, klap de parasols in, doe de lichten en alle elektrische apparaten uit en draai het water dicht. De sleutels moeten bij het uitchecken aan de gastheer worden teruggegeven.', rules_checkout:'UITCHECKEN: vóór 10:00 uur', rules_guests_t:'Maximaal aantal gasten', rules_guests_1:'10 gasten. Het meenemen van personen die niet als gast geregistreerd zijn, is verboden.', rules_guests_2:'Het organiseren van feesten en bijeenkomsten is ten strengste verboden.', rules_pets_t:'Huisdieren & roken', rules_pets_1:'Huisdieren zijn niet toegestaan.', rules_pets_2:'Roken binnenshuis is verboden. Buiten roken is toegestaan; peuken graag in de asbakken.', rules_pool_t:'Gebruik van het zwembad', rules_pool_1:'Gebruik van het zwembad is op eigen risico. Kinderen moeten te allen tijde onder toezicht van volwassenen staan.', rules_equip_t:'Apparatuur en meubilair', rules_equip_1:'Ga zorgvuldig om met apparatuur en meubilair en meld schade onmiddellijk aan de gastheer.', rules_equip_2:'Het is verboden apparaten en uitrusting (handdoeken, dekens, enz.) mee naar buiten te nemen.', rules_fire_t:'Brandveiligheid', rules_fire_1:'Het is niet toegestaan wapens, explosieven of brandbare materialen mee het huis in te nemen.', rules_fire_2:'De eigenaar heeft het recht het huis bij afwezigheid van de gast in uitzonderlijke omstandigheden te betreden om schade of gevaar te voorkomen, en zal de gast bij het eerstvolgende contact informeren.', rules_liab_t:'Aansprakelijkheid', rules_liab_1:'De eigenaren zijn niet verantwoordelijk voor letsel van gasten of diefstal van persoonlijke bezittingen.', rules_note:'Bij het niet naleven van de huisregels heeft de gastheer het recht verdere diensten aan de gast te annuleren. Dank u wel!',
     hero_eyebrow:'Exclusief verblijf · Dalmatië', hero_sub:'Uw thuis aan de Adriatische kust',
     hero_desc:'Prachtige villa met zeezicht, omgeven door mediterraan groen. De perfecte plek om tot rust te komen in het hart van Dalmatië.',
     hero_cta1:'Privé diner reserveren', hero_cta2:'Bekijk de villa',
@@ -710,7 +792,8 @@ const i18n = {
     ph_notes:'Allergieën, speciale wensen...', ph_message:'Uw vragen...', ph_review:'Beschrijf uw verblijf...', ph_country:'Kroatië', btn_show_more:'Alle recensies ↓', btn_show_less:'Minder ↑'
   },
   fr: {
-    nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_reviews:'Avis', nav_contact:'Contact',
+    nav_gallery:'Galerie', nav_amenities:'Équipements', nav_booking:'Réserver', nav_rules:'Règlement', nav_reviews:'Avis', nav_contact:'Contact',
+    rules_eyebrow:'Pour un séjour agréable', rules_title:'Règlement intérieur', rules_intro:'Merci de respecter le règlement intérieur afin de rendre votre séjour aussi agréable que possible. En quittant la propriété, verrouillez la porte d\'entrée, fermez les parasols, éteignez les lumières et tous les appareils électriques, et coupez l\'eau. Les clés doivent être restituées à l\'hôte au moment du départ.', rules_checkout:'DÉPART : avant 10h00', rules_guests_t:'Nombre maximum d\'invités', rules_guests_1:'10 personnes. Il est interdit d\'amener des personnes non enregistrées comme invités.', rules_guests_2:'L\'organisation de fêtes et de rassemblements est strictement interdite.', rules_pets_t:'Animaux & tabac', rules_pets_1:'Les animaux ne sont pas admis.', rules_pets_2:'Il est interdit de fumer à l\'intérieur. Fumer est autorisé à l\'extérieur, les mégots doivent être jetés dans les cendriers.', rules_pool_t:'Utilisation de la piscine', rules_pool_1:'L\'utilisation de la piscine se fait à vos propres risques. Les enfants doivent être surveillés par un adulte à tout moment.', rules_equip_t:'Équipement et mobilier', rules_equip_1:'Merci de manipuler l\'équipement et le mobilier avec soin et de signaler tout dommage immédiatement à l\'hôte.', rules_equip_2:'Il est interdit de sortir de la maison les appareils et équipements (serviettes, couvertures, etc.).', rules_fire_t:'Sécurité incendie', rules_fire_1:'Il est interdit d\'introduire des armes, des explosifs ou des matières inflammables dans la maison.', rules_fire_2:'Le propriétaire a le droit d\'entrer dans la maison en l\'absence du client, dans des circonstances exceptionnelles, afin de prévenir tout dommage ou danger, et en informera le client dès le prochain contact.', rules_liab_t:'Responsabilité', rules_liab_1:'Les propriétaires ne sont pas responsables des blessures des clients ni du vol d\'effets personnels.', rules_note:'En cas de non-respect du règlement intérieur, l\'hôte se réserve le droit d\'annuler les services au client. Merci !',
     hero_eyebrow:'Hébergement exclusif · Dalmatie', hero_sub:'Votre maison sur la côte Adriatique',
     hero_desc:'Magnifique villa avec vue sur la mer, entourée de verdure méditerranéenne. L\'endroit idéal pour se ressourcer au cœur de la Dalmatie.',
     hero_cta1:'Réserver un dîner privé', hero_cta2:'Voir la villa',
@@ -749,7 +832,8 @@ const i18n = {
     ph_notes:'Allergies, demandes spéciales...', ph_message:'Vos questions...', ph_review:'Décrivez votre séjour...', ph_country:'Croatie', btn_show_more:'Tous les avis ↓', btn_show_less:'Réduire ↑'
   },
   it: {
-    nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_reviews:'Recensioni', nav_contact:'Contatti',
+    nav_gallery:'Galleria', nav_amenities:'Servizi', nav_booking:'Prenota', nav_rules:'Regolamento', nav_reviews:'Recensioni', nav_contact:'Contatti',
+    rules_eyebrow:'Per un soggiorno piacevole', rules_title:'Regolamento della casa', rules_intro:'Vi preghiamo di rispettare il regolamento affinché il vostro soggiorno sia il più piacevole possibile. Quando lasciate la proprietà, chiudete a chiave la porta d\'ingresso, chiudete gli ombrelloni, spegnete le luci e tutti gli apparecchi elettrici e chiudete l\'acqua. Le chiavi devono essere restituite all\'host al momento del check-out.', rules_checkout:'CHECK-OUT: entro le 10:00', rules_guests_t:'Numero massimo di ospiti', rules_guests_1:'10 ospiti. È vietato portare persone non registrate come ospiti.', rules_guests_2:'È severamente vietato organizzare feste e riunioni.', rules_pets_t:'Animali e fumo', rules_pets_1:'Gli animali non sono ammessi.', rules_pets_2:'È vietato fumare all\'interno della casa. È consentito fumare all\'esterno, gettando i mozziconi negli appositi posacenere.', rules_pool_t:'Uso della piscina', rules_pool_1:'L\'uso della piscina è a proprio rischio. I bambini devono essere sempre sorvegliati da un adulto.', rules_equip_t:'Attrezzature e arredi', rules_equip_1:'Vi preghiamo di trattare con cura attrezzature e arredi e di segnalare immediatamente all\'host eventuali danni.', rules_equip_2:'È vietato portare fuori dalla casa dispositivi e attrezzature (asciugamani, coperte, ecc.).', rules_fire_t:'Sicurezza antincendio', rules_fire_1:'Non è consentito introdurre in casa armi, esplosivi o materiali infiammabili.', rules_fire_2:'Il proprietario ha il diritto di entrare in casa in assenza dell\'ospite, in circostanze eccezionali, per prevenire danni o pericoli, e ne informerà l\'ospite al primo contatto successivo.', rules_liab_t:'Responsabilità', rules_liab_1:'I proprietari non sono responsabili per lesioni agli ospiti o furto di beni personali.', rules_note:'In caso di mancato rispetto del regolamento, l\'host ha il diritto di annullare ulteriori servizi all\'ospite. Grazie!',
     hero_eyebrow:'Alloggio esclusivo · Dalmazia', hero_sub:'La tua casa sulla costa adriatica',
     hero_desc:'Splendida villa con vista sul mare, circondata da verde mediterraneo. Il luogo perfetto per rilassarsi nel cuore della Dalmazia.',
     hero_cta1:'Prenota una cena privata', hero_cta2:'Scopri la villa',
